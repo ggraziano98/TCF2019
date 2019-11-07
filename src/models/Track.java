@@ -122,5 +122,5 @@ public class Track extends TrackID {
 		this.image = image;
 	}
 
-	
+	public void foo() {}
 }
