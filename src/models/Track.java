@@ -59,27 +59,97 @@ public class Track {
 	}
 	
 	
+	/**
+	 * Setter e getter di ogni variabile
+	 */
+	
+	public StringProperty getTitle() {
+		return title;
+	}
+
+
+	public void setTitle(StringProperty title) {
+		this.title = title;
+	}
+
+
+	public StringProperty getArtist() {
+		return artist;
+	}
+
+
+	public void setArtist(StringProperty artist) {
+		this.artist = artist;
+	}
+
+
+	public StringProperty getAlbum() {
+		return album;
+	}
+
+
+	public void setAlbum(StringProperty album) {
+		this.album = album;
+	}
+
+
+	public StringProperty getGenre() {
+		return genre;
+	}
+
+
+	public void setGenre(StringProperty genre) {
+		this.genre = genre;
+	}
+
+
+	public IntegerProperty getYear() {
+		return year;
+	}
+
+
+	public void setYear(IntegerProperty year) {
+		this.year = year;
+	}
+
+
+	public Duration getDuration() {
+		return duration;
+	}
+
+
+	public void setDuration(Duration duration) {
+		this.duration = duration;
+	}
+
+
+	public Image getImage() {
+		return image;
+	}
+
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
+
+
+	public StringProperty getPath() {
+		return path;
+	}
+
+
+	public void setPath(StringProperty path) {
+		this.path = path;
+	}
+
+
+	public StringProperty getFileName() {
+		return fileName;
+	}
+
+
+	public void setFileName(StringProperty fileName) {
+		this.fileName = fileName;
+	}
+	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
