@@ -1,16 +1,10 @@
 package models;
 
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
-
-
-/*
- * TODO find duration and image classes
- */
 
 
 /**
@@ -23,11 +17,10 @@ import javafx.util.Duration;
  * @param year
  * @param duration
  * @param image
- * @param path
- * @param fileName
- * 
+ *
+ * @see <a href="https://docs.oracle.com/javafx/2/binding/jfxpub-binding.htm">Properties</a>
  */
-public class Track {
+public class Track extends TrackID {
 	private StringProperty title;
 	private StringProperty artist;
 	private StringProperty album;
@@ -35,15 +28,13 @@ public class Track {
 	private IntegerProperty year;
 	private Duration duration;
 	private Image image;
-	private StringProperty path;
-	private StringProperty fileName;
 
-	
+
 	/**
 	 * Default constructor
 	 */	
 	public Track() {
-		this(null, null);
+		super();
 	}
 	
 	
@@ -54,11 +45,10 @@ public class Track {
 	 * @param fileName
 	 */
 	public Track(String path, String fileName) {
-		this.path = new SimpleStringProperty(path);
-		this.fileName = new SimpleStringProperty(fileName);
+		super(path, fileName);
 	}
-	
-	
+
+
 	/**
 	 * Setter e getter di ogni variabile
 	 */
@@ -132,24 +122,5 @@ public class Track {
 		this.image = image;
 	}
 
-
-	public StringProperty getPath() {
-		return path;
-	}
-
-
-	public void setPath(StringProperty path) {
-		this.path = path;
-	}
-
-
-	public StringProperty getFileName() {
-		return fileName;
-	}
-
-
-	public void setFileName(StringProperty fileName) {
-		this.fileName = fileName;
-	}
 	
 }
