@@ -123,6 +123,4 @@ public class Track extends TrackID {
 	public void setImage(Image image) {
 		this.image = image;
 	}
-
-	public void foo() {}
 }
