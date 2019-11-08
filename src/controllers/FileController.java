@@ -2,11 +2,10 @@ package controllers;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
-import models.Track;
 import models.TrackID;
 import models.TrackList;
 import utils.Tools;
@@ -14,8 +13,8 @@ import utils.Tools;
 public class FileController {
 	private Path dirPath;
 	public final String[] extensions = {"mp3"};
-	
-	
+
+
 	/**
 	 * Default constructor 
 	 */
@@ -23,32 +22,34 @@ public class FileController {
 		this.dirPath = null;
 	}
 
-	
+
 	/**
 	 * Constructor with parameters for the class
+	 * Can retrieve files with a specific extension, and modify their information
+	 * Supported extensions: mp3
 	 * 
 	 * @param dirPath 		path alla directory in cui sono contenuti i file mp3
 	 */
 	public FileController(Path dirPath) {
 		this.dirPath = dirPath;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * setters and getters
 	 */
-	
+
 	public Path getDirPath() {
 		return this.dirPath;
 	}
-	
-	
+
+
 	public void setDirPath(Path dirPath) {
 		this.dirPath = dirPath;
 	}
-	
-	
+
+
 	/**
 	 * Function that returns all the TrackIDs in the directory through a TrackList
 	 * 
@@ -56,39 +57,79 @@ public class FileController {
 	 */
 	public TrackList getFilesFromDir(Path path) {
 		TrackList tracklist = new TrackList();
-		List<Path> pathList = Tools.getFilesInDir(path);
-		pathList.removeIf(p -> !this.isViableExtension(p));
-		/* uso il metodo removeIf dell'ArrayList per rimuovere i file che non sono dell'estensione corretta */
-		pathList.forEach(p -> tracklist.addTrack(new TrackID(p)));
+		List<Path> pathList;
+		try {
+			pathList = Tools.getFilesInDir(path);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			pathList = new ArrayList<Path>();
+		}
+		try {
+			pathList.removeIf(p -> !this.isViableExtension(p));
+			/* uso il metodo removeIf dell'ArrayList per rimuovere i file che non sono dell'estensione corretta */
+			
+			pathList.forEach(p -> {
+				tracklist.addTrack(new TrackID(p));
+			});
+		}
+		catch (NullPointerException e) {
+			System.out.println("Nullpointer exception handled: " + e.getMessage());
+			return TrackList.emptyTrackList();
+		}
 		/* uso una lambda expression e il metodo forEach per iterare sulla pathList */
 		return tracklist;
 	}
-	
-	
+
+
+	/**
+	 * overloading di getFilesFromDir per avere this.dirPath come default directory 
+	 * 
+	 * @return 		TrackList of the songs in the main directory
+	 */
+	public TrackList getFilesFromDir() {
+		return this.getFilesFromDir(this.dirPath);
+	}
+
+
 	/**
 	 * metodo per eliminare una canzone
-	 * @param track
+	 * 
+	 * TODO track.toTrackID()
+	 * 
+	 * @param track		Track
 	 */
+	/*
 	public void removeTrack(Track track) {
+		this.removeTrack(track.toTrackID());
+	}
+	 */
+
+	/**
+	 * metodo per eliminare una canzone, passa un TrackID(overloada removeTrack(Track)
+	 * 
+	 * @param track 		TrackID
+	 */
+	public void removeTrack(TrackID track) {
 		File file = track.getPath().toFile();
-		
+
 		// TODO UI.confirmation()
-		
+
+		String fileName = track.getPath().getFileName().toString();
 		if(true) {
-			if (file.delete()) System.out.println("File cancellato correttamente");
-			else System.out.println("Non è stato possibile cancellare il file"); // TODO errorMessage
+			if (file.delete()) System.out.println(fileName + ": file cancellato correttamente");
+			else System.out.println("Non è stato possibile cancellare il file" + fileName); // TODO errorMessage
 		}
 	}
-	
-	
+
 	/*
 	public void editInfo(Track track, String info) {
 		// TODO get info screen
-		
+
 		// TODO input message
-		
+
 		Scanner input = new Scanner(System.in);
-		
+
 		switch(info) {
 		case "artist":
 			track.setArtist(input.toString());
@@ -106,9 +147,9 @@ public class FileController {
 			track.setImage(input);
 		}
 	}
-	*/
-	
-	
+	 */
+
+
 	/**
 	 * Controllo se un file è della giusta estensione
 	 * 

@@ -19,6 +19,8 @@ import models.Track;
  * tester per la classe Track
  * @author giova
  *
+ *
+ * TODO use observables to communicate with stage, use actual mp3 file
  */
 public class TrackTester extends Application{
 	
@@ -27,7 +29,8 @@ public class TrackTester extends Application{
         primaryStage.setTitle("ImageView Experiment 1");
         
         Track track = new Track();
-        FileInputStream input = new FileInputStream("D:\\Programming\\Java\\TCF2019-progetto\\TCF2019\\src\\testers\\image.png");
+        System.out.println(System.getProperty("user.dir"));
+        FileInputStream input = new FileInputStream("files\\image.png");
         Image image = new Image(input);
         track.setImage(image);
         ImageView imageView = new ImageView(track.getImage());

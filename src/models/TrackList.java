@@ -1,7 +1,10 @@
 package models;
 
+import java.util.ArrayList;
+
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 
@@ -21,7 +24,10 @@ public class TrackList {
 	/**
 	 * Default constructor for the class
 	 */
-	public TrackList() {}
+	public TrackList() {
+		this.length = new SimpleIntegerProperty(0);
+		this.songList = FXCollections.observableArrayList(new ArrayList<TrackID>());
+	}
 	
 	
 	/**
@@ -62,7 +68,9 @@ public class TrackList {
 	}
 	
 	
-	
+	public static TrackList emptyTrackList() {
+		return new TrackList();
+	}
 	
 	
 	

@@ -13,6 +13,8 @@ import javafx.util.Duration;
 /**
  * Class model for a Track 
  * 
+ * TODO implement Track.toTrackID()
+ * 
  * @param title
  * @param artist
  * @param album

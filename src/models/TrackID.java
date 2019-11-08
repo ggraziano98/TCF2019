@@ -9,6 +9,10 @@ import javafx.beans.property.SimpleIntegerProperty;
 /**
  * Class model for TrackID, an object that identifies the track in the folder and its order in a tracklist, if any
  * 
+ * TODO TrackID.toTrack()
+ * TODO Delete TrackID, only use Path and order in songlist for orderID
+ * 
+ * 
  * @param path			string with file path to folder
  * @param fileName		string with file name
  * @param orderID		sets the position in queue, if any
