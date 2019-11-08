@@ -1,8 +1,9 @@
 package models;
 
+import java.nio.file.Path;
+
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 
 /**
@@ -15,8 +16,7 @@ import javafx.beans.property.StringProperty;
  * @see <a href="https://docs.oracle.com/javafx/2/binding/jfxpub-binding.htm">Properties</a>
  */
 public class TrackID {
-	protected StringProperty path;
-	protected StringProperty fileName;
+	protected Path path;
 	protected IntegerProperty orderID;
 	
 	
@@ -24,7 +24,7 @@ public class TrackID {
 	 * Default constructor
 	 */	
 	public TrackID() {
-		this(null, null);
+		this(null);
 	}
 	
 	
@@ -34,9 +34,8 @@ public class TrackID {
 	 * @param path
 	 * @param fileName
 	 */
-	public TrackID(String path, String fileName) {
-		this.path = new SimpleStringProperty(path);
-		this.fileName = new SimpleStringProperty(fileName);
+	public TrackID(Path path) {
+		this.path = path;
 	}
 	
 	
@@ -44,32 +43,23 @@ public class TrackID {
 	 * setters and getters for class parameters
 	 */
 	
-	public StringProperty getPath() {
+	public Path getPath() {
 		return path;
 	}
 
 
-	public void setPath(StringProperty path) {
+	public void setPath(Path path) {
 		this.path = path;
 	}
 
-
-	public StringProperty getFileName() {
-		return fileName;
-	}
-
-
-	public void setFileName(StringProperty fileName) {
-		this.fileName = fileName;
-	}
 	
 	public IntegerProperty getOrderID() {
 		return orderID;
 	}
 
 
-	public void setOrderID(IntegerProperty orderID) {
-		this.orderID = orderID;
+	public void setOrderID(int orderID) {
+		this.orderID = new SimpleIntegerProperty(orderID);
 	}
 
 }

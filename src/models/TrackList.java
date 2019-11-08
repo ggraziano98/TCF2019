@@ -34,7 +34,38 @@ public class TrackList {
 		this.length = new SimpleIntegerProperty(length);
 		this.songList = songList;
 	}
-
+	
+	
+	/**
+	 * add a track to the end of the TrackList
+	 * 
+	 * @param track
+	 */
+	public void addTrack(TrackID track) {
+		this.addTrackToPosition(this.getLength().getValue(), track);
+	}
+	
+	
+	/**
+	 * add a track to the specified position. Will shift all successive tracks to the right
+	 * 
+	 * @param position
+	 * @param track
+	 */
+	public void addTrackToPosition(int position, TrackID track) {
+		try {
+			this.songList.add(position, track);
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	/**
@@ -46,8 +77,8 @@ public class TrackList {
 	}
 
 
-	public void setLength(IntegerProperty length) {
-		this.length = length;
+	public void setLength(int length) {
+		this.length = new SimpleIntegerProperty(length);
 	}
 
 
