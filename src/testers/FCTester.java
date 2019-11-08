@@ -43,9 +43,6 @@ public class FCTester {
 
 		TrackID notATrack = new TrackID(Paths.get("notATrack.mp3"));
 		fileC.removeTrack(notATrack);
-
-		
-		System.out.println("Tracklist empty");
 		
 		
 		/* TODO: implement TrackID.toTrack()
