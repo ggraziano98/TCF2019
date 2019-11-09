@@ -1,44 +1,38 @@
 package models;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 
 /**
- * Class model for lists of tracks
- * Extended by Playlist and SongQueue
+ * Class model for lists of tracks, sostanzialmente una ObservableList ma con qualche funzionalità aggiuntiva
+ * Extended by SongQueue
  * 
- * @param length
- * @param songList		ObservableList containing songs 
+ * @param songList		ObservableList of paths to the track 
  * 
  * @see <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/collections/ObservableList.html">ObservableList</a>
  */
 public class TrackList {
-	protected IntegerProperty length;
-	protected ObservableList<TrackID> songList;
+	protected ObservableList<Path> songList;
 	
 	/**
 	 * Default constructor for the class
 	 */
 	public TrackList() {
-		this.length = new SimpleIntegerProperty(0);
-		this.songList = FXCollections.observableArrayList(new ArrayList<TrackID>());
+		this.setSongList(FXCollections.observableArrayList(new ArrayList<Path>()));
 	}
 	
 	
 	/**
 	 * Constructor with initial data
 	 * 
-	 * @param length
-	 * @param songList
+	 * @param songList		lista dei path delle canzoni
 	 */
-	public TrackList(int length, ObservableList<TrackID> songList) {
-		this.length = new SimpleIntegerProperty(length);
-		this.songList = songList;
+	public TrackList(ObservableList<Path> songList) {
+		this.setSongList(songList);
 	}
 	
 	
@@ -47,8 +41,8 @@ public class TrackList {
 	 * 
 	 * @param track
 	 */
-	public void addTrack(TrackID track) {
-		this.addTrackToPosition(this.getLength().getValue(), track);
+	public void addTrack(Path trackPath) {
+		this.addTrackToPosition(this.songList.size(), trackPath);
 	}
 	
 	
@@ -58,9 +52,9 @@ public class TrackList {
 	 * @param position
 	 * @param track
 	 */
-	public void addTrackToPosition(int position, TrackID track) {
+	public void addTrackToPosition(int position, Path trackPath) {
 		try {
-			this.songList.add(position, track);
+			this.songList.add(position, trackPath);
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -80,22 +74,12 @@ public class TrackList {
 	 * setters and getters for class parameters
 	 */
 	
-	public IntegerProperty getLength() {
-		return length;
-	}
-
-
-	public void setLength(int length) {
-		this.length = new SimpleIntegerProperty(length);
-	}
-
-
-	public ObservableList<TrackID> getSongList() {
+	public ObservableList<Path> getSongList() {
 		return songList;
 	}
 
 
-	public void setSongList(ObservableList<TrackID> songList) {
+	public void setSongList(ObservableList<Path> songList) {
 		this.songList = songList;
 	}
 	

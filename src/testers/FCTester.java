@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import controllers.FileController;
-import models.TrackID;
 import models.TrackList;
 
 public class FCTester {
@@ -33,7 +32,10 @@ public class FCTester {
 		
 		System.out.println(tracklist.getSongList().size());
 		
-		tracklist.getSongList().forEach(tID -> System.out.println(tID.getPath().getFileName() + "\t\t" + tID.getOrderID()));
+		for (int i = 0; i < tracklist.getSongList().size(); i++) {
+			System.out.println(tracklist.getSongList().get(i).getFileName() + "\t\t\t" + i);
+		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
+		
 		try {
 		fileC.removeTrack(tracklist.getSongList().get(3));
 		} 
@@ -41,12 +43,12 @@ public class FCTester {
 			System.out.println("Error: " + e.getMessage());
 		}
 
-		TrackID notATrack = new TrackID(Paths.get("notATrack.mp3"));
+		Path notATrack = Paths.get("notATrack.mp3");
 		fileC.removeTrack(notATrack);
 		
 		
-		/* TODO: implement TrackID.toTrack()
-		 * implement metadata handling of Track
+		/**
+		 * TODO implement metadata handling of Track
 		tracklist.getSongList().forEach(tID -> {
 			Track track = tID.toTrack();
 			System.out.println(track.getTitle() + "\t\t" + track.getArtist() + "\t\t" + track.getAlbum());

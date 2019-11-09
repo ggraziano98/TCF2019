@@ -13,8 +13,6 @@ import javafx.util.Duration;
 /**
  * Class model for a Track 
  * 
- * TODO implement Track.toTrackID()
- * 
  * @param title
  * @param artist
  * @param album
@@ -25,7 +23,8 @@ import javafx.util.Duration;
  *
  * @see <a href="https://docs.oracle.com/javafx/2/binding/jfxpub-binding.htm">Properties</a>
  */
-public class Track extends TrackID {
+public class Track{
+	private Path path;
 	private StringProperty title;
 	private StringProperty artist;
 	private StringProperty album;
@@ -39,7 +38,6 @@ public class Track extends TrackID {
 	 * Default constructor
 	 */	
 	public Track() {
-		super();
 	}
 	
 	
@@ -49,13 +47,32 @@ public class Track extends TrackID {
 	 * @param path			oggetto Path 
 	 */
 	public Track(Path path) {
-		super(path);
+		this.setPath(path);
+		this.handleMetadata();
+	}
+	
+	
+	public void handleMetadata() {
 	}
 
 
+	
+	
+	
+	
+	
 	/**
 	 * Setter e getter di ogni variabile
 	 */
+	
+	public Path getPath() {
+		return path;
+	}
+	
+	
+	public void setPath(Path path) {
+		this.path = path;
+	}
 	
 	public StringProperty getTitle() {
 		return title;

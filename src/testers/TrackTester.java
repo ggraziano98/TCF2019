@@ -75,7 +75,6 @@ public class TrackTester extends Application{
 									"\n" + track.getGenre().getValue() );
 		
 		System.out.println(track.getYear().getValue());
-		System.out.println(track.getOrderID());
 		System.out.println(track.getDuration().toMinutes() + " min");
 		
 		Application.launch();

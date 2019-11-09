@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import models.TrackID;
 import models.TrackList;
 import utils.Tools;
 
@@ -70,7 +69,7 @@ public class FileController {
 			/* uso il metodo removeIf dell'ArrayList per rimuovere i file che non sono dell'estensione corretta */
 			
 			pathList.forEach(p -> {
-				tracklist.addTrack(new TrackID(p));
+				tracklist.addTrack(p);
 			});
 		}
 		catch (NullPointerException e) {
@@ -95,8 +94,6 @@ public class FileController {
 	/**
 	 * metodo per eliminare una canzone
 	 * 
-	 * TODO track.toTrackID()
-	 * 
 	 * @param track		Track
 	 */
 	/*
@@ -110,15 +107,15 @@ public class FileController {
 	 * 
 	 * @param track 		TrackID
 	 */
-	public void removeTrack(TrackID track) {
-		File file = track.getPath().toFile();
+	public void removeTrack(Path path) {
+		File file = path.toFile();
 
 		// TODO UI.confirmation()
 
-		String fileName = track.getPath().getFileName().toString();
+		String fileName = path.getFileName().toString();
 		if(true) {
 			if (file.delete()) System.out.println(fileName + ": file cancellato correttamente");
-			else System.out.println("Non è stato possibile cancellare il file" + fileName); // TODO errorMessage
+			else System.out.println("Non è stato possibile cancellare il file " + fileName); // TODO errorMessage
 		}
 	}
 
