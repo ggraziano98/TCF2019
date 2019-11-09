@@ -8,6 +8,8 @@ import javafx.collections.ObservableList;
 
 
 /**
+ * TODO guardare se cambiare TrackList in modo che estenda SimpleListProperty
+ * 
  * Class model for lists of tracks, sostanzialmente una ObservableList ma con qualche funzionalità aggiuntiva
  * Extended by SongQueue
  * 
