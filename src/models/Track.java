@@ -1,7 +1,6 @@
 package models;
 
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
