@@ -56,9 +56,9 @@ public class SongQueue extends TrackList{
 	}
 	
 	
-	void setCurrentSongID(int currentSongID) {
+	public void setCurrentSongID(int currentSongID) {
 		this.currentSongID = new SimpleIntegerProperty(currentSongID);
 	}
 	
-	
+	public void foo() {}
 }
