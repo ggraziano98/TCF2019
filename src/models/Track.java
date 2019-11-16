@@ -1,6 +1,10 @@
 package models;
 
+import java.nio.file.Path;
+
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
@@ -19,7 +23,8 @@ import javafx.util.Duration;
  *
  * @see <a href="https://docs.oracle.com/javafx/2/binding/jfxpub-binding.htm">Properties</a>
  */
-public class Track extends TrackID {
+public class Track{
+	private Path path;
 	private StringProperty title;
 	private StringProperty artist;
 	private StringProperty album;
@@ -33,32 +38,49 @@ public class Track extends TrackID {
 	 * Default constructor
 	 */	
 	public Track() {
-		super();
 	}
 	
 	
 	/**
 	 * Constructor with initial data
 	 * 
-	 * @param path
-	 * @param fileName
+	 * @param path			oggetto Path 
 	 */
-	public Track(String path, String fileName) {
-		super(path, fileName);
+	public Track(Path path) {
+		this.setPath(path);
+		this.handleMetadata();
+	}
+	
+	
+	public void handleMetadata() {
 	}
 
 
+	
+	
+	
+	
+	
 	/**
 	 * Setter e getter di ogni variabile
 	 */
+	
+	public Path getPath() {
+		return path;
+	}
+	
+	
+	public void setPath(Path path) {
+		this.path = path;
+	}
 	
 	public StringProperty getTitle() {
 		return title;
 	}
 
 
-	public void setTitle(StringProperty title) {
-		this.title = title;
+	public void setTitle(String title) {
+		this.title = new SimpleStringProperty(title);
 	}
 
 
@@ -67,8 +89,8 @@ public class Track extends TrackID {
 	}
 
 
-	public void setArtist(StringProperty artist) {
-		this.artist = artist;
+	public void setArtist(String artist) {
+		this.artist = new SimpleStringProperty(artist);
 	}
 
 
@@ -77,8 +99,8 @@ public class Track extends TrackID {
 	}
 
 
-	public void setAlbum(StringProperty album) {
-		this.album = album;
+	public void setAlbum(String album) {
+		this.album = new SimpleStringProperty(album);
 	}
 
 
@@ -87,8 +109,8 @@ public class Track extends TrackID {
 	}
 
 
-	public void setGenre(StringProperty genre) {
-		this.genre = genre;
+	public void setGenre(String genre) {
+		this.genre = new SimpleStringProperty(genre);
 	}
 
 
@@ -97,8 +119,8 @@ public class Track extends TrackID {
 	}
 
 
-	public void setYear(IntegerProperty year) {
-		this.year = year;
+	public void setYear(int year) {
+		this.year = new SimpleIntegerProperty(year);
 	}
 
 
@@ -120,6 +142,4 @@ public class Track extends TrackID {
 	public void setImage(Image image) {
 		this.image = image;
 	}
-
-	
 }
