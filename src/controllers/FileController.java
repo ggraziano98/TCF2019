@@ -157,4 +157,5 @@ public class FileController {
 		return Arrays.stream(this.extensions).parallel().anyMatch(path.getFileName().toString()::contains);
 		/* uso uno stream per controllare in parallelo tutte le estensioni permesse, cercando se una di queste è contenuta nel fileName */
 	}
+	public void foo() {}
 }
