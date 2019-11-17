@@ -115,7 +115,7 @@ public class FileController {
 		String fileName = path.getFileName().toString();
 		if(true) {
 			if (file.delete()) System.out.println(fileName + ": file cancellato correttamente");
-			else System.out.println("Non è stato possibile cancellare il file " + fileName); // TODO errorMessage
+			else System.out.println("Non Ã¨ stato possibile cancellare il file " + fileName); // TODO errorMessage
 		}
 	}
 
@@ -148,14 +148,13 @@ public class FileController {
 
 
 	/**
-	 * Controllo se un file è della giusta estensione
+	 * Controllo se un file Ã¨ della giusta estensione
 	 * 
 	 * @param path
-	 * @return True se il l'estensione è contenuta in this.extensions
+	 * @return True se il l'estensione Ã¨ contenuta in this.extensions
 	 */
 	public boolean isViableExtension(Path path) {
 		return Arrays.stream(this.extensions).parallel().anyMatch(path.getFileName().toString()::contains);
-		/* uso uno stream per controllare in parallelo tutte le estensioni permesse, cercando se una di queste è contenuta nel fileName */
+		/* uso uno stream per controllare in parallelo tutte le estensioni permesse, cercando se una di queste Ã¨ contenuta nel fileName */
 	}
-	public void foo() {}
 }
