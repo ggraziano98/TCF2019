@@ -27,57 +27,57 @@ public class Player extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
 		
-		FileInputStream img = new FileInputStream("files\\Player\\play.png");
-		Image image = new Image(img);
-		ImageView Img = new ImageView(image);
-		Img.setFitHeight(25);
-		Img.setFitWidth(25);
+		FileInputStream playFile = new FileInputStream("files\\Player\\play.png");
+		Image playImage = new Image(playFile);
+		ImageView playView = new ImageView(playImage);
+		playView.setFitHeight(25);
+		playView.setFitWidth(25);
 		
-		FileInputStream paimg = new FileInputStream("files\\Player\\pause.png");
-		Image paimage = new Image(paimg);
-		ImageView paImg = new ImageView(paimage);
-		paImg.setFitHeight(25);
-		paImg.setFitWidth(25);
+		FileInputStream pauseFile = new FileInputStream("files\\Player\\pause.png");
+		Image pauseImage = new Image(pauseFile);
+		ImageView pauseView = new ImageView(pauseImage);
+		pauseView.setFitHeight(25);
+		pauseView.setFitWidth(25);
 		
-		FileInputStream pimg = new FileInputStream("files\\Player\\ps.png");
-		Image pimage = new Image(pimg);
-		ImageView pImg = new ImageView(pimage);
-		pImg.setFitHeight(25);
-		pImg.setFitWidth(25);
+		FileInputStream prevFile = new FileInputStream("files\\Player\\ps.png");
+		Image prevImage = new Image(prevFile);
+		ImageView prevView = new ImageView(prevImage);
+		prevView.setFitHeight(25);
+		prevView.setFitWidth(25);
 		
-		FileInputStream nimg = new FileInputStream("files\\Player\\ns.png");
-		Image nimage = new Image(nimg);
-		ImageView nImg = new ImageView(nimage);
-		nImg.setFitHeight(25);
-		nImg.setFitWidth(25);
+		FileInputStream nextFile = new FileInputStream("files\\Player\\ns.png");
+		Image nextImage = new Image(nextFile);
+		ImageView nextView = new ImageView(nextImage);
+		nextView.setFitHeight(25);
+		nextView.setFitWidth(25);
 		
 	
 		
-		Button pp = new Button("",Img);
-		Button ps = new Button("",pImg);
-		Button ns = new Button("",nImg);
+		Button playButton = new Button("",playView);
+		Button prevButton = new Button("",prevView);
+		Button nextButton = new Button("",nextView);
 		
-		pp.setOnAction((e) -> System.out.println("play/pause"));
-		pp.setTranslateX(-100);
-		pp.setTranslateY(100);
+		playButton.setOnAction((e) -> System.out.println("play/pause"));
+		playButton.setTranslateX(-100);
+		playButton.setTranslateY(100);
 		
 		
 		
-		ps.setOnAction((e) -> System.out.println("previous song"));
-		ps.setTranslateX(-150);
-		ps.setTranslateY(100);
+		prevButton.setOnAction((e) -> System.out.println("previous song"));
+		prevButton.setTranslateX(-150);
+		prevButton.setTranslateY(100);
 		
-		ns.setOnAction((e) -> System.out.println("next song"));
-		ns.setTranslateY(100);
-		ns.setTranslateX(-50);
+		nextButton.setOnAction((e) -> System.out.println("next song"));
+		nextButton.setTranslateY(100);
+		nextButton.setTranslateX(-50);
 		
-		Slider timesl = new Slider();
-		timesl.setMax(100);
-		timesl.setMin(0);
-		timesl.setTranslateY(50);
-		timesl.setMaxWidth(460);
+		Slider timeSlider = new Slider();
+		timeSlider.setMax(100);
+		timeSlider.setMin(0);
+		timeSlider.setTranslateY(50);
+		timeSlider.setMaxWidth(460);
 		final Label timeLabel = new Label();
-		timesl.valueProperty().addListener(new ChangeListener<Number>() {
+		timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
              @Override
              public void changed(
@@ -96,39 +96,39 @@ public class Player extends Application {
 		
 		
 		
-		FileInputStream vimg = new FileInputStream("files\\Player\\volume.png");
-		Image vimage = new Image(vimg);
-		ImageView vImg = new ImageView(vimage);
-		vImg.setFitHeight(25);
-		vImg.setFitWidth(25);
+		FileInputStream volumeFile = new FileInputStream("files\\Player\\volume.png");
+		Image volumeImage = new Image(volumeFile);
+		ImageView volumeView = new ImageView(volumeImage);
+		volumeView.setFitHeight(25);
+		volumeView.setFitWidth(25);
 		
-		FileInputStream mimg = new FileInputStream("files\\Player\\mute.png");
-		Image mimage = new Image(mimg);
-		ImageView mImg = new ImageView(mimage);
-		mImg.setFitHeight(25);
-		mImg.setFitWidth(25);
+		FileInputStream muteFile = new FileInputStream("files\\Player\\mute.png");
+		Image muteImage = new Image(muteFile);
+		ImageView muteView = new ImageView(muteImage);
+		muteView.setFitHeight(25);
+		muteView.setFitWidth(25);
 		
-		Button volume = new Button("",vImg);
-		volume.setOnAction((e) -> System.out.println("sound/mute"));
-		volume.setTranslateX(100);
-		volume.setTranslateY(100);
+		Button volumeButton = new Button("",volumeView);
+		volumeButton.setOnAction((e) -> System.out.println("sound/mute"));
+		volumeButton.setTranslateX(100);
+		volumeButton.setTranslateY(100);
 		
-		Slider vsl = new Slider();
-		vsl.setMax(30);
-		vsl.setMin(0);
-		vsl.setMaxWidth(80);
-		vsl.setTranslateX(165);
-		vsl.setTranslateY(100);
+		Slider volumeSlider = new Slider();
+		volumeSlider.setMax(30);
+		volumeSlider.setMin(0);
+		volumeSlider.setMaxWidth(80);
+		volumeSlider.setTranslateX(165);
+		volumeSlider.setTranslateY(100);
 
 		
 		StackPane root = new StackPane();
-		root.getChildren().add(pp);
-		root.getChildren().add(ps);
-		root.getChildren().add(ns);
-		root.getChildren().add(timesl);
+		root.getChildren().add(playButton);
+		root.getChildren().add(prevButton);
+		root.getChildren().add(nextButton);
+		root.getChildren().add(timeSlider);
 		root.getChildren().add(timeLabel);
-		root.getChildren().add(volume);
-		root.getChildren().add(vsl);
+		root.getChildren().add(volumeButton);
+		root.getChildren().add(volumeSlider);
 
 		
 		Scene scene = new Scene(root, 500, 300);
