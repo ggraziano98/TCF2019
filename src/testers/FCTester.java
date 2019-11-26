@@ -14,9 +14,8 @@ public class FCTester {
 		
 		tester(mainDir);
 		
-		Path path = Paths.get("D:\\Programming\\Java\\TCF2019-progetto\\TCF2019\\files\\FIleController");
+		Path path = Paths.get(".\\files\\TestSongs");
 		tester(path);
-
 	}
 	
 	
