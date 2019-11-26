@@ -88,7 +88,7 @@ public class Player extends Application {
                         String.valueOf(newValue.intValue()));
                }
 		});
-		timeLabel.setTextFill(Color.WHITE);
+		timeLabel.setTextFill(Color.RED);
 		timeLabel.setTranslateX(-200);
 		timeLabel.setTranslateY(65);
 		timeLabel.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
