@@ -49,7 +49,7 @@ public class TrackTester extends Application{
 		String artist = "artist"; 
 		String album = "album"; 
 		String genre = "genre"; 
-		int year = 1998;
+		String year = "1998";
 		Duration duration = Duration.seconds(165);
 
 		Path path = Paths.get("path", "file.mp3");

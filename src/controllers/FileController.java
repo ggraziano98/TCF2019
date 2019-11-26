@@ -6,9 +6,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.pdfbox.pdmodel.font.FontFormat;
+
+import models.Track;
 import models.TrackList;
 import utils.Tools;
 
+/**
+ * @author Umberto
+ *
+ */
 public class FileController {
 	private Path dirPath;
 	public final String[] extensions = {"mp3"};
@@ -50,9 +57,11 @@ public class FileController {
 
 
 	/**
-	 * Function that returns all the TrackIDs in the directory through a TrackList
+	 * Function that returns all the Tracks in the directory through a TrackList
 	 * 
-	 * @return 		TrackList of the songs in the main directory
+	 * 
+	 * TODO cambiare Tracklist in List<Track>?
+	 * @return 	TrackList of the songs in the main directory
 	 */
 	public TrackList getFilesFromDir(Path path) {
 		TrackList tracklist = new TrackList();
@@ -92,23 +101,23 @@ public class FileController {
 
 
 	/**
-	 * metodo per eliminare una canzone
-	 * 
+	 * metodo per eliminare una canzone passando una track (futureproofing)
 	 * @param track		Track
 	 */
-	/*
-	public void removeTrack(Track track) {
-		this.removeTrack(track.toTrackID());
+	public void deleteTrack(Track track) {
+		this.deleteTrack(track.getPath());
 	}
-	 */
+
 
 	/**
-	 * metodo per eliminare una canzone, passa un TrackID(overloada removeTrack(Track)
+	 * metodo per eliminare una canzone, passa un path della track(overloada removeTrack(Track)
 	 * 
-	 * @param track 		TrackID
+	 * @param path  Path assoluto alla canzone
 	 */
-	public void removeTrack(Path path) {
+	public void deleteTrack(Path path) {
 		File file = path.toFile();
+		
+	
 
 		// TODO UI.confirmation()
 
@@ -118,7 +127,7 @@ public class FileController {
 			else System.out.println("Non è stato possibile cancellare il file " + fileName); // TODO errorMessage
 		}
 	}
-
+	
 	/*
 	public void editInfo(Track track, String info) {
 		// TODO get info screen
@@ -145,7 +154,6 @@ public class FileController {
 		}
 	}
 	 */
-
 
 	/**
 	 * Controllo se un file è della giusta estensione

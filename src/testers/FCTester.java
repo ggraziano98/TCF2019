@@ -36,15 +36,20 @@ public class FCTester {
 		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
 		
 		try {
-		fileC.removeTrack(tracklist.getSongList().get(3));
+		fileC.deleteTrack(tracklist.getSongList().get(3));
 		} 
 		catch (Exception e) {
 			System.out.println("Error: " + e.getMessage());
 		}
 
 		Path notATrack = Paths.get("notATrack.mp3");
-		fileC.removeTrack(notATrack);
+		fileC.deleteTrack(notATrack);
+		System.out.println("\n \n \n \n");
+		tracklist.shuffleTrack();
 		
+		for (int i = 0; i < tracklist.getSongList().size(); i++) {
+			System.out.println(tracklist.getSongList().get(i).getFileName() + "\t\t\t" + i);
+		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
 		
 		/**
 		 * TODO implement metadata handling of Track
