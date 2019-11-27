@@ -1,7 +1,6 @@
 package models;
 
 import java.nio.file.Path;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -71,7 +70,7 @@ public class TrackList {
 
 	/**
 	 * add a track to the specified position. Will shift all successive tracks to the right
-	 * 
+	 * TODO implementare if sull'indice
 	 * @param position
 	 * @param path
 	 */
@@ -92,18 +91,18 @@ public class TrackList {
 	 * @param trackpath
 	 */
 	public void removeTrack() {
-		this.RemoveTrackToPosition(this.songList.size());
+		this.removeTrackToPosition(this.songList.size() - 1);		//ci va il meno uno, altrimenti non mi cancella l'ultimo
 	}
 
 
 
 	/**
 	 * remove a track to the specified position. Will shift all successive tracks to the right
-	 * 
+	 * TODO implementare if sull'indice
 	 * @param position
 	 * 
 	 */
-	public void RemoveTrackToPosition(int position) {
+	public void removeTrackToPosition(int position) {
 		try {
 			this.songList.remove(position);
 		}
@@ -134,18 +133,26 @@ public class TrackList {
 
 
 	/**
-	 * switcha due canzoni date le posizioni
-	 * 
+	 * switcha due canzoni date le posizioni, partendo dallo 0
+	 * TODO implementare if nel caso in cui indice sia maggiore del secondo e maggiore della lunghezza di songlist
 	 * @param position1
 	 * @param position2
 	 */
 	public void changeOrder(int position1, int position2) {
+		if (position1<position2) {
+
+		} else {
+			int change;
+			change=position1;
+			position1=position2;
+			position2=change;
+		}
 		Path path1 = songList.get(position1);
 		Path path2 = songList.get(position2);
-		RemoveTrackToPosition(position1);
-		RemoveTrackToPosition(position2);
-		addTrackToPosition(position2, path1);
+		removeTrackToPosition(position1);
+		removeTrackToPosition(position2 - 1);
 		addTrackToPosition(position1, path2);
+		addTrackToPosition(position2, path1);
 	}
 
 
@@ -155,14 +162,17 @@ public class TrackList {
 	 * 
 	 * @return Duration
 	 */
-	public Duration totalDuration() {
-		Duration totalDuration = new Duration(0);
+	public double totalDuration() {
+		Duration totalduration = new Duration(0);
+		Track track = new Track();
 		for (Path path : songList) {
-			Track track = new Track(path);
+			track.setPath(path);
 			Duration duration = track.getDuration();
-			totalDuration.add(duration);
+			System.out.println(duration);
+			totalduration.add(duration);
 		}
-		return totalDuration;
+		return totalduration.toMinutes();
+
 	}
 
 
@@ -266,10 +276,18 @@ public class TrackList {
 			l++;
 		}while (this.songList.get(l)==path2);
 		position2=l;
-		RemoveTrackToPosition(position1);
-		RemoveTrackToPosition(position2);
-		addTrackToPosition(position2, path1);
+		if (position1<position2) {
+
+		} else {
+			int change;
+			change=position1;
+			position1=position2;
+			position2=change;
+		}
+		removeTrackToPosition(position1);
+		removeTrackToPosition(position2 - 1);
 		addTrackToPosition(position1, path2);
+		addTrackToPosition(position2, path1);
 	}
 
 
@@ -292,10 +310,18 @@ public class TrackList {
 			l++;
 		}while (this.songList.get(l)==track2.getPath());
 		position2=l;
-		RemoveTrackToPosition(position1);
-		RemoveTrackToPosition(position2);
-		addTrackToPosition(position2, track1);
+		if (position1<position2) {
+
+		} else {
+			int change;
+			change=position1;
+			position1=position2;
+			position2=change;
+		}
+		removeTrackToPosition(position1);
+		removeTrackToPosition(position2 - 1);
 		addTrackToPosition(position1, track2);
+		addTrackToPosition(position2, track1);
 	}
 
 

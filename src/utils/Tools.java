@@ -7,13 +7,13 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.TrackList;
 
@@ -82,19 +82,18 @@ public class Tools {
 	 * @param tracklist
 	 */
 	public static void saveAsPlaylist(TrackList tracklist) {
-
-		Path filePath = Paths.get("playlists", tracklist.toString()+".txt");
+		Path filePath = Paths.get("playlists", tracklist.toString() + ".txt");
 		try {
 			Files.createFile(filePath);
 			BufferedWriter bw= Files.newBufferedWriter(filePath);
 			for (Path path : tracklist.getSongList()) {
 				bw.write(path.toString());
-				bw.newLine();
+				bw.write("\n");
 			}
 			bw.close();
 		} catch (IOException e) {
 			if (e instanceof FileAlreadyExistsException) {
-				System.out.println("file esiste già");
+				System.out.println("file già esistente in " + filePath.toString() );
 			} else 
 				e.printStackTrace();
 		}
@@ -112,16 +111,18 @@ public class Tools {
 	 */
 	public static TrackList readPlaylist(String playlist) {
 		TrackList tracklist = new TrackList();
-		Path filePath = Paths.get("playlists", playlist + ".txt");
-
+		Path filePath = Paths.get("playlists", playlist );
+		List<Path> list = new ArrayList<Path>();
+		ObservableList<Path> songList = FXCollections.observableList(list);
 		try {
-			ObservableList<Path> songList = null;
+
 			BufferedReader br= Files.newBufferedReader(filePath);
 			String line = "";
 
 			while ((line = br.readLine()) != null) {
+				System.out.println(line);
 				Path path = Paths.get(line);
-				songList.add(path);
+				songList.add(path);;
 			}	
 
 			br.close();
@@ -146,7 +147,7 @@ public class Tools {
 	 * @param playlist
 	 */
 	public static void deletePlaylist(String playlist) {
-		Path filePath = Paths.get("playlists", playlist + ".txt");
+		Path filePath = Paths.get("playlists", playlist);
 		try {
 			Files.deleteIfExists(filePath);
 		} catch (IOException e) {

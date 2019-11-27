@@ -5,14 +5,15 @@ import java.nio.file.Paths;
 
 import controllers.FileController;
 import models.TrackList;
+import utils.Tools;
 
 public class FCTester {
 	
 	
 	public static void main(String[] args) {
-		Path mainDir = Paths.get(System.getProperty("user.dir"), "FileController");
-		
-		tester(mainDir);
+//		Path mainDir = Paths.get(System.getProperty("user.dir"), "FileController");
+//		
+//		tester(mainDir);
 		
 		Path path = Paths.get(".\\files\\TestSongs");
 		tester(path);
@@ -44,12 +45,53 @@ public class FCTester {
 
 		Path notATrack = Paths.get("notATrack.mp3");
 		fileC.deleteTrack(notATrack);
-		System.out.println("\n \n \n \n");
-		tracklist.shuffleTrack();
 		
-		for (int i = 0; i < tracklist.getSongList().size(); i++) {
-			System.out.println(tracklist.getSongList().get(i).getFileName() + "\t\t\t" + i);
-		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
+		
+		
+		System.out.println("\n \n \n provo la funzione shuffle");
+		tracklist.shuffleTrack();
+		cout(tracklist);
+				
+		System.out.println("\n \n \n provo la funzione adTrack");
+		tracklist.addTrack(tracklist.getSongList().get(0));
+		cout(tracklist);
+				
+		System.out.println("\n \n \n provo la funzione adTracktoposition");
+		tracklist.addTrackToPosition(0,tracklist.getSongList().get(0));
+		cout(tracklist);
+		
+		System.out.println("\n \n \n provo la funzione remove track");
+		tracklist.removeTrack();
+		cout(tracklist);
+		
+		System.out.println("\n \n \n provo la funzione remove tracktoposition");
+		tracklist.removeTrackToPosition(0);
+		cout(tracklist);
+		
+		
+		System.out.println("\n \n \n provo la funzione cambio ordine tra elemento 0 e 5");
+		tracklist.changeOrder(5, 0);
+		cout(tracklist);
+
+		/**
+		 * TODO il metodo funziona ma non funziona il handle metadata	
+		 */
+//		System.out.println("\n \n \n provo la funzione totalduration");
+//		System.out.println(tracklist.totalDuration());
+		
+		System.out.println("\n \n \n provo la funzione saveasplaylist");
+		Tools.saveAsPlaylist(tracklist);
+		
+		
+		/**
+		 * TODO trovare un modo per prendere il nome della playlist per esempio aggiungere un metadata alla classe tracklist
+		 */
+		TrackList playlist1 = new TrackList();
+		playlist1 = Tools.readPlaylist("models.TrackList@cc34f4d.txt");
+		cout(playlist1);		
+		
+		Tools.deletePlaylist("models.TrackList@cc34f4d.txt");
+	
 		
 		/**
 		 * TODO implement metadata handling of Track
@@ -61,4 +103,13 @@ public class FCTester {
 		
 	}
 	
+
+	
+	
+	public static void cout(TrackList tracklist) {
+		for (int i = 0; i < tracklist.getSongList().size(); i++) {
+			System.out.println(tracklist.getSongList().get(i).getFileName() + "\t\t\t" + i);
+		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
+		
+	}
 }

@@ -6,9 +6,5 @@
 		</accessrules>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="libs/tika-app-1.22.jar"/>
-	<classpathentry kind="lib" path="libs/jaudiotagger-2.2.6-SNAPSHOT-javadoc.jar"/>
-	<classpathentry kind="lib" path="libs/jaudiotagger-2.2.6-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="lib" path="libs/jaudiotagger-2.2.6-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
