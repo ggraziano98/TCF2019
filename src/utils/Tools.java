@@ -1,12 +1,21 @@
 package utils;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+
+import javafx.collections.ObservableList;
+import models.TrackList;
 
 
 public class Tools {
@@ -63,4 +72,88 @@ public class Tools {
 		}
 
 	}
+
+
+
+	/**
+	 * 
+	 * funzione che salva la tracklist come file di testo
+	 * 
+	 * @param tracklist
+	 */
+	public static void saveAsPlaylist(TrackList tracklist) {
+
+		Path filePath = Paths.get("playlists", tracklist.toString()+".txt");
+		try {
+			Files.createFile(filePath);
+			BufferedWriter bw= Files.newBufferedWriter(filePath);
+			for (Path path : tracklist.getSongList()) {
+				bw.write(path.toString());
+				bw.newLine();
+			}
+			bw.close();
+		} catch (IOException e) {
+			if (e instanceof FileAlreadyExistsException) {
+				System.out.println("file esiste già");
+			} else 
+				e.printStackTrace();
+		}
+
+	}
+
+
+
+	/**
+	 * 
+	 * prende il nome del file di testo di una tracklist salvata e crea un oggetto tracklist con i path contenuti nel file di testo
+	 * 
+	 * @param String
+	 * @return tracklist
+	 */
+	public static TrackList readPlaylist(String playlist) {
+		TrackList tracklist = new TrackList();
+		Path filePath = Paths.get("playlists", playlist + ".txt");
+
+		try {
+			ObservableList<Path> songList = null;
+			BufferedReader br= Files.newBufferedReader(filePath);
+			String line = "";
+
+			while ((line = br.readLine()) != null) {
+				Path path = Paths.get(line);
+				songList.add(path);
+			}	
+
+			br.close();
+			tracklist.setSongList(songList);		
+
+		} catch (IOException e) { 
+			e.printStackTrace();
+		}
+
+		/**
+		 * TODO implementere il codice nel caso tracklist fosse vuota
+		 */
+		return tracklist;
+	}
+
+
+
+	/**
+	 * 
+	 * mi permette di eliminare una playlist in file di testo
+	 * 
+	 * @param playlist
+	 */
+	public static void deletePlaylist(String playlist) {
+		Path filePath = Paths.get("playlists", playlist + ".txt");
+		try {
+			Files.deleteIfExists(filePath);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
 }
