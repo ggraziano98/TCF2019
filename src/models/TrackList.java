@@ -133,25 +133,13 @@ public class TrackList {
 
 
 	/**
-	 * switcha due canzoni date le posizioni, partendo dallo 0
-	 * TODO implementare if nel caso in cui indice sia maggiore del secondo e maggiore della lunghezza di songlist
+	 * sposta una canzone dalla posizione position1 a quella position2 (posizione parte da 0)
 	 * @param position1
 	 * @param position2
 	 */
 	public void changeOrder(int position1, int position2) {
-		if (position1<position2) {
-
-		} else {
-			int change;
-			change=position1;
-			position1=position2;
-			position2=change;
-		}
 		Path path1 = songList.get(position1);
-		Path path2 = songList.get(position2);
 		removeTrackToPosition(position1);
-		removeTrackToPosition(position2 - 1);
-		addTrackToPosition(position1, path2);
 		addTrackToPosition(position2, path1);
 	}
 

@@ -2,8 +2,6 @@ package models;
 
 import java.nio.file.Path;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
@@ -29,7 +27,7 @@ public class Track{
 	private StringProperty artist;
 	private StringProperty album;
 	private StringProperty genre;
-	private IntegerProperty year;
+	private StringProperty year;
 	private Duration duration;
 	private Image image;
 
@@ -114,13 +112,13 @@ public class Track{
 	}
 
 
-	public IntegerProperty getYear() {
+	public StringProperty getYear() {
 		return year;
 	}
 
 
-	public void setYear(int year) {
-		this.year = new SimpleIntegerProperty(year);
+	public void setYear(String year) {
+		this.year = new SimpleStringProperty(year);
 	}
 
 

@@ -81,8 +81,8 @@ public class Tools {
 	 * 
 	 * @param tracklist
 	 */
-	public static void saveAsPlaylist(TrackList tracklist) {
-		Path filePath = Paths.get("playlists", tracklist.toString() + ".txt");
+	public static void saveAsPlaylist(TrackList tracklist, String playlistName) {
+		Path filePath = Paths.get("playlists", playlistName + ".txt");
 		try {
 			Files.createFile(filePath);
 			BufferedWriter bw= Files.newBufferedWriter(filePath);
@@ -144,12 +144,15 @@ public class Tools {
 	 * 
 	 * mi permette di eliminare una playlist in file di testo
 	 * 
+	 * TODO messaggio completamento operazione
+	 * 
 	 * @param playlist
 	 */
 	public static void deletePlaylist(String playlist) {
-		Path filePath = Paths.get("playlists", playlist);
+		Path filePath = Paths.get("playlists", playlist + ".txt");
 		try {
-			Files.deleteIfExists(filePath);
+			if(Files.deleteIfExists(filePath)) System.out.println("Playlist " + playlist + " eliminata");
+			else System.out.println("Non esiste la playlist selezionata");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
