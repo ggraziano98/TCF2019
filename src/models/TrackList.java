@@ -250,31 +250,18 @@ public class TrackList {
 
 	/**
 	 * overload di changeOrder
+	 *  sposta una canzone alla position2 (posizione parte da 0)
+	 * @param position2
 	 * @param path1
-	 * @param path2
 	 */
-	public void changeOrder(Path path1, Path path2) {
-		int position1, position2;
-		int i=0, l=0;
-		do {
+	public void changeOrder(int position2 ,Path path1) {
+		int position1;
+		int i=0;
+		while (this.songList.get(i)==path1) {
 			i++;
-		}while (this.songList.get(i)==path1);
-		position1=i;
-		do {
-			l++;
-		}while (this.songList.get(l)==path2);
-		position2=l;
-		if (position1<position2) {
-
-		} else {
-			int change;
-			change=position1;
-			position1=position2;
-			position2=change;
 		}
+		position1 = i - 1;
 		removeTrackToPosition(position1);
-		removeTrackToPosition(position2 - 1);
-		addTrackToPosition(position1, path2);
 		addTrackToPosition(position2, path1);
 	}
 
@@ -283,32 +270,18 @@ public class TrackList {
 	/**
 	 * 
 	 * overload di changeOrder
-	 * 
+ 	 *  sposta una canzone alla position2 (posizione parte da 0)
+	 * @param position2
 	 * @param track1
-	 * @param track2
 	 */
-	public void changeOrder(Track track1, Track track2) {
-		int position1, position2;
-		int i=0, l=0;
-		do {
+	public void changeOrder(int position2, Track track1) {
+		int position1;
+		int i=0;
+		while (this.songList.get(i)==track1.getPath()) {
 			i++;
-		}while (this.songList.get(i)==track1.getPath());
-		position1=i;
-		do {
-			l++;
-		}while (this.songList.get(l)==track2.getPath());
-		position2=l;
-		if (position1<position2) {
-
-		} else {
-			int change;
-			change=position1;
-			position1=position2;
-			position2=change;
 		}
+		position1 = i - 1;
 		removeTrackToPosition(position1);
-		removeTrackToPosition(position2 - 1);
-		addTrackToPosition(position1, track2);
 		addTrackToPosition(position2, track1);
 	}
 

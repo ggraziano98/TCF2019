@@ -78,8 +78,8 @@ public class FCTester {
 		/**
 		 * TODO il metodo funziona ma non funziona il handle metadata	
 		 */
-//		System.out.println("\n \n \n provo la funzione totalduration");
-//		System.out.println(tracklist.totalDuration());
+		System.out.println("\n \n \n provo la funzione totalduration");
+		System.out.println(tracklist.totalDuration());
 		
 		System.out.println("\n \n \n provo la funzione saveasplaylist");
 		Tools.saveAsPlaylist(tracklist, "Nuova Playlist");

@@ -5,13 +5,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.media.Media;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.Track;
+import models.TrackList;
 
 
 
@@ -77,7 +80,14 @@ public class TrackTester extends Application{
 		System.out.println(track.getYear().getValue());
 		System.out.println(track.getDuration().toMinutes() + " min");
 		
-		Application.launch();
+//		Application.launch();
+		Path path1 = Paths.get(".\\files\\TestSongs","Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0");
+		Track track1 = new Track();
+		track1.setPath(path1);
+		System.out.println(track1.getPath());
+		Media m = new Media(path1.toUri().toString());
+//		System.out.println(m.getDuration());
+//		System.out.println("finish");
 	}
 
 }

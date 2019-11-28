@@ -1,10 +1,14 @@
 package models;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.MapChangeListener;
+import javafx.embed.swing.JFXPanel;
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
 import javafx.util.Duration;
 
 
@@ -46,12 +50,9 @@ public class Track{
 	 */
 	public Track(Path path) {
 		this.setPath(path);
-		this.handleMetadata();
+//		this.setMetadata(path);
 	}
 	
-	
-	public void handleMetadata() {
-	}
 
 
 	
@@ -140,4 +141,73 @@ public class Track{
 	public void setImage(Image image) {
 		this.image = image;
 	}
+	
+	
+	private void resetProperties() {
+	    setArtist("");
+	    setAlbum("");
+	    setTitle("");
+	    setYear("");
+	    setImage(image);
+	  }
+	
+	final JFXPanel fxPanel = new JFXPanel();
+	
+	String dir = System.getProperty("user.dir");
+
+	Path testSongPath = Paths.get("files\\TestSongs\\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\\CD1\\Egmont Overture.mp3");
+	
+	 private void setMetadata (Path path) {
+		    
+		 
+//		 String url = cleanURL(urlnotclean);
+		 resetProperties();
+		    try {
+		      final Media media = new Media(path.toUri().toString());
+		      media.getMetadata().addListener(new MapChangeListener<String, Object>() {
+		        @Override
+		        public void onChanged(Change<? extends String, ? extends Object> ch) {
+		          if (ch.wasAdded()) {
+		            handleMetadata(ch.getKey(), ch.getValueAdded());
+		          }
+		        }
+		      });
+		    } catch (RuntimeException re) {
+		      //TODO error message
+		      System.out.println("Caught Exception: " + re.getMessage());
+		    }
+		  }
+         
+         
+         public void handleMetadata(String key, Object value) {
+        	    if (key.equals("album")) {
+        	      setAlbum(value.toString());
+        	    } else if (key.equals("artist")) {
+        	      setArtist(value.toString());
+        	    } if (key.equals("title")) {
+        	      setTitle(value.toString());
+        	    } if (key.equals("year")) {
+        	      setYear(value.toString());
+        	    } if (key.equals("image")) {
+        	      setImage((Image)value);
+        	    }
+        	  }
+        	
+         
+         /**
+
+          * Dobbiamo pulire l'url altrimenti javafx non lo riconosce
+          *
+          * @param uri
+          */
+         private static String cleanURL(String url) {
+             url = url.replace("\\", "/");
+             url = url.replaceAll(" ", "%20");
+             url = url.replace("[", "%5B");
+             url = url.replace("]", "%5D");
+             return url;
+
+         }
+	
+
 }
