@@ -6,15 +6,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -23,6 +23,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -78,12 +79,7 @@ public class Root extends Application {
 		TextField findText = new TextField();
 		findText.setMinWidth(250);
 		Button findButton = new Button("cerca");
-		findButton.setOnMouseClicked((e) -> {
-			find(findText.getText());
-		});
-		findHBox.setOnKeyReleased((final KeyEvent KeyEvent) -> {
-			if (KeyEvent.getCode() == KeyCode.ENTER) System.out.println(findText.getText());
-		});
+		
 		findHBox.getChildren().add(findText);	
 		findHBox.getChildren().add(findButton);
 		
@@ -132,12 +128,11 @@ public class Root extends Application {
 		playButton.setTranslateY(100);
 
 
-
-		prevButton.setOnMouseClicked((e) -> System.out.println("previous song"));
+		prevButton.setOnMouseClicked((e) -> previousSong());
 		prevButton.setTranslateX(-150);
 		prevButton.setTranslateY(100);
 
-		nextButton.setOnMouseClicked((e) -> System.out.println("next song"));
+		nextButton.setOnMouseClicked((e) -> nextSong());
 		nextButton.setTranslateY(100);
 		nextButton.setTranslateX(-50);
 
@@ -218,25 +213,42 @@ public class Root extends Application {
 		player.setStyle("-fx-background-color: #FF0000");
 		
 		
+		
+		FileInputStream gucciniFile = new FileInputStream("files\\mainPane\\guccini.png");
+		Image gucciniImage = new Image(gucciniFile);
+		ImageView gucciniView = new ImageView(gucciniImage);
+		FileInputStream radiciFile = new FileInputStream("files\\mainPane\\radici.png");
+		Image radiciImage = new Image(radiciFile);
+		ImageView radiciView = new ImageView(radiciImage);
 		HBox listsPane = new HBox();
 		listsPane.setAlignment(Pos.CENTER);
-		Button songsButton = new Button("songs");
+		ToggleButton songsButton = new ToggleButton("songs");
 		Label songs_artistsLabel = new Label("  ");
-		Button artistsButton = new Button("artists");
+		ToggleButton artistsButton = new ToggleButton("artists");
+		FlowPane artistsPane = new FlowPane();
+		artistsPane.getChildren().add(gucciniView);
+		artistsPane.setStyle("-fx-base: lightgreen");
+		artistsButton.setStyle("-fx-background-color:green");
+		artistsButton.getId();
 		Label artists_albumsLabel = new Label("  ");
-		Button albumsButton = new Button("albums");
+		ToggleButton albumsButton = new ToggleButton("albums");
+		FlowPane albumsPane = new FlowPane();
+		albumsPane.getChildren().add(radiciView);
+		albumsPane.setStyle("-fx-background-color:blue");
+		albumsButton.setStyle("-fx-base: lightblue");
 		listsPane.getChildren().add(songsButton);
 		listsPane.getChildren().add(songs_artistsLabel);
 		listsPane.getChildren().add(artistsButton);
 		listsPane.getChildren().add(artists_albumsLabel);
 		listsPane.getChildren().add(albumsButton);
 		
+		ToggleGroup mainPanel = new ToggleGroup();
+		songsButton.setToggleGroup(mainPanel);
+		artistsButton.setToggleGroup(mainPanel);
+		albumsButton.setToggleGroup(mainPanel);
+		
 		
 		VBox playlistsVbox = new VBox();
-		Hyperlink playlist1 = new Hyperlink("playlist 1");
-		Hyperlink playlist2 = new Hyperlink("playlist 2");
-		playlistsVbox.getChildren().add(playlist1);
-		playlistsVbox.getChildren().add(playlist2);
 		
 		
 		
@@ -244,17 +256,44 @@ public class Root extends Application {
 		root.add(findHBox, 0, 0);
 		root.add(listsPane, 1, 0);
 		root.add(playlistsVbox, 0, 1);
+		if(artistsButton.selectedProperty() != null) root.add(artistsPane, 1, 2);
+		if(albumsButton.selectedProperty() != null) root.add(albumsPane, 1, 2);
 		
-		primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, k -> {
+		
+		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, k -> {
 	        if ( k.getCode() == KeyCode.SPACE){
 				playPause(play);
 				if (play.get()) playButton.setGraphic(playView);
 				else playButton.setGraphic(pauseView);
 				play.set(!play.get());
 	        }
-	    });
+	        if ( k.getCode() == KeyCode.K){
+				playPause(play);
+				if (play.get()) playButton.setGraphic(playView);
+				else playButton.setGraphic(pauseView);
+				play.set(!play.get());
+	        }
+	        if ( k.getCode() == KeyCode.M) {
+				volumeMute(muted);
+				if(muted.get()) volumeButton.setGraphic(volumeView);
+				else volumeButton.setGraphic(muteView);
+				muted.set(!muted.get());
+				}
+	        if ( k.getCode() == KeyCode.L) nextSong();
+	        if ( k.getCode() == KeyCode.J) previousSong();
+		});
 		
-
+		
+		findButton.setOnMouseClicked((e) -> {
+			find(findText.getText());
+		});
+		findHBox.setOnKeyReleased((final KeyEvent KeyEvent) -> {
+			if (KeyEvent.getCode() == KeyCode.ENTER) {
+				System.out.println(findText.getText());
+			}
+		});
+		
+		
 
 		Scene scene = new Scene(root, 650, 600);
 		primaryStage.setTitle("Player");
@@ -264,15 +303,11 @@ public class Root extends Application {
 		primaryStage.show();
 
 		
-		scene.setOnKeyReleased((final KeyEvent KeyEvent) -> {
-			if (KeyEvent.getCode() == KeyCode.M) {
-				volumeMute(muted);
-				if(muted.get()) volumeButton.setGraphic(volumeView);
-				else volumeButton.setGraphic(muteView);
-				muted.set(!muted.get());
-				};
-		});
-		
+		playlists("lel", playlistsVbox, mainPanel);
+		playlists("lul", playlistsVbox, mainPanel);
+		playlists("abracadabra", playlistsVbox, mainPanel);
+		playlists("fofofofollo", playlistsVbox, mainPanel);
+		playlists("best hits", playlistsVbox, mainPanel);
 
 	}
 
@@ -292,6 +327,13 @@ public class Root extends Application {
 		
 	}
 
+	public static void nextSong() {
+		System.out.println("Next song");
+	}
+	
+	public static void previousSong() {
+		System.out.println("Previous Song");
+	}
 	
 	
 	public static void volumeMute(AtomicBoolean muted) {
@@ -301,7 +343,19 @@ public class Root extends Application {
 
 
 
-
+	public static void playlists(String string, VBox box, ToggleGroup mainPanel) {
+		ToggleButton playlist = new ToggleButton(string);
+		playlist.setToggleGroup(mainPanel);
+		playlist.setOnMouseEntered((e) -> {
+			playlist.setStyle("-fx-text-base-color: blue;"
+					+"-fx-background-color:yellow");
+		});
+		playlist.setOnMouseExited((e) -> {
+			playlist.setStyle("-fx-backgound-color:none");
+		});
+		box.getChildren().add(playlist);
+		
+	}
 
 
 
