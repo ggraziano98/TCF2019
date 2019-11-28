@@ -1,9 +1,9 @@
 package models;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
 
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Duration;
@@ -27,20 +27,12 @@ import javafx.util.Duration;
  *
  */
 
-public class TrackList {
-
-
-	/**
-	 * Datamember della classe, ObservableList di track
-	 */
-	protected ObservableList<Path> songList;
-
-
+public class TrackList extends SimpleListProperty<Track> {
 	/**
 	 * Default constructor for the class
 	 */
 	public TrackList() {
-		this.setSongList(FXCollections.observableArrayList(new ArrayList<Path>()));
+		super(FXCollections.observableArrayList());
 	}
 
 
@@ -49,8 +41,8 @@ public class TrackList {
 	 * 
 	 * @param songList		lista dei path delle canzoni
 	 */
-	public TrackList(ObservableList<Path> songList) {
-		this.setSongList(songList);
+	public TrackList(ObservableList<Track> songList) {
+		super(songList);
 	}
 
 
@@ -62,8 +54,8 @@ public class TrackList {
 	 * 
 	 * @param track
 	 */
-	public void addTrack(Path trackPath) {
-		this.addTrackToPosition(this.songList.size(), trackPath);
+	public void addTrack(Track track) {
+		this.addTrackToPosition(this.size(), track);
 	}
 
 
@@ -72,11 +64,11 @@ public class TrackList {
 	 * add a track to the specified position. Will shift all successive tracks to the right
 	 * TODO implementare if sull'indice
 	 * @param position
-	 * @param path
+	 * @param track
 	 */
-	public void addTrackToPosition(int position, Path trackPath) {
+	public void addTrackToPosition(int position, Track track) {
 		try {
-			this.songList.add(position, trackPath);
+			this.add(position, track);
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -87,11 +79,9 @@ public class TrackList {
 
 	/**
 	 * remove a track to the end of the TrackList
-	 * 
-	 * @param trackpath
 	 */
 	public void removeTrack() {
-		this.removeTrackToPosition(this.songList.size() - 1);		//ci va il meno uno, altrimenti non mi cancella l'ultimo
+		this.removeTrackToPosition(this.size() - 1);		//ci va il meno uno, altrimenti non mi cancella l'ultimo
 	}
 
 
@@ -104,7 +94,7 @@ public class TrackList {
 	 */
 	public void removeTrackToPosition(int position) {
 		try {
-			this.songList.remove(position);
+			this.remove(position);
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -117,7 +107,7 @@ public class TrackList {
 	 * Ordina a caso le canzoni della tracklist
 	 */
 	public void shuffleTrack () {
-		Collections.shuffle(songList);
+		Collections.shuffle(this);
 	}
 
 
@@ -138,9 +128,9 @@ public class TrackList {
 	 * @param position2
 	 */
 	public void changeOrder(int position1, int position2) {
-		Path path1 = songList.get(position1);
+		Track track = this.get(position1);
 		removeTrackToPosition(position1);
-		addTrackToPosition(position2, path1);
+		addTrackToPosition(position2, track);
 	}
 
 
@@ -150,31 +140,15 @@ public class TrackList {
 	 * 
 	 * @return Duration
 	 */
-	public double totalDuration() {
+	public Duration totalDuration() {
 		Duration totalduration = new Duration(0);
-		Track track = new Track();
-		for (Path path : songList) {
-			track.setPath(path);
+		for (Track track : this) {
 			Duration duration = track.getDuration();
-			System.out.println(duration);
-			totalduration.add(duration);
+			totalduration = totalduration.add(duration);
 		}
-		return totalduration.toMinutes();
-
+		return totalduration;
 	}
 
-
-
-	/**
-	 * setters and getters for class parameters
-	 */
-	public ObservableList<Path> getSongList() {
-		return songList;
-	}
-
-	public void setSongList(ObservableList<Path> songList) {
-		this.songList = songList;
-	}
 
 
 
@@ -191,10 +165,9 @@ public class TrackList {
 	 * @param position
 	 * @param track
 	 */
-	public void addTrack(Track track) {
-		this.addTrackToPosition(this.songList.size(), track.getPath());
+	public void addTrack(Path path) {
+		this.addTrackToPosition(this.size(), path);
 	}
-
 
 
 	/**
@@ -203,15 +176,16 @@ public class TrackList {
 	 * @param position
 	 * @param track
 	 */
-	public void addTrackToPosition(int position, Track track) {
+	public void addTrackToPosition(int position, Path path) {
 		try {
-			this.songList.add(position, track.getPath());
+			this.add(position, new Track(path));
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
+			System.out.println(path);
 		}
 	}
-
+	
 
 
 	/**
@@ -220,14 +194,15 @@ public class TrackList {
 	 * @param path
 	 * 
 	 */
-	public void RemoveTrackToPosition(Path path) {
+	public void RemoveTrack(Path path) {
 		try {
-			this.songList.remove(path);
+			this.remove(path);
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 	}
+
 
 
 
@@ -237,9 +212,9 @@ public class TrackList {
 	 * @param track
 	 * 
 	 */
-	public void RemoveTrackToPosition(Track track) {
+	public void RemoveTrack(Track track) {
 		try {
-			this.songList.remove(track.getPath());
+			this.remove(track);
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -257,7 +232,7 @@ public class TrackList {
 	public void changeOrder(int position2 ,Path path1) {
 		int position1;
 		int i=0;
-		while (this.songList.get(i)==path1) {
+		while (this.get(i)==path1) {
 			i++;
 		}
 		position1 = i - 1;
@@ -277,7 +252,7 @@ public class TrackList {
 	public void changeOrder(int position2, Track track1) {
 		int position1;
 		int i=0;
-		while (this.songList.get(i)==track1.getPath()) {
+		while (this.get(i)==track1.getPath()) {
 			i++;
 		}
 		position1 = i - 1;

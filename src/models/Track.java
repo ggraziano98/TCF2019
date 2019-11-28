@@ -1,7 +1,7 @@
 package models;
 
+import java.io.IOError;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -9,7 +9,9 @@ import javafx.collections.MapChangeListener;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import utils.Tools;
 
 
 /**
@@ -34,6 +36,7 @@ public class Track{
 	private StringProperty year;
 	private Duration duration;
 	private Image image;
+	private Media media;
 
 
 	/**
@@ -41,8 +44,8 @@ public class Track{
 	 */	
 	public Track() {
 	}
-	
-	
+
+
 	/**
 	 * Constructor with initial data
 	 * 
@@ -50,36 +53,136 @@ public class Track{
 	 */
 	public Track(Path path) {
 		this.setPath(path);
-//		this.setMetadata(path);
+		this.setMetadata();
+
 	}
-	
 
 
-	
-	
-	
-	
-	
+
+	private void resetProperties() {
+		setArtist(new SimpleStringProperty(""));
+		setAlbum(new SimpleStringProperty(""));
+		setTitle(new SimpleStringProperty(""));
+		setYear(new SimpleStringProperty(""));
+	}
+
+	/*
+	 * TODO fixare il problema
+	 * dato che Media.getMetadata() funziona in modo asincrono, non va bene. Probabilmente bisogna usare un'altra libreria
+	 */
+	private void setMetadata() {
+
+
+		Path path = this.getPath();
+		String cleanPathS = Tools.cleanURL(path.toString());
+
+		//TODO togliere questo?
+		@SuppressWarnings("unused")
+		final JFXPanel fxPanel = new JFXPanel();
+
+
+		this.resetProperties();
+		try {
+			final Media media = new Media(cleanPathS);		
+			media.getMetadata().addListener(new MapChangeListener<String, Object>() {
+						@Override
+						public void onChanged(Change<? extends String, ? extends Object> ch) {
+							if (ch.wasAdded()) {
+								if(ch.getKey().toString() == "artist") {
+								}
+								handleMetadata(ch.getKey(), ch.getValueAdded());
+							}
+						}
+			});
+
+			this.setMedia(media);
+			this.setDuration(media.getDuration());
+		} catch (RuntimeException re) {
+			//TODO error message
+			re.printStackTrace();
+		}
+
+		if (this.getAlbum().getValueSafe() == "") {
+			setAlbum(Tools.DALBUM);
+		}
+		if (this.getArtist().getValueSafe() == "") {
+			setArtist(Tools.DARTIST);
+		}
+		if (this.getGenre() == null || this.getGenre().getValueSafe() == "") {
+			setGenre(Tools.DGENRE);
+		}
+		if (this.getYear().getValueSafe() == "") {
+			setYear(Tools.DYEAR);
+		}
+		if (this.getTitle().getValueSafe() == "") {
+			setTitle(new SimpleStringProperty(this.getPath().getFileName().toString()));
+		}
+	}
+
+
+	public void handleMetadata(String key, Object value) {
+		if (key.equals("album") || key.equals("album artist")) {
+			if(value.toString() == "" || value == null) {
+				setAlbum(Tools.DALBUM);
+			}
+			else {
+				setAlbum(new SimpleStringProperty(value.toString()));
+			}
+		} else if (key.equals("artist")) {
+			if(value.toString() == "" && this.getArtist().getValueSafe() == "") setArtist(Tools.DARTIST);
+			else setArtist(new SimpleStringProperty(value.toString()));
+
+		} if (key.equals("title")) {
+			if(value.toString() == "") setTitle(new SimpleStringProperty(this.getPath().getFileName().toString()));
+			else setTitle(new SimpleStringProperty(value.toString()));
+
+		} if (key.equals("year")) {
+			if(value.toString() == "") setYear(Tools.DYEAR);
+			else setYear(new SimpleStringProperty(value.toString()));
+
+		} if (key.equals("image")) {
+			setImage((Image) value);
+
+		} if (key.equals("genre")) {
+			if(value.toString() == "") setGenre(Tools.DGENRE);
+			else setGenre(new SimpleStringProperty(value.toString()));
+		}
+	}
+
+
+
+
+
+
+
+
+
 	/**
 	 * Setter e getter di ogni variabile
 	 */
-	
+
 	public Path getPath() {
 		return path;
 	}
-	
-	
+
+
 	public void setPath(Path path) {
-		this.path = path;
+		try {	
+			this.path = path.toAbsolutePath();
+		}
+		catch(IOError e) {
+			this.path = path;
+			System.out.println("Path non convertito a absolutepath");
+		}
 	}
-	
+
 	public StringProperty getTitle() {
 		return title;
 	}
 
 
-	public void setTitle(String title) {
-		this.title = new SimpleStringProperty(title);
+	public void setTitle(StringProperty title) {
+		this.title = title;
 	}
 
 
@@ -88,8 +191,8 @@ public class Track{
 	}
 
 
-	public void setArtist(String artist) {
-		this.artist = new SimpleStringProperty(artist);
+	public void setArtist(StringProperty artist) {
+		this.artist = artist;
 	}
 
 
@@ -98,8 +201,8 @@ public class Track{
 	}
 
 
-	public void setAlbum(String album) {
-		this.album = new SimpleStringProperty(album);
+	public void setAlbum(StringProperty album) {
+		this.album = album;
 	}
 
 
@@ -108,8 +211,8 @@ public class Track{
 	}
 
 
-	public void setGenre(String genre) {
-		this.genre = new SimpleStringProperty(genre);
+	public void setGenre(StringProperty genre) {
+		this.genre = genre;
 	}
 
 
@@ -118,8 +221,8 @@ public class Track{
 	}
 
 
-	public void setYear(String year) {
-		this.year = new SimpleStringProperty(year);
+	public void setYear(StringProperty year) {
+		this.year = year;
 	}
 
 
@@ -141,73 +244,16 @@ public class Track{
 	public void setImage(Image image) {
 		this.image = image;
 	}
-	
-	
-	private void resetProperties() {
-	    setArtist("");
-	    setAlbum("");
-	    setTitle("");
-	    setYear("");
-	    setImage(image);
-	  }
-	
-	final JFXPanel fxPanel = new JFXPanel();
-	
-	String dir = System.getProperty("user.dir");
 
-	Path testSongPath = Paths.get("files\\TestSongs\\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\\CD1\\Egmont Overture.mp3");
-	
-	 private void setMetadata (Path path) {
-		    
-		 
-//		 String url = cleanURL(urlnotclean);
-		 resetProperties();
-		    try {
-		      final Media media = new Media(path.toUri().toString());
-		      media.getMetadata().addListener(new MapChangeListener<String, Object>() {
-		        @Override
-		        public void onChanged(Change<? extends String, ? extends Object> ch) {
-		          if (ch.wasAdded()) {
-		            handleMetadata(ch.getKey(), ch.getValueAdded());
-		          }
-		        }
-		      });
-		    } catch (RuntimeException re) {
-		      //TODO error message
-		      System.out.println("Caught Exception: " + re.getMessage());
-		    }
-		  }
-         
-         
-         public void handleMetadata(String key, Object value) {
-        	    if (key.equals("album")) {
-        	      setAlbum(value.toString());
-        	    } else if (key.equals("artist")) {
-        	      setArtist(value.toString());
-        	    } if (key.equals("title")) {
-        	      setTitle(value.toString());
-        	    } if (key.equals("year")) {
-        	      setYear(value.toString());
-        	    } if (key.equals("image")) {
-        	      setImage((Image)value);
-        	    }
-        	  }
-        	
-         
-         /**
+	public Media getMedia() {
+		return media;
+	}
 
-          * Dobbiamo pulire l'url altrimenti javafx non lo riconosce
-          *
-          * @param uri
-          */
-         private static String cleanURL(String url) {
-             url = url.replace("\\", "/");
-             url = url.replaceAll(" ", "%20");
-             url = url.replace("[", "%5B");
-             url = url.replace("]", "%5D");
-             return url;
 
-         }
-	
+	public void setMedia(Media media) {
+		this.media = media;
+	}
+
+
 
 }

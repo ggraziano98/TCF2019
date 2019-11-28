@@ -4,17 +4,24 @@ import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.collections.ObservableList;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.media.Media;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.Track;
-import models.TrackList;
 
 
 
@@ -26,68 +33,64 @@ import models.TrackList;
  * TODO use observables to communicate with stage, use actual mp3 file
  */
 public class TrackTester extends Application{
-	
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("ImageView Experiment 1");
-        
-        Track track = new Track();
-        System.out.println(System.getProperty("user.dir"));
-        FileInputStream input = new FileInputStream("files\\image.png");
-        Image image = new Image(input);
-        track.setImage(image);
-        ImageView imageView = new ImageView(track.getImage());
 
-        HBox hbox = new HBox(imageView);
+	@Override
+	public void start(Stage primaryStage) throws Exception {
 
-        Scene scene = new Scene(hbox);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+		Path pathS = Paths.get("D:\\Programming\\Java\\TCF2019-progetto\\TCF2019\\.\\files\\TestSongs\\Beethoven\\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\\CD1\\String Quartet Op. 59 No. 3 Razumovsky - Allegro molto.mp3");
+		primaryStage.setTitle("ImageView Experiment 1");
 
-    }
+		Track track = new Track(pathS);
+		FileInputStream input = new FileInputStream("files\\image.png");
+		Image image = new Image(input);
+		track.setImage(image);
+		ImageView imageView = new ImageView(track.getImage());
+		imageView.resize(40, 40);
+		
+		HBox hbox = new HBox();
+	    hbox.setPadding(new Insets(10));
+	    hbox.setSpacing(8);
 
-	
-	public static void main(String[] args) {
-		 
-		String artist = "artist"; 
-		String album = "album"; 
-		String genre = "genre"; 
-		String year = "1998";
-		Duration duration = Duration.seconds(165);
+	    Text title = new Text();
+	    title.textProperty().bind(track.getTitle());
+	    Text album = new Text();
+	    album.textProperty().bindBidirectional(track.getAlbum());
+	    track.getAlbum().addListener((a, b, c)-> System.out.println("change: " + b));
+	    Text artist = new Text();
+	    artist.accessibleTextProperty().bind(track.getArtist());
+	    Text duration = new Text();
+	    duration.textProperty().bind(new SimpleStringProperty(track.getDuration().toString()));
+	    Text genre = new Text();
+	    genre.textProperty().bind(track.getGenre());
+	    
+	    
+	    hbox.getChildren().addAll(title, artist, album, genre, duration);
 
-		Path path = Paths.get("path", "file.mp3");
+		VBox vbox = new VBox();
+		vbox.getChildren().addAll( hbox);
 
+		Scene scene = new Scene(vbox);
+		primaryStage.setScene(scene);
+		primaryStage.show();
 		
-		
-		Track track = new Track(path);
-		System.out.println("Created track " + track.getPath());
-		
-		track.setAlbum(album);
-		track.setArtist(artist);
-		track.setArtist(artist);
-		track.setGenre(genre);
-		track.setYear(year);
-		track.setDuration(duration);
+		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5)));
+		Timeline fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(3), new EventHandler<ActionEvent>() {
 
-		
-		track.setPath(Paths.get("newpath", "newfile.mp3"));
-		
-		System.out.println("Changed path of track to" + track.getPath()+
-									"\n" + track.getArtist().getValue() + 
-									"\n" + track.getAlbum().getValue() + 
-									"\n" + track.getGenre().getValue() );
-		
-		System.out.println(track.getYear().getValue());
-		System.out.println(track.getDuration().toMinutes() + " min");
-		
-//		Application.launch();
-		Path path1 = Paths.get(".\\files\\TestSongs","Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0");
-		Track track1 = new Track();
-		track1.setPath(path1);
-		System.out.println(track1.getPath());
-		Media m = new Media(path1.toUri().toString());
-//		System.out.println(m.getDuration());
-//		System.out.println("finish");
+		    @Override
+		    public void handle(ActionEvent event) {
+		        track.setAlbum(new SimpleStringProperty(timeline.getTotalDuration().toString()));
+		        System.out.println(timeline.getTotalDuration().toString());
+		    }
+		}));
+		fiveSecondsWonder.setCycleCount(Timeline.INDEFINITE);
+		fiveSecondsWonder.play();
 	}
 
-}
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+	
+	
+	
+}	

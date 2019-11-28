@@ -7,18 +7,24 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import models.Track;
 import models.TrackList;
 
 
 public class Tools {
+	
+	public static final StringProperty DALBUM = new SimpleStringProperty("Album Sconosciuto");
+	public static final StringProperty DYEAR = new SimpleStringProperty("Anno Sconosciuto");
+	public static final StringProperty DARTIST = new SimpleStringProperty("Artista Sconosciuto");
+	public static final StringProperty DGENRE = new SimpleStringProperty("Genere Sconosciuto");
+		
 
 	/**
 	 * funzione che ritorna una lista di path ai file contenuti nella directory
@@ -86,8 +92,8 @@ public class Tools {
 		try {
 			Files.createFile(filePath);
 			BufferedWriter bw= Files.newBufferedWriter(filePath);
-			for (Path path : tracklist.getSongList()) {
-				bw.write(path.toString());
+			for (Track track : tracklist) {
+				bw.write(track.getPath().toString());
 				bw.write("\n");
 			}
 			bw.close();
@@ -112,8 +118,6 @@ public class Tools {
 	public static TrackList readPlaylist(String playlist) {
 		TrackList tracklist = new TrackList();
 		Path filePath = Paths.get("playlists", playlist );
-		List<Path> list = new ArrayList<Path>();
-		ObservableList<Path> songList = FXCollections.observableList(list);
 		try {
 
 			BufferedReader br= Files.newBufferedReader(filePath);
@@ -122,11 +126,10 @@ public class Tools {
 			while ((line = br.readLine()) != null) {
 				System.out.println(line);
 				Path path = Paths.get(line);
-				songList.add(path);;
+				tracklist.add(new Track(path));;
 			}	
 
-			br.close();
-			tracklist.setSongList(songList);		
+			br.close();	
 
 		} catch (IOException e) { 
 			e.printStackTrace();
@@ -158,6 +161,22 @@ public class Tools {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	/**
 
+	 * Dobbiamo pulire l'url altrimenti javafx non lo riconosce
+	 *
+	 * @param uri
+	 */
+	public static String cleanURL(String url) {
+		url = url.replace("\\", "/");
+		url = url.replaceAll(" ", "%20");
+		url = url.replace("[", "%5B");
+		url = url.replace("]", "%5D");
+		url = "file:///" + url;
+		return url;
+
+	}
 
 }
