@@ -49,6 +49,17 @@ public class TrackList extends SimpleListProperty<Track> {
 	//metodi principali
 
 
+	public int getIndex(Track track) {
+		int i=0;
+		while (this.get(i)==track.getPath()) {
+			i++;
+		}
+		int position1 = i - 1;
+		return position1;
+	}
+	
+	
+	
 	/**
 	 * add a track to the end of the TrackList
 	 * 

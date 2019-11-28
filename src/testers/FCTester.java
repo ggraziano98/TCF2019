@@ -2,9 +2,11 @@ package testers;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import controllers.FileController;
+import controllers.PlayerController;
 import models.Track;
 import models.TrackList;
 import utils.Tools;
@@ -54,42 +56,42 @@ public class FCTester {
 		*/
 		
 		
-		System.out.println("\n \n \n provo la funzione shuffle");
-		tracklist.shuffleTrack();
-		cout(tracklist);
+//		System.out.println("\n \n \n provo la funzione shuffle");
+//		tracklist.shuffleTrack();
+//		cout(tracklist);
 				
-		System.out.println("\n \n \n provo la funzione addTrack (aggiungo la track 0 al fondo della tracklist");
-		tracklist.addTrack(tracklist.get(0));
-		cout(tracklist);
-				
-		System.out.println("\n \n \n provo la funzione addTrackToPosition (aggiungo la track 0 all'inizio della tracklist");
-		tracklist.addTrackToPosition(0,tracklist.get(0));
-		cout(tracklist);
-		
-		System.out.println("\n \n \n provo la funzione remove track (rimuovo l'ultima track dalla tracklist)");
-		tracklist.removeTrack();
-		cout(tracklist);
-		
-		System.out.println("\n \n \n provo la funzione remove tracktoposition (rimuovo la prima track)");
-		tracklist.removeTrackToPosition(0);
-		cout(tracklist);
-		
-		System.out.println("\n \n \n provo la funzione cambio ordine tra elemento 2 e 5");
-		tracklist.changeOrder(2, 5);
-		cout(tracklist);
-
-		
-		/**
-		 * TODO il metodo funziona ma non funziona il handle metadata	
-		 */
-		System.out.println("\n \n \n provo la funzione totalduration");
-		System.out.println(tracklist.totalDuration());
+//		System.out.println("\n \n \n provo la funzione addTrack (aggiungo la track 0 al fondo della tracklist");
+//		tracklist.addTrack(tracklist.get(0));
+//		cout(tracklist);
+//				
+//		System.out.println("\n \n \n provo la funzione addTrackToPosition (aggiungo la track 0 all'inizio della tracklist");
+//		tracklist.addTrackToPosition(0,tracklist.get(0));
+//		cout(tracklist);
+//		
+//		System.out.println("\n \n \n provo la funzione remove track (rimuovo l'ultima track dalla tracklist)");
+//		tracklist.removeTrack();
+//		cout(tracklist);
+//		
+//		System.out.println("\n \n \n provo la funzione remove tracktoposition (rimuovo la prima track)");
+//		tracklist.removeTrackToPosition(0);
+//		cout(tracklist);
+//		
+//		System.out.println("\n \n \n provo la funzione cambio ordine tra elemento 2 e 5");
+//		tracklist.changeOrder(2, 5);
+//		cout(tracklist);
+//
+//		
+//		/**
+//		 * TODO il metodo funziona ma non funziona il handle metadata	
+//		 */
+//		System.out.println("\n \n \n provo la funzione totalduration");
+//		System.out.println(tracklist.totalDuration());
 		
 		
 		System.out.println("\n \n \n provo la funzione saveasplaylist");
 		Tools.saveAsPlaylist(tracklist, "Nuova Playlist");
 		
-		
+//		
 		/**
 		 * TODO trovare un modo per prendere il nome della playlist per esempio aggiungere un metadata alla classe tracklist
 		 */
@@ -130,10 +132,11 @@ public class FCTester {
 				"year " + track.getYear().getValue() + "\n"+
 				"duration " + track.getDuration().toMinutes() + "\n"+
 				"image " + track.getImage() + "\n");
+		PlayerController playasong = new PlayerController();
+		javafx.util.Duration duration = track.getDuration();
+		playasong.playTrack(track, playlist1);
 		
 	}
-	
-
 	
 	
 	public static void cout(TrackList tracklist) {
