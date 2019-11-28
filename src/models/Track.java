@@ -1,5 +1,8 @@
 package models;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.IOError;
 import java.nio.file.Path;
 
@@ -37,6 +40,8 @@ public class Track{
 	private Duration duration;
 	private Image image;
 	private Media media;
+	protected PropertyChangeSupport propertyChangeSupport;
+	private long id;
 
 
 	/**
@@ -52,18 +57,23 @@ public class Track{
 	 * @param path			oggetto Path 
 	 */
 	public Track(Path path) {
+		this.album = Tools.DALBUM;
+		this.artist = Tools.DARTIST;
+		this.year = Tools.DYEAR;
+		this.title = new SimpleStringProperty(path.getFileName().toString());
+		this.genre = Tools.DGENRE;
 		this.setPath(path);
 		this.setMetadata();
-
 	}
 
 
 
 	private void resetProperties() {
-		setArtist(new SimpleStringProperty(""));
-		setAlbum(new SimpleStringProperty(""));
-		setTitle(new SimpleStringProperty(""));
-		setYear(new SimpleStringProperty(""));
+		setAlbum(Tools.DALBUM);
+		setArtist(Tools.DARTIST);
+		setGenre(Tools.DGENRE);
+		setYear(Tools.DYEAR);
+		setTitle(new SimpleStringProperty(this.getPath().getFileName().toString()));
 	}
 
 	/*
@@ -85,14 +95,14 @@ public class Track{
 		try {
 			final Media media = new Media(cleanPathS);		
 			media.getMetadata().addListener(new MapChangeListener<String, Object>() {
-						@Override
-						public void onChanged(Change<? extends String, ? extends Object> ch) {
-							if (ch.wasAdded()) {
-								if(ch.getKey().toString() == "artist") {
-								}
-								handleMetadata(ch.getKey(), ch.getValueAdded());
-							}
+				@Override
+				public void onChanged(Change<? extends String, ? extends Object> ch) {
+					if (ch.wasAdded()) {
+						if(ch.getKey().toString() == "artist") {
 						}
+						handleMetadata(ch.getKey(), ch.getValueAdded());
+					}
+				}
 			});
 
 			this.setMedia(media);
@@ -101,34 +111,23 @@ public class Track{
 			//TODO error message
 			re.printStackTrace();
 		}
+		
+		
+	    MediaPlayer mediaPlayer = new MediaPlayer(media);
 
-		if (this.getAlbum().getValueSafe() == "") {
-			setAlbum(Tools.DALBUM);
-		}
-		if (this.getArtist().getValueSafe() == "") {
-			setArtist(Tools.DARTIST);
-		}
-		if (this.getGenre() == null || this.getGenre().getValueSafe() == "") {
-			setGenre(Tools.DGENRE);
-		}
-		if (this.getYear().getValueSafe() == "") {
-			setYear(Tools.DYEAR);
-		}
-		if (this.getTitle().getValueSafe() == "") {
-			setTitle(new SimpleStringProperty(this.getPath().getFileName().toString()));
-		}
+	    mediaPlayer.setOnReady(()->this.setDuration(media.getDuration()));
 	}
 
 
 	public void handleMetadata(String key, Object value) {
-		if (key.equals("album") || key.equals("album artist")) {
+		if (key.equals("album") ) {
 			if(value.toString() == "" || value == null) {
 				setAlbum(Tools.DALBUM);
 			}
 			else {
 				setAlbum(new SimpleStringProperty(value.toString()));
 			}
-		} else if (key.equals("artist")) {
+		} else if (key.equals("artist")|| key.equals("album artist")) {
 			if(value.toString() == "" && this.getArtist().getValueSafe() == "") setArtist(Tools.DARTIST);
 			else setArtist(new SimpleStringProperty(value.toString()));
 
@@ -157,6 +156,26 @@ public class Track{
 
 
 
+
+
+	public void addChangeListener(PropertyChangeListener listener)
+	{
+		this.propertyChangeSupport.addPropertyChangeListener(listener);
+	}
+
+	public void removeChangeListener(PropertyChangeListener listener)
+	{
+		this.propertyChangeSupport.removePropertyChangeListener(listener);
+	}
+
+	public void setId(long newId)
+	{
+		long oldId = this.id;
+		this.id = newId;
+		propertyChangeSupport.firePropertyChange("id", oldId, newId);
+	}
+
+
 	/**
 	 * Setter e getter di ogni variabile
 	 */
@@ -182,7 +201,7 @@ public class Track{
 
 
 	public void setTitle(StringProperty title) {
-		this.title = title;
+		this.title.set(title.getValue());
 	}
 
 
@@ -192,7 +211,7 @@ public class Track{
 
 
 	public void setArtist(StringProperty artist) {
-		this.artist = artist;
+		this.artist.set(artist.getValue());
 	}
 
 
@@ -202,7 +221,7 @@ public class Track{
 
 
 	public void setAlbum(StringProperty album) {
-		this.album = album;
+		this.album.set(album.getValue());
 	}
 
 
@@ -212,7 +231,7 @@ public class Track{
 
 
 	public void setGenre(StringProperty genre) {
-		this.genre = genre;
+		this.genre.set(genre.getValue());;
 	}
 
 
@@ -222,7 +241,7 @@ public class Track{
 
 
 	public void setYear(StringProperty year) {
-		this.year = year;
+		this.year.set(year.getValue());
 	}
 
 

@@ -72,18 +72,6 @@ public class TrackTester extends Application{
 		Scene scene = new Scene(vbox);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5)));
-		Timeline fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(3), new EventHandler<ActionEvent>() {
-
-		    @Override
-		    public void handle(ActionEvent event) {
-		        track.setAlbum(new SimpleStringProperty(timeline.getTotalDuration().toString()));
-		        System.out.println(timeline.getTotalDuration().toString());
-		    }
-		}));
-		fiveSecondsWonder.setCycleCount(Timeline.INDEFINITE);
-		fiveSecondsWonder.play();
 	}
 
 

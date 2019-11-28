@@ -2,6 +2,7 @@ package testers;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 import controllers.FileController;
 import models.Track;
@@ -101,6 +102,12 @@ public class FCTester {
 		Tools.deletePlaylist("Nuova Playlist");
 		Tools.deletePlaylist("notAPlaylist");
 		
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("\n\n\n");
 		System.out.println("Durata playlist: " + playlist1.totalDuration().toMinutes());
 		
@@ -117,12 +124,12 @@ public class FCTester {
 		}}
 		*/
 		Track track = playlist1.get(3);
-		System.out.println(track.getAlbum().getValue() + "\n" +
-				track.getArtist().getValue() + "\n" +
-				track.getGenre().getValue() + "\n"+
-				track.getYear().getValue() + "\n"+
-				track.getDuration().toMinutes() + "\n"+
-				track.getImage() + "\n");
+		System.out.println("album " + track.getAlbum().getValue() + "\n" +
+				"artist " + track.getArtist().getValue() + "\n" +
+				"genre " + track.getGenre().getValue() + "\n"+
+				"year " + track.getYear().getValue() + "\n"+
+				"duration " + track.getDuration().toMinutes() + "\n"+
+				"image " + track.getImage() + "\n");
 		
 	}
 	
