@@ -37,6 +37,7 @@ import javafx.stage.Stage;
 
 public class Root extends Application {
 
+	// TODO chiudere le risorse una volta usate 
 	//TODO questo serve per adattare la dimensione della finestra alla definizione del display del pc
 	//	GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	//	int width = gd.getDisplayMode().getWidth();
@@ -45,7 +46,6 @@ public class Root extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// TODO Auto-generated method stub
 
 		GridPane root = new GridPane();
 		root.setVgap(10);
@@ -79,7 +79,7 @@ public class Root extends Application {
 		findText.setMinWidth(250);
 		Button findButton = new Button("cerca");
 		findButton.setOnMouseClicked((e) -> {
-			System.out.println(findText.getText());
+			find(findText.getText());
 		});
 		findHBox.setOnKeyReleased((final KeyEvent KeyEvent) -> {
 			if (KeyEvent.getCode() == KeyCode.ENTER) System.out.println(findText.getText());
@@ -245,7 +245,14 @@ public class Root extends Application {
 		root.add(listsPane, 1, 0);
 		root.add(playlistsVbox, 0, 1);
 		
-		
+		primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, k -> {
+	        if ( k.getCode() == KeyCode.SPACE){
+				playPause(play);
+				if (play.get()) playButton.setGraphic(playView);
+				else playButton.setGraphic(pauseView);
+				play.set(!play.get());
+	        }
+	    });
 		
 
 
@@ -264,12 +271,6 @@ public class Root extends Application {
 				else volumeButton.setGraphic(muteView);
 				muted.set(!muted.get());
 				};
-			if (KeyEvent.getCode() == KeyCode.P) {
-				playPause(play);
-				if (play.get()) playButton.setGraphic(playView);
-				else playButton.setGraphic(pauseView);
-				play.set(!play.get());
-				};
 		});
 		
 
@@ -280,8 +281,8 @@ public class Root extends Application {
 	}
 
 
-	public static void find() {
-		
+	public static void find(String keyWord) {
+		System.out.println(keyWord);		
 	}
 	
 	
