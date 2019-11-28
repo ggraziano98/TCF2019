@@ -8,6 +8,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -229,7 +230,6 @@ public class Root extends Application {
 		artistsPane.getChildren().add(gucciniView);
 		artistsPane.setStyle("-fx-base: lightgreen");
 		artistsButton.setStyle("-fx-background-color:green");
-		artistsButton.getId();
 		Label artists_albumsLabel = new Label("  ");
 		ToggleButton albumsButton = new ToggleButton("albums");
 		FlowPane albumsPane = new FlowPane();
@@ -242,10 +242,24 @@ public class Root extends Application {
 		listsPane.getChildren().add(artists_albumsLabel);
 		listsPane.getChildren().add(albumsButton);
 		
+		albumsButton.setUserData(albumsPane);
+		artistsButton.setUserData(artistsPane);
+		songsButton.setUserData("song");
+		
 		ToggleGroup mainPanel = new ToggleGroup();
 		songsButton.setToggleGroup(mainPanel);
 		artistsButton.setToggleGroup(mainPanel);
 		albumsButton.setToggleGroup(mainPanel);
+		
+		albumsButton.setSelected(false);
+		artistsButton.setSelected(true);
+		
+		mainPanel.selectedToggleProperty().addListener((obs, oldv, newv) ->{
+			if(oldv != null) {
+				((Node) oldv.getUserData()).setVisible(false);
+			}
+			((Node) newv.getUserData()).setVisible(true);
+		});
 		
 		
 		VBox playlistsVbox = new VBox();
@@ -256,8 +270,9 @@ public class Root extends Application {
 		root.add(findHBox, 0, 0);
 		root.add(listsPane, 1, 0);
 		root.add(playlistsVbox, 0, 1);
-		if(artistsButton.selectedProperty() != null) root.add(artistsPane, 1, 2);
-		if(albumsButton.selectedProperty() != null) root.add(albumsPane, 1, 2);
+		
+		root.add(albumsPane, 1, 1, 1, 2);
+		root.add(artistsPane, 1, 1, 1, 2);
 		
 		
 		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, k -> {
@@ -346,6 +361,7 @@ public class Root extends Application {
 	public static void playlists(String string, VBox box, ToggleGroup mainPanel) {
 		ToggleButton playlist = new ToggleButton(string);
 		playlist.setToggleGroup(mainPanel);
+		playlist.setStyle("-fx-background-color:none");
 		playlist.setOnMouseEntered((e) -> {
 			playlist.setStyle("-fx-text-base-color: blue;"
 					+"-fx-background-color:yellow");
