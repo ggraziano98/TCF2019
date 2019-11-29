@@ -89,7 +89,7 @@ public class FCTester {
 		
 		
 		System.out.println("\n \n \n provo la funzione saveasplaylist");
-		Tools.saveAsPlaylist(tracklist, "Nuova Playlist");
+		Tools.saveAsPlaylist(tracklist, "Playlist playerTester");
 		
 //		
 		/**

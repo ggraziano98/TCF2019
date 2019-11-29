@@ -3,9 +3,9 @@ package userinterface;
 import java.io.FileInputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-
 import controllers.PlayerController;
 import javafx.application.Application;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -35,7 +35,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import models.Track;
 import models.TrackList;
 import utils.Tools;
 
@@ -186,7 +185,6 @@ public class Root extends Application {
 		AtomicBoolean muted = new AtomicBoolean(false);
 		Button volumeButton = new Button("",volumeView);
 		volumeButton.setOnMouseClicked((e) -> {
-			volumeMute(muted);
 			if(muted.get()) {
 				volumeButton.setGraphic(volumeView);
 			}
@@ -194,6 +192,7 @@ public class Root extends Application {
 				volumeButton.setGraphic(muteView);
 			}
 			muted.set(!muted.get());
+			volumeMute(muted);
 			
 		});
 		
@@ -204,12 +203,13 @@ public class Root extends Application {
 		volumeButton.setTranslateY(100);
 
 		Slider volumeSlider = new Slider();
-		volumeSlider.setMax(30);
+		volumeSlider.setMax(100);
 		volumeSlider.setMin(0);
-		volumeSlider.setValue(15);
+		volumeSlider.setValue(100);
 		volumeSlider.setMaxWidth(80);
 		volumeSlider.setTranslateX(165);
 		volumeSlider.setTranslateY(100);
+		volumeSlider.valueProperty().bindBidirectional(pc.getVolumeValue());
 
 
 		StackPane player = new StackPane();
@@ -298,10 +298,10 @@ public class Root extends Application {
 				play.set(!play.get());
 	        }
 	        if ( k.getCode() == KeyCode.M) {
-				volumeMute(muted);
 				if(muted.get()) volumeButton.setGraphic(volumeView);
 				else volumeButton.setGraphic(muteView);
 				muted.set(!muted.get());
+				volumeMute(muted);
 				}
 	        if ( k.getCode() == KeyCode.L) nextSong();
 	        if ( k.getCode() == KeyCode.J) previousSong();
@@ -363,8 +363,7 @@ public class Root extends Application {
 	
 	
 	public static void volumeMute(AtomicBoolean muted) {
-		if(muted.get()) System.out.println("Let's Rock!");
-		else System.out.println("booooooo");
+		pc.setMuted(new SimpleBooleanProperty(muted.get()));
 	}
 
 

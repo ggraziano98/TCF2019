@@ -81,7 +81,7 @@ public class Tools {
 
 
 
-	/**
+	/**TODO errore
 	 * 
 	 * funzione che salva la tracklist come file di testo
 	 * 
@@ -99,7 +99,8 @@ public class Tools {
 			bw.close();
 		} catch (IOException e) {
 			if (e instanceof FileAlreadyExistsException) {
-				System.out.println("file già esistente in " + filePath.toString() );
+				deletePlaylist(playlistName, false);
+				saveAsPlaylist(tracklist, playlistName);
 			} else 
 				e.printStackTrace();
 		}
@@ -108,7 +109,7 @@ public class Tools {
 
 
 
-	/**
+	/**TODO errore
 	 * 
 	 * prende il nome del file di testo di una tracklist salvata e crea un oggetto tracklist con i path contenuti nel file di testo
 	 * 
@@ -131,7 +132,7 @@ public class Tools {
 			br.close();	
 
 		} catch (IOException e) { 
-			e.printStackTrace();
+			System.out.println("La playlist da leggere non esiste");
 		}
 
 		/**
@@ -140,6 +141,11 @@ public class Tools {
 		return tracklist;
 	}
 
+	
+	
+	public static void deletePlaylist(String playlist) {
+		deletePlaylist(playlist, true);
+	}
 
 
 	/**
@@ -150,10 +156,12 @@ public class Tools {
 	 * 
 	 * @param playlist
 	 */
-	public static void deletePlaylist(String playlist) {
+	public static void deletePlaylist(String playlist, boolean showMessage) {
 		Path filePath = Paths.get("playlists", playlist + ".txt");
 		try {
-			if(Files.deleteIfExists(filePath)) System.out.println("Playlist " + playlist + " eliminata");
+			if(Files.deleteIfExists(filePath)) {
+				if(showMessage) System.out.println("Playlist " + playlist + " eliminata");
+			}
 			else System.out.println("Non esiste la playlist selezionata");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

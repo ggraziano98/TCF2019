@@ -160,6 +160,7 @@ public class Track{
 
 	public void setPath(Path path) {
 		try {	
+			System.out.println(path.toString());
 			this.path = path.toAbsolutePath();
 		}
 		catch(IOError e) {

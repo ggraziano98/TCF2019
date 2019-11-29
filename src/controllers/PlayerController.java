@@ -1,14 +1,18 @@
 package controllers;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
-import models.Track;
 import models.TrackList;
 
 public class PlayerController {
 	//TODO make sure songs are closed properly
+	// TODO handle media duration
 
 	/**
 	 * inizializzo i data member, mi dicono la canzone corrente e quella successiva
@@ -17,6 +21,8 @@ public class PlayerController {
 	private MediaPlayer player;
 	private MediaPlayer loadingPlayer;
 	private TrackList tracklist;
+	private DoubleProperty volumeValue;
+	private BooleanProperty muted;
 	/**
 	 * costruttore di default
 	 */
@@ -27,6 +33,8 @@ public class PlayerController {
 	public PlayerController(TrackList tracklist) {
 		this.setTracklist(tracklist);
 		this.setCurrentTrack(new SimpleIntegerProperty(0));
+		this.muted = new SimpleBooleanProperty(false);
+		this.volumeValue = new SimpleDoubleProperty(100);
 		this.refresh();
 	}
 
@@ -75,6 +83,12 @@ public class PlayerController {
 		}
 		else this.refresh();
 	}
+	
+	
+	
+	public void setVolumeValue(double volume) {
+		this.setVolumeValue(new SimpleDoubleProperty((int) volume));
+	}
 
 
 
@@ -82,7 +96,7 @@ public class PlayerController {
 
 	private void refresh() {
 		if(this.getLoadingPlayer() != null && this.getLoadingPlayer().equals(this.getTracklist().get(this.currentInt()+1).getMediaPlayer())) {
-			this.player = this.loadingPlayer;
+			this.setPlayer(this.getLoadingPlayer());
 			this.setLoadingPlayer(this.getTracklist().get(this.currentInt()+1).getMediaPlayer());
 		}
 		else {
@@ -134,6 +148,7 @@ public class PlayerController {
 
 	public void setPlayer(MediaPlayer player) {
 		this.player = player;
+		this.setVolume();
 	}
 
 
@@ -158,6 +173,33 @@ public class PlayerController {
 
 	private int currentInt() {
 		return this.getCurrentTrack().getValue();
+	}
+
+
+	public  DoubleProperty getVolumeValue() {
+		return volumeValue;
+	}
+
+
+	public  void setVolumeValue(DoubleProperty volumeValue) {
+		this.volumeValue.set(volumeValue.intValue());
+		this.setVolume();
+	}
+
+
+	public  BooleanProperty getMuted() {
+		return muted;
+	}
+
+
+	public void setMuted(BooleanProperty muted) {
+		this.muted.set(muted.getValue());
+		this.setVolume();
+	}
+	
+	private void setVolume() {
+		this.player.setVolume(this.getVolumeValue().doubleValue());
+		this.player.setMute(this.getMuted().getValue());
 	}
 
 }
