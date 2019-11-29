@@ -1,7 +1,5 @@
 package models;
 
-import java.nio.file.Path;
-
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
@@ -40,7 +38,7 @@ public class SongQueue extends TrackList{
 	 * @param songList
 	 * @param curentSongID
 	 */
-	public SongQueue(ObservableList<Path> songList, int currentSongID) {
+	public SongQueue(ObservableList<Track> songList, int currentSongID) {
 		super(songList);
 		this.setCurrentSongID(currentSongID);
 	}

@@ -1,15 +1,30 @@
 package utils;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import models.Track;
+import models.TrackList;
+
 
 public class Tools {
+	
+	public static final StringProperty DALBUM = new SimpleStringProperty("Album Sconosciuto");
+	public static final StringProperty DYEAR = new SimpleStringProperty("Anno Sconosciuto");
+	public static final StringProperty DARTIST = new SimpleStringProperty("Artista Sconosciuto");
+	public static final StringProperty DGENRE = new SimpleStringProperty("Genere Sconosciuto");
+		
 
 	/**
 	 * funzione che ritorna una lista di path ai file contenuti nella directory
@@ -63,4 +78,117 @@ public class Tools {
 		}
 
 	}
+
+
+
+	/**
+	 * 
+	 * funzione che salva la tracklist come file di testo
+	 * 
+	 * @param tracklist
+	 */
+	public static void saveAsPlaylist(TrackList tracklist, String playlistName) {
+		Path filePath = Paths.get("playlists", playlistName + ".txt");
+		try {
+			Files.createFile(filePath);
+			BufferedWriter bw= Files.newBufferedWriter(filePath);
+			for (Track track : tracklist) {
+				bw.write(track.getPath().toString());
+				bw.write("\n");
+			}
+			bw.close();
+		} catch (IOException e) {
+			if (e instanceof FileAlreadyExistsException) {
+				System.out.println("file già esistente in " + filePath.toString() );
+			} else 
+				e.printStackTrace();
+		}
+
+	}
+
+
+
+	/**
+	 * 
+	 * prende il nome del file di testo di una tracklist salvata e crea un oggetto tracklist con i path contenuti nel file di testo
+	 * 
+	 * @param String
+	 * @return tracklist
+	 */
+	public static TrackList readPlaylist(String playlist) {
+		TrackList tracklist = new TrackList();
+		Path filePath = Paths.get("playlists", playlist + ".txt");
+		try {
+
+			BufferedReader br= Files.newBufferedReader(filePath);
+			String line = "";
+
+			while ((line = br.readLine()) != null) {
+				Path path = Paths.get(line);
+				tracklist.add(new Track(path));;
+			}	
+
+			br.close();	
+
+		} catch (IOException e) { 
+			e.printStackTrace();
+		}
+
+		/**
+		 * TODO implementere il codice nel caso tracklist fosse vuota
+		 */
+		return tracklist;
+	}
+
+
+
+	/**
+	 * 
+	 * mi permette di eliminare una playlist in file di testo
+	 * 
+	 * TODO messaggio completamento operazione
+	 * 
+	 * @param playlist
+	 */
+	public static void deletePlaylist(String playlist) {
+		Path filePath = Paths.get("playlists", playlist + ".txt");
+		try {
+			if(Files.deleteIfExists(filePath)) System.out.println("Playlist " + playlist + " eliminata");
+			else System.out.println("Non esiste la playlist selezionata");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+
+	 * Dobbiamo pulire l'url altrimenti javafx non lo riconosce
+	 *
+	 * @param uri
+	 */
+	public static String cleanURL(String url) {
+		url = url.replace("\\", "/");
+		url = url.replaceAll(" ", "%20");
+		url = url.replace("[", "%5B");
+		url = url.replace("]", "%5D");
+		url = "file:///" + url;
+		return url;
+
+	}
+	
+	
+	/**
+	 * tool per debugging, printa il contenuto di una playlist
+	 * 
+	 * @param tracklist
+	 */
+	public static void cout(TrackList tracklist) {
+		for (int i = 0; i < tracklist.size(); i++) {
+			System.out.println(tracklist.get(i).getPath().getFileName() + "\t\t\t" + i);
+		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
+		
+	}
+
 }

@@ -1,0 +1,24 @@
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\AC-DC - War Machine (Live At River Plate 2009).mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\back in black acdc.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD1\Egmont Overture.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD1\Fidelio - Abscheulicher.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD1\Piano Concerto No. 5 Emperor - Rondo.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD1\Piano Sonata No. 14 Moonlight - Adagio sostenuto.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD1\Piano Sonata No. 8 Pathetique - Adagio cantabile.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD1\String Quartet Op. 59 No. 3 Razumovsky - Allegro molto.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD1\Symphony No. 5 - Allegro con brio.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD1\Symphony No. 6 Pastoral - Allegro ma non troppo.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD1\Violin Concerto in D major - Rondo.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD1\Violin Sonata No. 9 Kreutzer - Finale.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD2\Andante favori.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD2\Archduke Trio - Scherzo.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD2\Bagatelle in A minor Fur Elise.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD2\Cello Sonata in A major - Adagio cantabile & Allegro vivace.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD2\Missa Solemnis - Sanctus-Benedictus.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD2\Piano Concerto No. 4 - Rondo.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD2\Symphony No. 3 Eroica - Scherzo.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD2\Symphony No. 7 - Allegretto.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD2\Symphony No. 9 Choral - Ode To Joy.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Beethoven\Beethoven - The Very Best Of Beethoven (2CD) (naxos 2005) MP3 V0\CD2\Violin Sonata No. 5 Spring - Adagio molto espressivo.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\For Those About To Rock acdc.mp3
+D:\Programming\Java\TCF2019-progetto\TCF2019\.\files\TestSongs\Hells Bells acdc.mp3

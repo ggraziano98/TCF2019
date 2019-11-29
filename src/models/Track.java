@@ -1,13 +1,19 @@
 package models;
 
+import java.io.IOError;
 import java.nio.file.Path;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.MapChangeListener;
+import javafx.embed.swing.JFXPanel;
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import utils.Tools;
 
 
 /**
@@ -29,9 +35,11 @@ public class Track{
 	private StringProperty artist;
 	private StringProperty album;
 	private StringProperty genre;
-	private IntegerProperty year;
+	private StringProperty year;
 	private Duration duration;
 	private Image image;
+	private MediaPlayer mediaPlayer;
+	private BooleanProperty ready;
 
 
 	/**
@@ -39,48 +47,134 @@ public class Track{
 	 */	
 	public Track() {
 	}
-	
-	
+
+
 	/**
 	 * Constructor with initial data
 	 * 
 	 * @param path			oggetto Path 
 	 */
 	public Track(Path path) {
+		this.album = Tools.DALBUM;
+		this.artist = Tools.DARTIST;
+		this.year = Tools.DYEAR;
+		this.title = new SimpleStringProperty(path.getFileName().toString());
+		this.genre = Tools.DGENRE;
+		this.ready = new SimpleBooleanProperty(false);
 		this.setPath(path);
-		this.handleMetadata();
-	}
-	
-	
-	public void handleMetadata() {
+		this.setMetadata();
 	}
 
 
-	
-	
-	
-	
-	
+
+	private void resetProperties() {
+		setAlbum(Tools.DALBUM);
+		setArtist(Tools.DARTIST);
+		setGenre(Tools.DGENRE);
+		setYear(Tools.DYEAR);
+		setTitle(new SimpleStringProperty(this.getPath().getFileName().toString()));
+	}
+
+	/*TODO get image
+	 */
+	private void setMetadata() {
+
+
+		Path path = this.getPath();
+		String cleanPathS = Tools.cleanURL(path.toString());
+
+		//TODO togliere questo?
+		@SuppressWarnings("unused")
+		final JFXPanel fxPanel = new JFXPanel();
+
+
+		this.resetProperties();
+		try {
+			final Media media = new Media(cleanPathS);
+		    MediaPlayer mediaPlayer = new MediaPlayer(media);
+		    this.setMediaPlayer(mediaPlayer);
+			media.getMetadata().addListener(new MapChangeListener<String, Object>() {
+				@Override
+				public void onChanged(Change<? extends String, ? extends Object> ch) {
+					if (ch.wasAdded()) {
+						if(ch.getKey().toString() == "artist") {
+						}
+						handleMetadata(ch.getKey(), ch.getValueAdded());
+					}
+				}
+			});
+			
+		    mediaPlayer.setOnReady(()-> {
+		    	this.setDuration(media.getDuration());
+		    	this.setReady(true);
+		    });
+
+			this.setDuration(media.getDuration());
+		} catch (RuntimeException re) {
+			//TODO error message
+			re.printStackTrace();
+		}
+	}
+
+
+	public void handleMetadata(String key, Object value) {
+		if (key.equals("album") ) {
+			if(value.toString() == "" || value == null) {
+				setAlbum(Tools.DALBUM);
+			}
+			else {
+				setAlbum(new SimpleStringProperty(value.toString()));
+			}
+		} else if (key.equals("artist")|| key.equals("album artist")) {
+			if(value.toString() == "" && this.getArtist().getValueSafe() == "") setArtist(Tools.DARTIST);
+			else setArtist(new SimpleStringProperty(value.toString()));
+
+		} if (key.equals("title")) {
+			if(value.toString() == "") setTitle(new SimpleStringProperty(this.getPath().getFileName().toString()));
+			else setTitle(new SimpleStringProperty(value.toString()));
+
+		} if (key.equals("year")) {
+			if(value.toString() == "") setYear(Tools.DYEAR);
+			else setYear(new SimpleStringProperty(value.toString()));
+
+		} if (key.equals("image")) {
+			setImage((Image) value);
+
+		} if (key.equals("genre")) {
+			if(value.toString() == "") setGenre(Tools.DGENRE);
+			else setGenre(new SimpleStringProperty(value.toString()));
+		}
+	}
+
+
+
+
 	/**
 	 * Setter e getter di ogni variabile
 	 */
-	
+
 	public Path getPath() {
 		return path;
 	}
-	
-	
+
+
 	public void setPath(Path path) {
-		this.path = path;
+		try {	
+			this.path = path.toAbsolutePath();
+		}
+		catch(IOError e) {
+			this.path = path;
+			System.out.println("Path non convertito a absolutepath");
+		}
 	}
-	
+
 	public StringProperty getTitle() {
 		return title;
 	}
 
 
-	public void setTitle(String title) {
-		this.title = new SimpleStringProperty(title);
+	public void setTitle(StringProperty title) {
+		this.title.set(title.getValue());
 	}
 
 
@@ -89,8 +183,8 @@ public class Track{
 	}
 
 
-	public void setArtist(String artist) {
-		this.artist = new SimpleStringProperty(artist);
+	public void setArtist(StringProperty artist) {
+		this.artist.set(artist.getValue());
 	}
 
 
@@ -99,8 +193,8 @@ public class Track{
 	}
 
 
-	public void setAlbum(String album) {
-		this.album = new SimpleStringProperty(album);
+	public void setAlbum(StringProperty album) {
+		this.album.set(album.getValue());
 	}
 
 
@@ -109,18 +203,18 @@ public class Track{
 	}
 
 
-	public void setGenre(String genre) {
-		this.genre = new SimpleStringProperty(genre);
+	public void setGenre(StringProperty genre) {
+		this.genre.set(genre.getValue());;
 	}
 
 
-	public IntegerProperty getYear() {
+	public StringProperty getYear() {
 		return year;
 	}
 
 
-	public void setYear(int year) {
-		this.year = new SimpleIntegerProperty(year);
+	public void setYear(StringProperty year) {
+		this.year.set(year.getValue());
 	}
 
 
@@ -142,4 +236,26 @@ public class Track{
 	public void setImage(Image image) {
 		this.image = image;
 	}
+
+	public MediaPlayer getMediaPlayer() {
+		return this.mediaPlayer;
+	}
+
+
+	public void setMediaPlayer(MediaPlayer mediaPlayer) {
+		this.mediaPlayer = mediaPlayer;
+	}
+
+
+	public BooleanProperty getReady() {
+		return ready;
+	}
+
+
+	public void setReady(boolean ready) {
+		this.ready.set(ready);
+	}
+
+
+
 }
