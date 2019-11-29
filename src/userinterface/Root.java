@@ -57,12 +57,17 @@ public class Root extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
+		
+		
+		
+		//gridpane è il pane di livello piu alto, contiene tutti gli altri
 		GridPane root = new GridPane();
 		root.setVgap(10);
 		root.setHgap(20);
 		root.setPadding(new Insets(5, 10, 5, 10));
 		root.setGridLinesVisible(true);
-
+		
+		//imposto i constraints del gridpane per settare anche il comportamento quando riscalo
 		ColumnConstraints column1 = new ColumnConstraints();
 		column1.setMinWidth(300);
 		column1.setMaxWidth(300);
@@ -82,7 +87,10 @@ public class Root extends Application {
 		row3.setMaxHeight(300);
 		root.getRowConstraints().addAll(row1, row2, row3); 
 
-
+		
+		
+		
+		// barra per cercare all'interno della libreria
 		HBox findHBox = new HBox();
 		findHBox.setAlignment(Pos.CENTER);
 		TextField findText = new TextField();
@@ -92,9 +100,10 @@ public class Root extends Application {
 		findHBox.getChildren().add(findText);	
 		findHBox.getChildren().add(findButton);
 		
+		
 
-
-
+		
+		//immagini per i bottoni del player: play, pause, next, previous
 		FileInputStream playFile = new FileInputStream("files\\Player\\play.png");
 		Image playImage = new Image(playFile);
 		ImageView playView = new ImageView(playImage);
@@ -118,9 +127,7 @@ public class Root extends Application {
 		ImageView nextView = new ImageView(nextImage);
 		nextView.setFitHeight(25);
 		nextView.setFitWidth(25);
-
-
-
+		
 		Button playButton = new Button("",playView);
 		Button prevButton = new Button("",prevView);
 		Button nextButton = new Button("",nextView);
@@ -135,7 +142,6 @@ public class Root extends Application {
 			});
 		playButton.setTranslateX(-100);
 		playButton.setTranslateY(100);
-
 
 		prevButton.setOnMouseClicked((e) -> previousSong());
 		prevButton.setTranslateX(-150);
@@ -169,7 +175,8 @@ public class Root extends Application {
 
 
 
-
+		
+		//bottoni del player e slider per il controllo del volume
 		FileInputStream volumeFile = new FileInputStream("files\\Player\\volume.png");
 		Image volumeImage = new Image(volumeFile);
 		ImageView volumeView = new ImageView(volumeImage);
@@ -196,9 +203,6 @@ public class Root extends Application {
 			
 		});
 		
-		
-		
-		
 		volumeButton.setTranslateX(100);
 		volumeButton.setTranslateY(100);
 
@@ -212,6 +216,9 @@ public class Root extends Application {
 		volumeSlider.valueProperty().bindBidirectional(pc.getVolumeValue());
 
 
+		
+		
+		//pane in cui sta il player
 		StackPane player = new StackPane();
 		player.getChildren().add(playButton);
 		player.getChildren().add(prevButton);
@@ -224,6 +231,8 @@ public class Root extends Application {
 		
 		
 		
+		
+		//TODO pane che fanno vedere le canzoni
 		FileInputStream gucciniFile = new FileInputStream("files\\mainPane\\guccini.png");
 		Image gucciniImage = new Image(gucciniFile);
 		ImageView gucciniView = new ImageView(gucciniImage);
@@ -270,11 +279,12 @@ public class Root extends Application {
 			((Node) newv.getUserData()).setVisible(true);
 		});
 		
-		
 		VBox playlistsVbox = new VBox();
 		
 		
 		
+		
+		//aggiungo i pane al gridpane
 		root.add(player, 0, 2);
 		root.add(findHBox, 0, 0);
 		root.add(listsPane, 1, 0);
@@ -284,6 +294,10 @@ public class Root extends Application {
 		root.add(artistsPane, 1, 1, 1, 2);
 		
 		
+		
+		
+		// gestisco i keypresses
+		//TODO restringere gli shortcut quando si cerca
 		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, k -> {
 	        if ( k.getCode() == KeyCode.SPACE){
 				playPause(play);
@@ -313,12 +327,14 @@ public class Root extends Application {
 		});
 		findHBox.setOnKeyReleased((final KeyEvent KeyEvent) -> {
 			if (KeyEvent.getCode() == KeyCode.ENTER) {
-				System.out.println(findText.getText());
+				find(findText.getText());
 			}
 		});
 		
 		
 
+		
+		//aggiungo tutto alla window
 		Scene scene = new Scene(root, 650, 600);
 		primaryStage.setTitle("Player");
 		primaryStage.setScene(scene);
@@ -327,6 +343,8 @@ public class Root extends Application {
 		primaryStage.show();
 
 		
+		
+		//TODO togliere e mettere le playlist giuste
 		playlists("lel", playlistsVbox, mainPanel);
 		playlists("lul", playlistsVbox, mainPanel);
 		playlists("abracadabra", playlistsVbox, mainPanel);

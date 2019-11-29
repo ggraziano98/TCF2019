@@ -34,7 +34,10 @@ public class PlayerController {
 		this.setTracklist(tracklist);
 		this.setCurrentTrack(new SimpleIntegerProperty(0));
 		this.muted = new SimpleBooleanProperty(false);
-		this.volumeValue = new SimpleDoubleProperty(100);
+		this.volumeValue = new SimpleDoubleProperty(1);
+		this.volumeValue.addListener((obs, oldv, newv)->{
+			this.setVolume();
+		});
 		this.refresh();
 	}
 
