@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
+import javafx.util.Duration;
 import models.TrackList;
 
 public class PlayerController {
@@ -92,6 +93,18 @@ public class PlayerController {
 	public void setVolumeValue(double volume) {
 		this.setVolumeValue(new SimpleDoubleProperty((int) volume));
 	}
+	
+	
+	
+	
+	/**
+	 * sposta il player al time desiderato 
+	 * 
+	 * @param time (Duration) tempo in millisecondi
+	 */
+	public void seek(Duration time) {
+		this.getPlayer().seek(time);
+	}
 
 
 
@@ -174,7 +187,7 @@ public class PlayerController {
 		this.tracklist = tracklist;
 	}
 
-	private int currentInt() {
+	public int currentInt() {
 		return this.getCurrentTrack().getValue();
 	}
 

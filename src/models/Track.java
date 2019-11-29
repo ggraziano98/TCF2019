@@ -145,8 +145,7 @@ public class Track{
 			else setGenre(new SimpleStringProperty(value.toString()));
 		}
 	}
-
-
+	
 
 
 	/**
