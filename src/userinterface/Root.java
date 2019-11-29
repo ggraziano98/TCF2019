@@ -3,6 +3,8 @@ package userinterface;
 import java.io.FileInputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
+import controllers.PlayerController;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -33,6 +35,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import models.Track;
+import models.TrackList;
+import utils.Tools;
+
 
 
 
@@ -44,6 +50,9 @@ public class Root extends Application {
 	//	GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	//	int width = gd.getDisplayMode().getWidth();
 	//	int height = gd.getDisplayMode().getHeight();
+
+	static TrackList playlist = Tools.readPlaylist("Playlist playerTester");
+	static PlayerController pc = new PlayerController(playlist);
 
 
 	@Override
@@ -328,6 +337,8 @@ public class Root extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
+
+		Tools.cout(playlist);
 	}
 
 
@@ -337,17 +348,17 @@ public class Root extends Application {
 	
 	
 	public static void playPause(AtomicBoolean play) {
-		if (play.get()) System.out.println("Shut up!");
-		else System.out.println("sing: che schifo i coefficienti di clebsch gordan");
+		if (play.get()) pc.pause();
+		else pc.play();
 		
 	}
 
 	public static void nextSong() {
-		System.out.println("Next song");
+		pc.next();
 	}
 	
 	public static void previousSong() {
-		System.out.println("Previous Song");
+		pc.prev();
 	}
 	
 	
