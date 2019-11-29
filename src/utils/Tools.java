@@ -2,29 +2,38 @@ package utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import models.Track;
 import models.TrackList;
 
 
 public class Tools {
-	
+
 	public static final StringProperty DALBUM = new SimpleStringProperty("Album Sconosciuto");
 	public static final StringProperty DYEAR = new SimpleStringProperty("Anno Sconosciuto");
 	public static final StringProperty DARTIST = new SimpleStringProperty("Artista Sconosciuto");
 	public static final StringProperty DGENRE = new SimpleStringProperty("Genere Sconosciuto");
-		
+
 
 	/**
 	 * funzione che ritorna una lista di path ai file contenuti nella directory
@@ -141,8 +150,8 @@ public class Tools {
 		return tracklist;
 	}
 
-	
-	
+
+
 	public static void deletePlaylist(String playlist) {
 		deletePlaylist(playlist, true);
 	}
@@ -168,8 +177,8 @@ public class Tools {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	/**
 
 	 * Dobbiamo pulire l'url altrimenti javafx non lo riconosce
@@ -185,8 +194,8 @@ public class Tools {
 		return url;
 
 	}
-	
-	
+
+
 	/**
 	 * tool per debugging, printa il contenuto di una playlist
 	 * 
@@ -196,7 +205,28 @@ public class Tools {
 		for (int i = 0; i < tracklist.size(); i++) {
 			System.out.println(tracklist.get(i).getPath().getFileName() + "\t\t\t" + i);
 		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
-		
+
 	}
 
+
+	public static ObservableList<String> getNamesSavedPlaylists(){
+		List<String> namesarray = new ArrayList<String>();
+		ObservableList<String> nameplaylists = FXCollections.observableList(namesarray);
+		File directoryPath = new File("playlists");
+
+		//list all txt files
+
+		for (File file : directoryPath.listFiles()) {
+			if (file.getName().endsWith(".txt")) {
+				nameplaylists.add(file.getName());
+			} else {
+				System.out.println(file.getName() + " is not a readable playlist");
+			}
+
+		}
+
+		return nameplaylists;
+
+
+	}
 }
