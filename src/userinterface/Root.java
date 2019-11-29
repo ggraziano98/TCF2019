@@ -5,9 +5,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import controllers.PlayerController;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -33,8 +36,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import models.TrackList;
 import utils.Tools;
 
@@ -157,17 +163,33 @@ public class Root extends Application {
 		timeSlider.setTranslateY(50);
 		timeSlider.setMaxWidth(460);
 		final Label timeLabel = new Label();
-		timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-
-			@Override
-			public void changed(
-					ObservableValue<? extends Number> observableValue, 
-					Number oldValue, 
-					Number newValue) { 
-				timeLabel.textProperty().setValue(
-						String.valueOf(newValue.intValue()));
-			}
+//		timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+//
+//			@Override
+//			public void changed(
+//					ObservableValue<? extends Number> observableValue, 
+//					Number oldValue, 
+//					Number newValue) { 
+//				timeLabel.textProperty().setValue(
+//						String.valueOf(newValue.intValue()));
+//				pc.seek( new Duration((double)newValue));
+//			}
+//		});
+		
+		timeSlider.valueProperty().addListener(new InvalidationListener() {
+		    public void invalidated(Observable ov) {
+		       if (timeSlider.isValueChanging()) {
+		       // multiply duration by percentage calculated by slider position
+		          pc.seek(new Duration(pc.getTotalDuration().doubleValue()*(timeSlider.getValue()*10)));
+		       }
+		    }
 		});
+        pc.getCurrentTime().addListener((obs, oldv, newv)->{
+            if (!timeSlider.isValueChanging()) {
+            	System.out.println(newv.doubleValue()/pc.getTotalDuration().doubleValue());
+                timeSlider.setValue(newv.doubleValue()/pc.getTotalDuration().doubleValue()*100);
+            }
+        });
 		timeLabel.setTextFill(Color.WHITE);
 		timeLabel.setTranslateX(-200);
 		timeLabel.setTranslateY(65);
@@ -214,6 +236,29 @@ public class Root extends Application {
 		volumeSlider.setTranslateX(165);
 		volumeSlider.setTranslateY(100);
 		volumeSlider.valueProperty().bindBidirectional(pc.getVolumeValue());
+		
+		
+		
+		
+		Text songName = new Text();
+		StringProperty text = new SimpleStringProperty("");
+		text.set(pc.getTracklist().get(pc.getCurrentTrack().intValue()).getTitle().getValue());		
+		songName.textProperty().bind(text);
+		pc.getCurrentTrack().addListener((obs, oldv, newv)->{
+			text.set(pc.getTracklist().get(newv.intValue()).getTitle().getValue());
+		});
+		songName.setTranslateX(0);
+		songName.setTranslateY(0);
+		
+		Text songTime = new Text();
+		StringProperty time = new SimpleStringProperty("");
+		time.set(String.valueOf(pc.getTracklist().get(pc.currentInt()).getDuration().toMinutes()));
+		songTime.textProperty().bind(time);
+		pc.getTotalDuration().addListener((obs, oldv, newv)->{
+			time.set(String.valueOf(pc.getTracklist().get(pc.currentInt()).getDuration().toMinutes()));
+		});
+		songTime.setTranslateX(0);
+		songTime.setTranslateY(20);
 
 
 		
@@ -227,7 +272,10 @@ public class Root extends Application {
 		player.getChildren().add(timeLabel);
 		player.getChildren().add(volumeButton);
 		player.getChildren().add(volumeSlider);
+		player.getChildren().add(songName);
+		player.getChildren().add(songTime);
 		player.setStyle("-fx-background-color: #FF0000");
+		
 		
 		
 		
@@ -400,8 +448,6 @@ public class Root extends Application {
 		box.getChildren().add(playlist);
 		
 	}
-
-
 
 }
 

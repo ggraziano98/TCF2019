@@ -24,6 +24,8 @@ public class PlayerController {
 	private TrackList tracklist;
 	private DoubleProperty volumeValue;
 	private BooleanProperty muted;
+	private DoubleProperty totalDuration;
+	private DoubleProperty currentTime;
 	/**
 	 * costruttore di default
 	 */
@@ -39,6 +41,8 @@ public class PlayerController {
 		this.volumeValue.addListener((obs, oldv, newv)->{
 			this.setVolume();
 		});
+		this.totalDuration = new SimpleDoubleProperty(0);
+		this.currentTime = new SimpleDoubleProperty(0);
 		this.refresh();
 	}
 
@@ -46,15 +50,28 @@ public class PlayerController {
 	public PlayerController(TrackList tracklist, int firstSongPosition) {
 		this.setTracklist(tracklist);
 		this.setCurrentTrack(new SimpleIntegerProperty(firstSongPosition));
+		this.muted = new SimpleBooleanProperty(false);
+		this.volumeValue = new SimpleDoubleProperty(1);
+		this.volumeValue.addListener((obs, oldv, newv)->{
+			this.setVolume();
+		});
+		this.totalDuration = new SimpleDoubleProperty(0);
+		this.currentTime = new SimpleDoubleProperty(0);
 		this.refresh();
 	}
 
 	public void play() {
-		if(!this.getPlayer().getStatus().equals(Status.UNKNOWN)) this.getPlayer().play();
+		if(!this.getPlayer().getStatus().equals(Status.UNKNOWN)) {
+			this.setTotalDuration(this.getPlayer().getMedia().getDuration());
+			this.getPlayer().play();
+			this.getPlayer().setOnEndOfMedia(()->this.next());
+		}
 		else {
 			this.getPlayer().setOnReady(()-> {
 				this.getPlayer().play();
+				this.setTotalDuration(this.getPlayer().getMedia().getDuration());
 			});
+			this.getPlayer().setOnEndOfMedia(()->this.next());
 		}
 
 	}
@@ -68,7 +85,6 @@ public class PlayerController {
 
 
 	public void next() {
-		boolean playing = false;
 		this.setCurrentTrack(new SimpleIntegerProperty(this.currentInt() + 1));
 		if(this.getPlayer().getStatus().equals(Status.PLAYING)) {
 			this.refresh();
@@ -79,7 +95,6 @@ public class PlayerController {
 
 
 	public void prev() {
-		boolean playing = false;
 		this.setCurrentTrack(new SimpleIntegerProperty(this.currentInt() - 1));
 		if(this.getPlayer().getStatus().equals(Status.PLAYING)) {
 			this.refresh();
@@ -103,6 +118,7 @@ public class PlayerController {
 	 * @param time (Duration) tempo in millisecondi
 	 */
 	public void seek(Duration time) {
+		System.out.println(time.toSeconds());
 		this.getPlayer().seek(time);
 	}
 
@@ -165,6 +181,9 @@ public class PlayerController {
 	public void setPlayer(MediaPlayer player) {
 		this.player = player;
 		this.setVolume();
+		this.player.currentTimeProperty().addListener((obs, oldv, newv)->{
+			this.setCurrentTime(new SimpleDoubleProperty(newv.toSeconds()));
+		});
 	}
 
 
@@ -217,6 +236,35 @@ public class PlayerController {
 		this.player.setVolume(this.getVolumeValue().doubleValue());
 		this.player.setMute(this.getMuted().getValue());
 	}
+
+	
+	/**
+	 * 
+	 * @return duration in seconds
+	 */
+	public DoubleProperty getTotalDuration() {
+		return totalDuration;
+	}
+
+
+	public void setTotalDuration(Duration totalDuration) {
+		this.totalDuration.set(totalDuration.toSeconds());
+	}
+
+	/**
+	 * 
+	 * @return time in seconds
+	 */
+	public DoubleProperty getCurrentTime() {
+		return currentTime;
+	}
+
+
+	public void setCurrentTime(DoubleProperty currentTime) {
+		this.currentTime.set(currentTime.doubleValue());
+	}
+	
+	
 
 }
 
