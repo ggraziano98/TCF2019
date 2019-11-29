@@ -96,22 +96,19 @@ public class FCTester {
 		 * TODO trovare un modo per prendere il nome della playlist per esempio aggiungere un metadata alla classe tracklist
 		 */
 		TrackList playlist1 = new TrackList();
-		playlist1 = Tools.readPlaylist("Nuova Playlist.txt");
+		playlist1 = Tools.readPlaylist("Nuova Playlist");
 		System.out.println("\n\n\nNuova playlist:");
-		cout(playlist1);
+		Tools.cout(playlist1);
 		
 		System.out.println("\n\n\n");
 		Tools.deletePlaylist("Nuova Playlist");
 		Tools.deletePlaylist("notAPlaylist");
 		
-		try {
-			TimeUnit.SECONDS.sleep(1);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		System.out.println("\n\n\n");
-		System.out.println("Durata playlist: " + playlist1.totalDuration().toMinutes());
+		System.out.println("Duration test");
+		playlist1.totalDuration().addListener((obs, oldv, newv) -> {
+			System.out.println("Duration: " + newv);
+		});
 		
 		System.out.println("\n\n\n");
 		System.out.println("Info sulla track n.3 della playlist: ");
@@ -131,18 +128,6 @@ public class FCTester {
 				"genre " + track.getGenre().getValue() + "\n"+
 				"year " + track.getYear().getValue() + "\n"+
 				"duration " + track.getDuration().toMinutes() + "\n"+
-				"image " + track.getImage() + "\n");
-		PlayerController playasong = new PlayerController();
-		javafx.util.Duration duration = track.getDuration();
-		playasong.playTrack(track, playlist1);
-		
-	}
-	
-	
-	public static void cout(TrackList tracklist) {
-		for (int i = 0; i < tracklist.size(); i++) {
-			System.out.println(tracklist.get(i).getPath().getFileName() + "\t\t\t" + i);
-		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
-		
+				"image " + track.getImage() + "\n");		
 	}
 }

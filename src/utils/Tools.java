@@ -117,14 +117,13 @@ public class Tools {
 	 */
 	public static TrackList readPlaylist(String playlist) {
 		TrackList tracklist = new TrackList();
-		Path filePath = Paths.get("playlists", playlist );
+		Path filePath = Paths.get("playlists", playlist + ".txt");
 		try {
 
 			BufferedReader br= Files.newBufferedReader(filePath);
 			String line = "";
 
 			while ((line = br.readLine()) != null) {
-				System.out.println(line);
 				Path path = Paths.get(line);
 				tracklist.add(new Track(path));;
 			}	
@@ -177,6 +176,19 @@ public class Tools {
 		url = "file:///" + url;
 		return url;
 
+	}
+	
+	
+	/**
+	 * tool per debugging, printa il contenuto di una playlist
+	 * 
+	 * @param tracklist
+	 */
+	public static void cout(TrackList tracklist) {
+		for (int i = 0; i < tracklist.size(); i++) {
+			System.out.println(tracklist.get(i).getPath().getFileName() + "\t\t\t" + i);
+		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
+		
 	}
 
 }

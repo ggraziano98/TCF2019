@@ -1,11 +1,10 @@
 package models;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.IOError;
 import java.nio.file.Path;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.MapChangeListener;
@@ -39,9 +38,8 @@ public class Track{
 	private StringProperty year;
 	private Duration duration;
 	private Image image;
-	private Media media;
-	protected PropertyChangeSupport propertyChangeSupport;
-	private long id;
+	private MediaPlayer mediaPlayer;
+	private BooleanProperty ready;
 
 
 	/**
@@ -62,6 +60,7 @@ public class Track{
 		this.year = Tools.DYEAR;
 		this.title = new SimpleStringProperty(path.getFileName().toString());
 		this.genre = Tools.DGENRE;
+		this.ready = new SimpleBooleanProperty(false);
 		this.setPath(path);
 		this.setMetadata();
 	}
@@ -76,9 +75,7 @@ public class Track{
 		setTitle(new SimpleStringProperty(this.getPath().getFileName().toString()));
 	}
 
-	/*
-	 * TODO fixare il problema
-	 * dato che Media.getMetadata() funziona in modo asincrono, non va bene. Probabilmente bisogna usare un'altra libreria
+	/*TODO get image
 	 */
 	private void setMetadata() {
 
@@ -93,7 +90,9 @@ public class Track{
 
 		this.resetProperties();
 		try {
-			final Media media = new Media(cleanPathS);		
+			final Media media = new Media(cleanPathS);
+		    MediaPlayer mediaPlayer = new MediaPlayer(media);
+		    this.setMediaPlayer(mediaPlayer);
 			media.getMetadata().addListener(new MapChangeListener<String, Object>() {
 				@Override
 				public void onChanged(Change<? extends String, ? extends Object> ch) {
@@ -104,18 +103,17 @@ public class Track{
 					}
 				}
 			});
+			
+		    mediaPlayer.setOnReady(()-> {
+		    	this.setDuration(media.getDuration());
+		    	this.setReady(true);
+		    });
 
-			this.setMedia(media);
 			this.setDuration(media.getDuration());
 		} catch (RuntimeException re) {
 			//TODO error message
 			re.printStackTrace();
 		}
-		
-		
-	    MediaPlayer mediaPlayer = new MediaPlayer(media);
-
-	    mediaPlayer.setOnReady(()->this.setDuration(media.getDuration()));
 	}
 
 
@@ -149,31 +147,6 @@ public class Track{
 	}
 
 
-
-
-
-
-
-
-
-
-
-	public void addChangeListener(PropertyChangeListener listener)
-	{
-		this.propertyChangeSupport.addPropertyChangeListener(listener);
-	}
-
-	public void removeChangeListener(PropertyChangeListener listener)
-	{
-		this.propertyChangeSupport.removePropertyChangeListener(listener);
-	}
-
-	public void setId(long newId)
-	{
-		long oldId = this.id;
-		this.id = newId;
-		propertyChangeSupport.firePropertyChange("id", oldId, newId);
-	}
 
 
 	/**
@@ -264,13 +237,23 @@ public class Track{
 		this.image = image;
 	}
 
-	public Media getMedia() {
-		return media;
+	public MediaPlayer getMediaPlayer() {
+		return this.mediaPlayer;
 	}
 
 
-	public void setMedia(Media media) {
-		this.media = media;
+	public void setMediaPlayer(MediaPlayer mediaPlayer) {
+		this.mediaPlayer = mediaPlayer;
+	}
+
+
+	public BooleanProperty getReady() {
+		return ready;
+	}
+
+
+	public void setReady(boolean ready) {
+		this.ready.set(ready);
 	}
 
 

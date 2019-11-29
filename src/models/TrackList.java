@@ -3,6 +3,8 @@ package models;
 import java.nio.file.Path;
 import java.util.Collections;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -57,9 +59,9 @@ public class TrackList extends SimpleListProperty<Track> {
 		int position1 = i - 1;
 		return position1;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * add a track to the end of the TrackList
 	 * 
@@ -149,13 +151,16 @@ public class TrackList extends SimpleListProperty<Track> {
 	/**
 	 * mi da' la durata totale della tracklist
 	 * 
-	 * @return Duration
+	 * @return DoubleProperty duration in milliseconds (needs to be an observable)
 	 */
-	public Duration totalDuration() {
-		Duration totalduration = new Duration(0);
+	public DoubleProperty totalDuration() {
+		DoubleProperty totalduration = new SimpleDoubleProperty(0);
 		for (Track track : this) {
-			Duration duration = track.getDuration();
-			totalduration = totalduration.add(duration);
+			track.getReady().addListener((obs, oldv, newv) ->{
+				if (newv.booleanValue()) {
+					totalduration.set(totalduration.get() + track.getDuration().toMillis());
+				}
+			});
 		}
 		return totalduration;
 	}
@@ -196,7 +201,7 @@ public class TrackList extends SimpleListProperty<Track> {
 			System.out.println(path);
 		}
 	}
-	
+
 
 
 	/**
@@ -256,7 +261,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	/**
 	 * 
 	 * overload di changeOrder
- 	 *  sposta una canzone alla position2 (posizione parte da 0)
+	 *  sposta una canzone alla position2 (posizione parte da 0)
 	 * @param position2
 	 * @param track1
 	 */
