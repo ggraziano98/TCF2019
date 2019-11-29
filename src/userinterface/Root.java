@@ -207,9 +207,9 @@ public class Root extends Application {
 		volumeButton.setTranslateY(100);
 
 		Slider volumeSlider = new Slider();
-		volumeSlider.setMax(100);
+		volumeSlider.setMax(1);
 		volumeSlider.setMin(0);
-		volumeSlider.setValue(100);
+		volumeSlider.setValue(1);
 		volumeSlider.setMaxWidth(80);
 		volumeSlider.setTranslateX(165);
 		volumeSlider.setTranslateY(100);
@@ -280,6 +280,12 @@ public class Root extends Application {
 		});
 		
 		VBox playlistsVbox = new VBox();
+		
+		
+		FileInputStream gioFile = new FileInputStream("files\\gio.png");
+		Image gioImage = new Image(gioFile);
+		ImageView gioView = new ImageView(gioImage);
+		primaryStage.getIcons().add(gioImage);
 		
 		
 		
