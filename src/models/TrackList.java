@@ -13,8 +13,6 @@ import javafx.util.Duration;
 
 
 /**
- * TODO guardare se cambiare TrackList in modo che estenda SimpleListProperty
- * TODO cambiare Tracklist in List<Track>?
  * TODO errori
  * TODO vedere se i metodi funzionano
  * Class model for lists of tracks, sostanzialmente una ObservableList ma con qualche funzionalità aggiuntiva

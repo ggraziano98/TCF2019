@@ -14,17 +14,19 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import models.Track;
 import models.TrackList;
 
 
 public class Tools {
-	
+
 	public static final StringProperty DALBUM = new SimpleStringProperty("Album Sconosciuto");
 	public static final StringProperty DYEAR = new SimpleStringProperty("Anno Sconosciuto");
 	public static final StringProperty DARTIST = new SimpleStringProperty("Artista Sconosciuto");
 	public static final StringProperty DGENRE = new SimpleStringProperty("Genere Sconosciuto");
-		
+
 
 	/**
 	 * funzione che ritorna una lista di path ai file contenuti nella directory
@@ -81,8 +83,7 @@ public class Tools {
 
 
 
-	/**TODO errore
-	 * 
+	/**TODO errore 
 	 * funzione che salva la tracklist come file di testo
 	 * 
 	 * @param tracklist
@@ -141,8 +142,8 @@ public class Tools {
 		return tracklist;
 	}
 
-	
-	
+
+
 	public static void deletePlaylist(String playlist) {
 		deletePlaylist(playlist, true);
 	}
@@ -168,8 +169,8 @@ public class Tools {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	/**
 
 	 * Dobbiamo pulire l'url altrimenti javafx non lo riconosce
@@ -185,10 +186,12 @@ public class Tools {
 		return url;
 
 	}
-	
-	
+
+
+
 	/**
 	 * tool per debugging, printa il contenuto di una playlist
+	 * TODO togliere quando non serve piu
 	 * 
 	 * @param tracklist
 	 */
@@ -196,7 +199,7 @@ public class Tools {
 		for (int i = 0; i < tracklist.size(); i++) {
 			System.out.println(tracklist.get(i).getPath().getFileName() + "\t\t\t" + i);
 		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
-		
+
 	}
 
 }

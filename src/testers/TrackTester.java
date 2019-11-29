@@ -30,7 +30,6 @@ import models.Track;
  * @author giova
  *
  *
- * TODO use observables to communicate with stage, use actual mp3 file
  */
 public class TrackTester extends Application{
 

@@ -75,7 +75,7 @@ public class Track{
 		setTitle(new SimpleStringProperty(this.getPath().getFileName().toString()));
 	}
 
-	/*TODO get image
+	/*
 	 */
 	private void setMetadata() {
 
@@ -83,7 +83,6 @@ public class Track{
 		Path path = this.getPath();
 		String cleanPathS = Tools.cleanURL(path.toString());
 
-		//TODO togliere questo?
 		@SuppressWarnings("unused")
 		final JFXPanel fxPanel = new JFXPanel();
 
@@ -111,7 +110,6 @@ public class Track{
 
 			this.setDuration(media.getDuration());
 		} catch (RuntimeException re) {
-			//TODO error message
 			re.printStackTrace();
 		}
 	}

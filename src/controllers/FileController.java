@@ -5,8 +5,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import models.Track;
 import models.TrackList;
 import utils.Tools;
@@ -59,7 +63,6 @@ public class FileController {
 	 * Function that returns all the Tracks in the directory through a TrackList
 	 * 
 	 * 
-	 * TODO cambiare Tracklist in List<Track>?
 	 * @return 	TrackList of the songs in the main directory
 	 */
 	public TrackList getFilesFromDir(Path path) {
@@ -75,7 +78,7 @@ public class FileController {
 		try {
 			pathList.removeIf(p -> !this.isViableExtension(p));
 			/* uso il metodo removeIf dell'ArrayList per rimuovere i file che non sono dell'estensione corretta */
-			
+
 			pathList.forEach(p -> {
 				tracklist.addTrack(p);
 			});
@@ -115,19 +118,45 @@ public class FileController {
 	 */
 	public void deleteTrack(Path path) {
 		File file = path.toFile();
-		
-	
-
-		// TODO UI.confirmation()
-
 		String fileName = path.getFileName().toString();
-		if(true) {
-			if (file.delete()) System.out.println(fileName + ": file cancellato correttamente");
-			else System.out.println("Non è stato possibile cancellare il file " + fileName); // TODO errorMessage
-		}
+		
+		//TODO controllare che funzioni
+
+		Platform.runLater(new Runnable() {
+		    @Override
+		    public void run() {
+		    	Alert confirm = new Alert(AlertType.CONFIRMATION);
+				confirm.setTitle("Conferma eliminazione");
+				confirm.setHeaderText("Stai per eliminare \"" + fileName + "\"");
+				confirm.setContentText("Confermi?");
+
+				Optional<ButtonType> result = confirm.showAndWait();
+				if (result.get() == ButtonType.OK){
+					System.out.println(file.getPath());
+					if (file.delete()) {
+						Alert alert = new Alert(AlertType.INFORMATION);
+						alert.setTitle("Success!");
+						alert.setContentText("Canzone eliminata correttamente");
+						alert.showAndWait();
+					}
+					else {
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setTitle("Errore");
+						alert.setHeaderText("Errore durante l'eliminazione della canzone");
+						alert.setContentText("Non � stato possibile eliminare \"" + fileName + "\"");
+						alert.showAndWait();
+					}
+				} else {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Operazione annullata");
+					alert.setContentText("Operazione annullata");
+					alert.showAndWait();
+				}
+		    }
+		});
 	}
-	
-	/*
+
+/*
 	public void editInfo(Track track, String info) {
 		// TODO get info screen
 
@@ -152,16 +181,16 @@ public class FileController {
 			track.setImage(input);
 		}
 	}
-	 */
+ */
 
-	/**
-	 * Controllo se un file è della giusta estensione
-	 * 
-	 * @param path
-	 * @return True se il l'estensione è contenuta in this.extensions
-	 */
-	public boolean isViableExtension(Path path) {
-		return Arrays.stream(this.extensions).parallel().anyMatch(path.getFileName().toString()::contains);
-		/* uso uno stream per controllare in parallelo tutte le estensioni permesse, cercando se una di queste è contenuta nel fileName */
-	}
+/**
+ * Controllo se un file è della giusta estensione
+ * 
+ * @param path
+ * @return True se il l'estensione è contenuta in this.extensions
+ */
+public boolean isViableExtension(Path path) {
+	return Arrays.stream(this.extensions).parallel().anyMatch(path.getFileName().toString()::contains);
+	/* uso uno stream per controllare in parallelo tutte le estensioni permesse, cercando se una di queste è contenuta nel fileName */
+}
 }

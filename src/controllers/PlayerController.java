@@ -13,7 +13,6 @@ import models.TrackList;
 
 public class PlayerController {
 	//TODO make sure songs are closed properly
-	// TODO handle media duration
 
 	/**
 	 * inizializzo i data member, mi dicono la canzone corrente e quella successiva
@@ -159,14 +158,12 @@ public class PlayerController {
 			if(currentTrack.intValue()>= 0) {
 				this.currentTrack.set(currentTrack.intValue()%this.getTracklist().getSize());
 			} else {
-				//TODO better handling of this
 				this.currentTrack.set(this.getTracklist().getSize() -1);
 			}
 		} else {
 			if(currentTrack.intValue()>= 0) {
 				this.currentTrack = new SimpleIntegerProperty(currentTrack.intValue()%(this.getTracklist().getSize()));
 			} else {
-				//TODO better handling of this
 				this.currentTrack = new SimpleIntegerProperty(this.getTracklist().getSize() -1);
 			}
 		}

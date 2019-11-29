@@ -163,23 +163,10 @@ public class Root extends Application {
 		timeSlider.setTranslateY(50);
 		timeSlider.setMaxWidth(460);
 		final Label timeLabel = new Label();
-//		timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-//
-//			@Override
-//			public void changed(
-//					ObservableValue<? extends Number> observableValue, 
-//					Number oldValue, 
-//					Number newValue) { 
-//				timeLabel.textProperty().setValue(
-//						String.valueOf(newValue.intValue()));
-//				pc.seek( new Duration((double)newValue));
-//			}
-//		});
 		
 		timeSlider.valueProperty().addListener(new InvalidationListener() {
 		    public void invalidated(Observable ov) {
 		       if (timeSlider.isValueChanging()) {
-		       // multiply duration by percentage calculated by slider position
 		          pc.seek(new Duration(pc.getTotalDuration().doubleValue()*(timeSlider.getValue()*10)));
 		       }
 		    }
@@ -345,28 +332,30 @@ public class Root extends Application {
 		
 		
 		// gestisco i keypresses
-		//TODO restringere gli shortcut quando si cerca
 		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, k -> {
-	        if ( k.getCode() == KeyCode.SPACE){
-				playPause(play);
-				if (play.get()) playButton.setGraphic(playView);
-				else playButton.setGraphic(pauseView);
-				play.set(!play.get());
-	        }
-	        if ( k.getCode() == KeyCode.K){
-				playPause(play);
-				if (play.get()) playButton.setGraphic(playView);
-				else playButton.setGraphic(pauseView);
-				play.set(!play.get());
-	        }
-	        if ( k.getCode() == KeyCode.M) {
-				if(muted.get()) volumeButton.setGraphic(volumeView);
-				else volumeButton.setGraphic(muteView);
-				muted.set(!muted.get());
-				volumeMute(muted);
-				}
-	        if ( k.getCode() == KeyCode.L) nextSong();
-	        if ( k.getCode() == KeyCode.J) previousSong();
+			if(k.getTarget() != findText) {
+		        if ( k.getCode() == KeyCode.SPACE){
+					playPause(play);
+					if (play.get()) playButton.setGraphic(playView);
+					else playButton.setGraphic(pauseView);
+					play.set(!play.get());
+		        }
+		        if ( k.getCode() == KeyCode.K){
+					playPause(play);
+					if (play.get()) playButton.setGraphic(playView);
+					else playButton.setGraphic(pauseView);
+					play.set(!play.get());
+		        }
+		        if ( k.getCode() == KeyCode.M) {
+					if(muted.get()) volumeButton.setGraphic(volumeView);
+					else volumeButton.setGraphic(muteView);
+					muted.set(!muted.get());
+					volumeMute(muted);
+					}
+		        if ( k.getCode() == KeyCode.L) nextSong();
+		        if ( k.getCode() == KeyCode.J) previousSong();
+			}
+		        
 		});
 		
 		
