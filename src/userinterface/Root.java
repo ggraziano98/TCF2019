@@ -3,6 +3,7 @@ package userinterface;
 import java.io.FileInputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
 import controllers.PlayerController;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -41,6 +42,7 @@ import utils.Tools;
 
 
 
+
 public class Root extends Application {
 
 	// TODO chiudere le risorse una volta usate 
@@ -48,7 +50,7 @@ public class Root extends Application {
 	//	GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	//	int width = gd.getDisplayMode().getWidth();
 	//	int height = gd.getDisplayMode().getHeight();
-	
+
 	static TrackList playlist = Tools.readPlaylist("Playlist playerTester");
 	static PlayerController pc = new PlayerController(playlist);
 
@@ -335,10 +337,8 @@ public class Root extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
+
 		Tools.cout(playlist);
-		
-		
-		
 	}
 
 
@@ -387,3 +387,13 @@ public class Root extends Application {
 
 
 }
+
+
+
+
+
+
+
+
+
+

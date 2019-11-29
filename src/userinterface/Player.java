@@ -25,7 +25,6 @@ public class Player extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// TODO Auto-generated method stub
 		
 		FileInputStream playFile = new FileInputStream("files\\Player\\play.png");
 		Image playImage = new Image(playFile);
@@ -88,7 +87,7 @@ public class Player extends Application {
                         String.valueOf(newValue.intValue()));
                }
 		});
-		timeLabel.setTextFill(Color.WHITE);
+		timeLabel.setTextFill(Color.RED);
 		timeLabel.setTranslateX(-200);
 		timeLabel.setTranslateY(65);
 		timeLabel.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
