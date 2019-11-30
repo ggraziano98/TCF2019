@@ -521,9 +521,7 @@ public class Root extends Application {
 		String mainDir = "";
 		try {
 			BufferedReader br= Files.newBufferedReader(mainDirFile);
-			if(br.readLine() != null) {
 				mainDir = br.readLine();
-			}	
 			br.close();	
 		} catch (IOException e) { 
 			System.out.println("mainDir non selezionata");

@@ -83,12 +83,9 @@ public class Track{
 		Path path = this.getPath();
 		String cleanPathS = Tools.cleanURL(path.toString());
 
-		@SuppressWarnings("unused")
-		final JFXPanel fxPanel = new JFXPanel();
-
 		this.resetProperties();
 		try {
-			Media media = new Media(cleanPathS);
+			final Media media = new Media(cleanPathS);
 			MediaPlayer mediaPlayer = new MediaPlayer(media);
 			this.setMediaPlayer(mediaPlayer);
 			media.getMetadata().addListener((Change<? extends String,
