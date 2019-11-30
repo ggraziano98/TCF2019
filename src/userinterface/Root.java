@@ -526,10 +526,10 @@ public class Root extends Application {
 			}	
 			br.close();	
 		} catch (IOException e) { 
-			e.printStackTrace();
+			System.out.println("mainDir non selezionata");
 		}
 
-		while(mainDir == null) {
+		while(mainDir == "" || mainDir == null || !Files.isDirectory(Paths.get(mainDir))) {
 			TextInputDialog dialog = new TextInputDialog("Select Directory");
 			dialog.setTitle("Enter main directory path");
 			dialog.setContentText("example: C:\\Music");
@@ -539,17 +539,16 @@ public class Root extends Application {
 				mainDir = result.get();
 			}
 
-			Path filePath = Paths.get("files", "mainDir.txt");
 			try {
-				Files.createFile(filePath);
-				BufferedWriter bw= Files.newBufferedWriter(filePath);
+				Files.createFile(mainDirFile);
+				BufferedWriter bw= Files.newBufferedWriter(mainDirFile);
 				bw.write(mainDir);
 				bw.close();
 			} catch (IOException e) {
 				if (e instanceof FileAlreadyExistsException) {
 					BufferedWriter bw;
 					try {
-						bw = Files.newBufferedWriter(filePath);
+						bw = Files.newBufferedWriter(mainDirFile);
 						bw.write(mainDir);
 						bw.close();
 					} catch (IOException e1) {
@@ -560,9 +559,7 @@ public class Root extends Application {
 					e.printStackTrace();
 			}
 		}
-		if(!Files.isDirectory(Paths.get(mainDir))) {
-			return getMainDir();
-		}
+		System.out.println(mainDir);
 		return mainDir;
 	}
 }
