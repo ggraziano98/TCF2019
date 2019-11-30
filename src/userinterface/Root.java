@@ -534,7 +534,7 @@ public class Root extends Application {
 
 			Optional<String> result = dialog.showAndWait();
 			if (result.isPresent()){
-				mainDir = result.toString();
+				mainDir = result.get();
 			}
 
 			Path filePath = Paths.get("files", "mainDir.txt");
