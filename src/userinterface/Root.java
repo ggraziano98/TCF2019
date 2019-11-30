@@ -521,13 +521,15 @@ public class Root extends Application {
 		String mainDir = "";
 		try {
 			BufferedReader br= Files.newBufferedReader(mainDirFile);
-			mainDir = br.readLine();
+			if(br.readLine() != null) {
+				mainDir = br.readLine();
+			}	
 			br.close();	
 		} catch (IOException e) { 
 			e.printStackTrace();
 		}
 
-		while(mainDir == "" || !Files.isDirectory(Paths.get(mainDir))) {
+		while(mainDir == null) {
 			TextInputDialog dialog = new TextInputDialog("Select Directory");
 			dialog.setTitle("Enter main directory path");
 			dialog.setContentText("example: C:\\Music");
@@ -557,6 +559,9 @@ public class Root extends Application {
 				} else 
 					e.printStackTrace();
 			}
+		}
+		if(!Files.isDirectory(Paths.get(mainDir))) {
+			return getMainDir();
 		}
 		return mainDir;
 	}

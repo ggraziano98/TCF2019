@@ -9,9 +9,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
-import models.Track;
 import models.TrackList;
-import utils.Tools;
 
 public class PlayerController {
 	//TODO make sure songs are closed properly
@@ -71,6 +69,7 @@ public class PlayerController {
 			this.getPlayer().setOnEndOfMedia(()->this.next());
 		}
 		else {
+			System.out.println(this.currentInt());
 			this.getPlayer().setOnReady(()-> {
 				this.getPlayer().play();
 				this.setTotalDuration(this.getPlayer().getMedia().getDuration());
