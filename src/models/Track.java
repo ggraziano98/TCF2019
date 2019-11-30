@@ -157,7 +157,6 @@ public class Track{
 
 	public void setPath(Path path) {
 		try {	
-			System.out.println(path.toString());
 			this.path = path.toAbsolutePath();
 		}
 		catch(IOError e) {
@@ -167,6 +166,11 @@ public class Track{
 	}
 
 	public StringProperty getTitle() {
+		return title;
+	}
+	
+	
+	public StringProperty titleProperty() {
 		return title;
 	}
 
@@ -179,6 +183,11 @@ public class Track{
 	public StringProperty getArtist() {
 		return artist;
 	}
+	
+	
+	public StringProperty artistProperty() {
+		return artist;
+	}
 
 
 	public void setArtist(StringProperty artist) {
@@ -187,6 +196,11 @@ public class Track{
 
 
 	public StringProperty getAlbum() {
+		return album;
+	}
+	
+	
+	public StringProperty albumProperty() {
 		return album;
 	}
 
@@ -199,6 +213,10 @@ public class Track{
 	public StringProperty getGenre() {
 		return genre;
 	}
+	
+	public StringProperty genreProperty() {
+		return genre;
+	}
 
 
 	public void setGenre(StringProperty genre) {
@@ -207,6 +225,10 @@ public class Track{
 
 
 	public StringProperty getYear() {
+		return year;
+	}
+	
+	public StringProperty yearProperty() {
 		return year;
 	}
 

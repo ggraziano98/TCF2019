@@ -26,8 +26,26 @@ public class Tools {
 	public static final StringProperty DYEAR = new SimpleStringProperty("Anno Sconosciuto");
 	public static final StringProperty DARTIST = new SimpleStringProperty("Artista Sconosciuto");
 	public static final StringProperty DGENRE = new SimpleStringProperty("Genere Sconosciuto");
+	
+	
+	public static final String TRANSBUTT = "    -fx-border-color: transparent;\n" + 
+			"    -fx-border-width: 0;\n" + 
+			"    -fx-background-radius: 0;\n" + 
+			"    -fx-background-color: transparent;\n}";
+	public static final String BOLDBUTT = "    -fx-border-color: transparent;\n" + 
+			"    -fx-border-width: 0;\n" + 
+			"    -fx-background-radius: 0;\n" + 
+			"    -fx-background-color: transparent;\n" +
+			"    -fx-font-weight: bold}";
+	public static final String SELBUTT = "    -fx-border-color: red;\n" + 
+			"    -fx-border-width: 0;\n" + 
+			"    -fx-background-radius: 0;\n" + 
+			"    -fx-background-color: #bebdbf;\n" +
+			"    -fx-font-weight: bold;\n}";
 
-
+	
+	
+	
 	/**
 	 * funzione che ritorna una lista di path ai file contenuti nella directory
 	 * @param 		path

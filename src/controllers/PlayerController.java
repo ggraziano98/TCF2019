@@ -117,7 +117,6 @@ public class PlayerController {
 	 * @param time (Duration) tempo in millisecondi
 	 */
 	public void seek(Duration time) {
-		System.out.println(time.toSeconds());
 		this.getPlayer().seek(time);
 	}
 

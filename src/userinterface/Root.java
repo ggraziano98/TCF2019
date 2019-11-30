@@ -5,22 +5,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import controllers.PlayerController;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -34,13 +36,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import models.Track;
 import models.TrackList;
 import utils.Tools;
 
@@ -63,16 +63,16 @@ public class Root extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		
-		
-		
-		//gridpane è il pane di livello piu alto, contiene tutti gli altri
+
+
+
+		//GRIDPANE è il pane di livello piu alto, contiene tutti gli altri
 		GridPane root = new GridPane();
 		root.setVgap(10);
 		root.setHgap(20);
 		root.setPadding(new Insets(5, 10, 5, 10));
 		root.setGridLinesVisible(true);
-		
+
 		//imposto i constraints del gridpane per settare anche il comportamento quando riscalo
 		ColumnConstraints column1 = new ColumnConstraints();
 		column1.setMinWidth(300);
@@ -92,24 +92,42 @@ public class Root extends Application {
 		row3.setMinHeight(300);
 		row3.setMaxHeight(300);
 		root.getRowConstraints().addAll(row1, row2, row3); 
+		
+		Scene scene = new Scene(root, 650, 600);
+		scene.getStylesheets().add(Tools.cleanURL(System.getProperty("user.dir")+ "\\files\\styles.css"));
 
-		
-		
-		
-		// barra per cercare all'interno della libreria
+
+
+
+		// SEARCHBAR per cercare all'interno della libreria
 		HBox findHBox = new HBox();
 		findHBox.setAlignment(Pos.CENTER);
 		TextField findText = new TextField();
-		findText.setMinWidth(250);
+		findText.setMinWidth(220);
 		Button findButton = new Button("cerca");
-		
+
 		findHBox.getChildren().add(findText);	
 		findHBox.getChildren().add(findButton);
-		
-		
 
-		
-		//immagini per i bottoni del player: play, pause, next, previous
+
+
+
+		//PLAYER play, pause, next, previous
+		GridPane playerV = new GridPane();
+		HBox playerButtons = new HBox();
+
+		RowConstraints row60 = new RowConstraints(35, 35, 35);
+		row60.setValignment(VPos.CENTER);
+		RowConstraints row120 = new RowConstraints(180, 180, 180);
+		row60.setValignment(VPos.CENTER);
+		RowConstraints row50 = new RowConstraints(50, 50, 50);
+		row50.setValignment(VPos.CENTER);
+		playerV.getRowConstraints().addAll(row60, row120, row60, row50);
+		ColumnConstraints colConstraint = new ColumnConstraints(300, 300, 300);
+		colConstraint.setHalignment(HPos.CENTER);
+		playerV.getColumnConstraints().add(colConstraint);
+		playerV.setGridLinesVisible(true);
+
 		FileInputStream playFile = new FileInputStream("files\\Player\\play.png");
 		Image playImage = new Image(playFile);
 		ImageView playView = new ImageView(playImage);
@@ -133,59 +151,25 @@ public class Root extends Application {
 		ImageView nextView = new ImageView(nextImage);
 		nextView.setFitHeight(25);
 		nextView.setFitWidth(25);
-		
+
 		Button playButton = new Button("",playView);
 		Button prevButton = new Button("",prevView);
 		Button nextButton = new Button("",nextView);
 
-		
+
 		AtomicBoolean play = new AtomicBoolean(false);
 		playButton.setOnMouseClicked((e) -> {
 			playPause(play);
 			if (play.get()) playButton.setGraphic(playView);
 			else playButton.setGraphic(pauseView);
 			play.set(!play.get());
-			});
-		playButton.setTranslateX(-100);
-		playButton.setTranslateY(100);
+		});
 
 		prevButton.setOnMouseClicked((e) -> previousSong());
-		prevButton.setTranslateX(-150);
-		prevButton.setTranslateY(100);
-
 		nextButton.setOnMouseClicked((e) -> nextSong());
-		nextButton.setTranslateY(100);
-		nextButton.setTranslateX(-50);
-
-		Slider timeSlider = new Slider();
-		timeSlider.setMax(100);
-		timeSlider.setMin(0);
-		timeSlider.setTranslateY(50);
-		timeSlider.setMaxWidth(460);
-		final Label timeLabel = new Label();
-		
-		timeSlider.valueProperty().addListener(new InvalidationListener() {
-		    public void invalidated(Observable ov) {
-		       if (timeSlider.isValueChanging()) {
-		          pc.seek(new Duration(pc.getTotalDuration().doubleValue()*(timeSlider.getValue()*10)));
-		       }
-		    }
-		});
-        pc.getCurrentTime().addListener((obs, oldv, newv)->{
-            if (!timeSlider.isValueChanging()) {
-            	System.out.println(newv.doubleValue()/pc.getTotalDuration().doubleValue());
-                timeSlider.setValue(newv.doubleValue()/pc.getTotalDuration().doubleValue()*100);
-            }
-        });
-		timeLabel.setTextFill(Color.WHITE);
-		timeLabel.setTranslateX(-200);
-		timeLabel.setTranslateY(65);
-		timeLabel.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
 
-
-		
-		//bottoni del player e slider per il controllo del volume
+		//PLAYER: volume, slider, titolo
 		FileInputStream volumeFile = new FileInputStream("files\\Player\\volume.png");
 		Image volumeImage = new Image(volumeFile);
 		ImageView volumeView = new ImageView(volumeImage);
@@ -209,156 +193,197 @@ public class Root extends Application {
 			}
 			muted.set(!muted.get());
 			volumeMute(muted);
-			
+
 		});
-		
-		volumeButton.setTranslateX(100);
-		volumeButton.setTranslateY(100);
 
 		Slider volumeSlider = new Slider();
 		volumeSlider.setMax(1);
 		volumeSlider.setMin(0);
 		volumeSlider.setValue(1);
 		volumeSlider.setMaxWidth(80);
-		volumeSlider.setTranslateX(165);
-		volumeSlider.setTranslateY(100);
 		volumeSlider.valueProperty().bindBidirectional(pc.getVolumeValue());
-		
-		
-		
-		
-		Text songName = new Text();
+
+		playerButtons.getChildren().addAll(prevButton, playButton, nextButton, volumeButton, volumeSlider);
+
+
+
+
+		Slider timeSlider = new Slider();
+		timeSlider.setMax(100);
+		timeSlider.setMin(0);
+		timeSlider.setMaxWidth(460);
+		final Label timeLabel = new Label();
+
+		timeSlider.setOnMouseReleased((ev)->{
+			double currentTime = pc.getCurrentTime().doubleValue()/pc.getTotalDuration().doubleValue()*100;
+			if (Math.abs(currentTime - timeSlider.getValue()) > 0.1) {
+				pc.seek(new Duration(pc.getTotalDuration().doubleValue()*(timeSlider.getValue()*10)));
+			}
+		});
+		pc.getCurrentTime().addListener((obs, oldv, newv)->{
+			if (!timeSlider.isValueChanging() && !timeSlider.isPressed()) {
+				timeSlider.setValue(newv.doubleValue()/pc.getTotalDuration().doubleValue()*100);
+			}
+		});
+		timeLabel.setTextFill(Color.WHITE);
+		timeLabel.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+
+		// TODO cambiarla con una default image, fix height
+		Image songImage = new Image(volumeFile);
+		ImageView songView = new ImageView(songImage);
+		songView.setFitWidth(170);
+		songView.setFitHeight(170);
+
+		//TODO songtext che gira (o almeno che ci sta dentro
+		Label songName = new Label();
+		songName.setPadding(new Insets(0, 3, 0, 3));
 		StringProperty text = new SimpleStringProperty("");
 		text.set(pc.getTracklist().get(pc.getCurrentTrack().intValue()).getTitle().getValue());		
 		songName.textProperty().bind(text);
 		pc.getCurrentTrack().addListener((obs, oldv, newv)->{
 			text.set(pc.getTracklist().get(newv.intValue()).getTitle().getValue());
+			songView.setImage(pc.getTracklist().get(pc.currentInt()).getImage());
 		});
-		songName.setTranslateX(0);
-		songName.setTranslateY(0);
-		
+		/**unused
 		Text songTime = new Text();
 		StringProperty time = new SimpleStringProperty("");
 		time.set(String.valueOf(pc.getTracklist().get(pc.currentInt()).getDuration().toMinutes()));
 		songTime.textProperty().bind(time);
 		pc.getTotalDuration().addListener((obs, oldv, newv)->{
 			time.set(String.valueOf(pc.getTracklist().get(pc.currentInt()).getDuration().toMinutes()));
+			songView.setImage(pc.getTracklist().get(pc.currentInt()).getImage());
 		});
-		songTime.setTranslateX(0);
-		songTime.setTranslateY(20);
+		 */
+
+		GridPane.setHalignment(songName, HPos.LEFT);
+		playerButtons.setAlignment(Pos.CENTER);
+		playerV.add(songName, 0, 0);
+		playerV.add(songView, 0, 1);
+		playerV.add(timeSlider, 0, 2);
+		playerV.add(playerButtons, 0, 3);
 
 
-		
-		
-		//pane in cui sta il player
-		StackPane player = new StackPane();
-		player.getChildren().add(playButton);
-		player.getChildren().add(prevButton);
-		player.getChildren().add(nextButton);
-		player.getChildren().add(timeSlider);
-		player.getChildren().add(timeLabel);
-		player.getChildren().add(volumeButton);
-		player.getChildren().add(volumeSlider);
-		player.getChildren().add(songName);
-		player.getChildren().add(songTime);
-		player.setStyle("-fx-background-color: #FF0000");
-		
-		
-		
-		
-		
+
+
+
+
 		//TODO pane che fanno vedere le canzoni
 		FileInputStream gucciniFile = new FileInputStream("files\\mainPane\\guccini.png");
 		Image gucciniImage = new Image(gucciniFile);
 		ImageView gucciniView = new ImageView(gucciniImage);
+
 		FileInputStream radiciFile = new FileInputStream("files\\mainPane\\radici.png");
 		Image radiciImage = new Image(radiciFile);
 		ImageView radiciView = new ImageView(radiciImage);
+
+
 		HBox listsPane = new HBox();
 		listsPane.setAlignment(Pos.CENTER);
-		ToggleButton songsButton = new ToggleButton("songs");
+
+		RadioButton songsButton = new RadioButton("songs");
+		songsButton.getStyleClass().remove("radio-button");
+		songsButton.getStyleClass().add("toggle-button");
+		TableView<Track> songsPane = new TableView<Track>();
+
 		Label songs_artistsLabel = new Label("  ");
-		ToggleButton artistsButton = new ToggleButton("artists");
+
+		RadioButton artistsButton = new RadioButton("artists");
+		artistsButton.getStyleClass().remove("radio-button");
+		artistsButton.getStyleClass().add("toggle-button");
 		FlowPane artistsPane = new FlowPane();
+
 		artistsPane.getChildren().add(gucciniView);
 		artistsPane.setStyle("-fx-base: lightgreen");
 		artistsButton.setStyle("-fx-background-color:green");
+
 		Label artists_albumsLabel = new Label("  ");
-		ToggleButton albumsButton = new ToggleButton("albums");
+
+		RadioButton albumsButton = new RadioButton("albums");
+		albumsButton.getStyleClass().remove("radio-button");
+		albumsButton.getStyleClass().add("toggle-button");
 		FlowPane albumsPane = new FlowPane();
+
 		albumsPane.getChildren().add(radiciView);
 		albumsPane.setStyle("-fx-background-color:blue");
 		albumsButton.setStyle("-fx-base: lightblue");
+
+
 		listsPane.getChildren().add(songsButton);
 		listsPane.getChildren().add(songs_artistsLabel);
 		listsPane.getChildren().add(artistsButton);
 		listsPane.getChildren().add(artists_albumsLabel);
 		listsPane.getChildren().add(albumsButton);
-		
+
 		albumsButton.setUserData(albumsPane);
 		artistsButton.setUserData(artistsPane);
-		songsButton.setUserData("song");
-		
+		songsButton.setUserData(songsPane);
+
 		ToggleGroup mainPanel = new ToggleGroup();
 		songsButton.setToggleGroup(mainPanel);
 		artistsButton.setToggleGroup(mainPanel);
 		albumsButton.setToggleGroup(mainPanel);
-		
+
+		songsButton.setSelected(true);
 		albumsButton.setSelected(false);
 		artistsButton.setSelected(true);
-		
+
+		songsPane.setVisible(true);
+		albumsPane.setVisible(false);
+		artistsPane.setVisible(true);
+
 		mainPanel.selectedToggleProperty().addListener((obs, oldv, newv) ->{
-			if(oldv != null) {
-				((Node) oldv.getUserData()).setVisible(false);
+			if(newv != null) {
+//				((Node) oldv.getUserData()).setVisible(false);
+				System.out.println(((ToggleButton) newv).getText());
 			}
-			((Node) newv.getUserData()).setVisible(true);
+//			((Node) newv.getUserData()).setVisible(true);
 		});
-		
+
 		VBox playlistsVbox = new VBox();
-		
-		
-		
-		
+
+
+
+
 		//aggiungo i pane al gridpane
-		root.add(player, 0, 2);
+		root.add(playerV, 0, 2);
 		root.add(findHBox, 0, 0);
 		root.add(listsPane, 1, 0);
 		root.add(playlistsVbox, 0, 1);
-		
+
 		root.add(albumsPane, 1, 1, 1, 2);
 		root.add(artistsPane, 1, 1, 1, 2);
-		
-		
-		
-		
+
+
+
+
 		// gestisco i keypresses
 		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, k -> {
 			if(k.getTarget() != findText) {
-		        if ( k.getCode() == KeyCode.SPACE){
+				if ( k.getCode() == KeyCode.SPACE){
 					playPause(play);
 					if (play.get()) playButton.setGraphic(playView);
 					else playButton.setGraphic(pauseView);
 					play.set(!play.get());
-		        }
-		        if ( k.getCode() == KeyCode.K){
+				}
+				if ( k.getCode() == KeyCode.K){
 					playPause(play);
 					if (play.get()) playButton.setGraphic(playView);
 					else playButton.setGraphic(pauseView);
 					play.set(!play.get());
-		        }
-		        if ( k.getCode() == KeyCode.M) {
+				}
+				if ( k.getCode() == KeyCode.M) {
 					if(muted.get()) volumeButton.setGraphic(volumeView);
 					else volumeButton.setGraphic(muteView);
 					muted.set(!muted.get());
 					volumeMute(muted);
-					}
-		        if ( k.getCode() == KeyCode.L) nextSong();
-		        if ( k.getCode() == KeyCode.J) previousSong();
+				}
+				if ( k.getCode() == KeyCode.L) nextSong();
+				if ( k.getCode() == KeyCode.J) previousSong();
 			}
-		        
+
 		});
-		
-		
+
+
 		findButton.setOnMouseClicked((e) -> {
 			find(findText.getText());
 		});
@@ -367,12 +392,11 @@ public class Root extends Application {
 				find(findText.getText());
 			}
 		});
-		
-		
 
-		
+
+
+
 		//aggiungo tutto alla window
-		Scene scene = new Scene(root, 650, 600);
 		primaryStage.setTitle("Player");
 		primaryStage.setScene(scene);
 		primaryStage.setMinWidth(800);
@@ -380,8 +404,8 @@ public class Root extends Application {
 		primaryStage.show();
 
 		
-		
 		//TODO togliere e mettere le playlist giuste
+		//TODO scrollview
 		playlists("lel", playlistsVbox, mainPanel);
 		playlists("lul", playlistsVbox, mainPanel);
 		playlists("abracadabra", playlistsVbox, mainPanel);
@@ -392,31 +416,29 @@ public class Root extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
-
-		Tools.cout(playlist);
 	}
 
 
 	public static void find(String keyWord) {
 		System.out.println(keyWord);		
 	}
-	
-	
+
+
 	public static void playPause(AtomicBoolean play) {
 		if (play.get()) pc.pause();
 		else pc.play();
-		
+
 	}
 
 	public static void nextSong() {
 		pc.next();
 	}
-	
+
 	public static void previousSong() {
 		pc.prev();
 	}
-	
-	
+
+
 	public static void volumeMute(AtomicBoolean muted) {
 		pc.setMuted(new SimpleBooleanProperty(muted.get()));
 	}
@@ -424,18 +446,60 @@ public class Root extends Application {
 
 
 	public static void playlists(String string, VBox box, ToggleGroup mainPanel) {
-		ToggleButton playlist = new ToggleButton(string);
-		playlist.setToggleGroup(mainPanel);
-		playlist.setStyle("-fx-background-color:none");
-		playlist.setOnMouseEntered((e) -> {
-			playlist.setStyle("-fx-text-base-color: blue;"
-					+"-fx-background-color:yellow");
+		ToggleButton playlistButton = new ToggleButton(string);
+		playlistButton.setMinWidth(300);
+		playlistButton.setMaxWidth(300);
+		playlistButton.setAlignment(Pos.CENTER_LEFT);
+		playlistButton.setToggleGroup(mainPanel);
+		playlistButton.setStyle(Tools.TRANSBUTT);
+		playlistButton.setOnMouseMoved((e)->{
+			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
+			else playlistButton.setStyle(Tools.BOLDBUTT);
 		});
-		playlist.setOnMouseExited((e) -> {
-			playlist.setStyle("-fx-backgound-color:none");
+		playlistButton.setOnMouseExited((e)->{
+			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
+			else playlistButton.setStyle(Tools.TRANSBUTT);
 		});
-		box.getChildren().add(playlist);
+		playlistButton.selectedProperty().addListener((e)->{
+			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
+			else playlistButton.setStyle(Tools.TRANSBUTT);
+		});
+		box.getChildren().add(playlistButton);
 		
+//		try {
+//		FileInputStream lel = new FileInputStream("files\\mainPane\\radici.png");
+//		Image lelImage = new Image(lel);
+//		ImageView lelView = new ImageView(lelImage);
+//		box.getChildren().add(lelView);
+//		lelView.setVisible(false);
+//		playlistButton.setUserData(lelView);;
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		}
+
+	}
+	
+	
+	public static TableView<Track> tableFromTracklist(TrackList tracklist) {
+		TableView<Track> table = new TableView<>();
+
+        TableColumn<Track, StringProperty> column1 = new TableColumn<>("Titolo");
+        column1.setCellValueFactory(new PropertyValueFactory<>("title"));
+
+
+        TableColumn<Track, StringProperty> column2 = new TableColumn<>("Artista");
+        column2.setCellValueFactory(new PropertyValueFactory<>("artist"));
+
+
+        table.getColumns().add(column1);
+        table.getColumns().add(column2);
+
+        tracklist.forEach((Track t)->{
+            table.getItems().add(t);
+        });
+		
+		
+		return table;
 	}
 
 }
