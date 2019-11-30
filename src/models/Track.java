@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.MapChangeListener;
+import javafx.collections.MapChangeListener.Change;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
@@ -63,6 +64,10 @@ public class Track{
 		this.ready = new SimpleBooleanProperty(false);
 		this.setPath(path);
 		this.setMetadata();
+
+		this.getArtist().addListener((ev)->{
+			System.out.println(this.getTitle().getValue() + " " + this.getArtist().getValue());
+		});
 	}
 
 
@@ -86,27 +91,22 @@ public class Track{
 		@SuppressWarnings("unused")
 		final JFXPanel fxPanel = new JFXPanel();
 
-
 		this.resetProperties();
 		try {
-			final Media media = new Media(cleanPathS);
-		    MediaPlayer mediaPlayer = new MediaPlayer(media);
-		    this.setMediaPlayer(mediaPlayer);
-			media.getMetadata().addListener(new MapChangeListener<String, Object>() {
-				@Override
-				public void onChanged(Change<? extends String, ? extends Object> ch) {
-					if (ch.wasAdded()) {
-						if(ch.getKey().toString() == "artist") {
+			Media media = new Media(cleanPathS);
+			MediaPlayer mediaPlayer = new MediaPlayer(media);
+			this.setMediaPlayer(mediaPlayer);
+			media.getMetadata().addListener((Change<? extends String,
+					? extends Object> ch) -> {
+						if (ch.wasAdded()) {
+							handleMetadata(ch.getKey(), ch.getValueAdded());
 						}
-						handleMetadata(ch.getKey(), ch.getValueAdded());
-					}
-				}
+					});
+
+			mediaPlayer.setOnReady(()-> {
+				this.setDuration(media.getDuration());
+				this.setReady(true);
 			});
-			
-		    mediaPlayer.setOnReady(()-> {
-		    	this.setDuration(media.getDuration());
-		    	this.setReady(true);
-		    });
 
 			this.setDuration(media.getDuration());
 		} catch (RuntimeException re) {
@@ -118,32 +118,32 @@ public class Track{
 	public void handleMetadata(String key, Object value) {
 		if (key.equals("album") ) {
 			if(value.toString() == "" || value == null) {
-				setAlbum(Tools.DALBUM);
+				this.setAlbum(Tools.DALBUM);
 			}
 			else {
-				setAlbum(new SimpleStringProperty(value.toString()));
+				this.setAlbum(new SimpleStringProperty(value.toString()));
 			}
-		} else if (key.equals("artist")|| key.equals("album artist")) {
-			if(value.toString() == "" && this.getArtist().getValueSafe() == "") setArtist(Tools.DARTIST);
-			else setArtist(new SimpleStringProperty(value.toString()));
+		} else if (key.equals("artist") || key.equals("album artist")) {
+			if(value.toString() == "" && this.getArtist().getValueSafe() == "") this.setArtist(Tools.DARTIST);
+			else this.setArtist(new SimpleStringProperty(value.toString()));
 
 		} if (key.equals("title")) {
-			if(value.toString() == "") setTitle(new SimpleStringProperty(this.getPath().getFileName().toString()));
-			else setTitle(new SimpleStringProperty(value.toString()));
+			if(value.toString() == "") this.setTitle(new SimpleStringProperty(getPath().getFileName().toString()));
+			else this.setTitle(new SimpleStringProperty(value.toString()));
 
 		} if (key.equals("year")) {
-			if(value.toString() == "") setYear(Tools.DYEAR);
-			else setYear(new SimpleStringProperty(value.toString()));
+			if(value.toString() == "") this.setYear(Tools.DYEAR);
+			else this.setYear(new SimpleStringProperty(value.toString()));
 
 		} if (key.equals("image")) {
-			setImage((Image) value);
+			this.setImage((Image) value);
 
 		} if (key.equals("genre")) {
-			if(value.toString() == "") setGenre(Tools.DGENRE);
-			else setGenre(new SimpleStringProperty(value.toString()));
+			if(value.toString() == "") this.setGenre(Tools.DGENRE);
+			else this.setGenre(new SimpleStringProperty(value.toString()));
 		}
 	}
-	
+
 
 
 	/**
@@ -168,8 +168,8 @@ public class Track{
 	public StringProperty getTitle() {
 		return title;
 	}
-	
-	
+
+
 	public StringProperty titleProperty() {
 		return title;
 	}
@@ -183,8 +183,8 @@ public class Track{
 	public StringProperty getArtist() {
 		return artist;
 	}
-	
-	
+
+
 	public StringProperty artistProperty() {
 		return artist;
 	}
@@ -198,8 +198,8 @@ public class Track{
 	public StringProperty getAlbum() {
 		return album;
 	}
-	
-	
+
+
 	public StringProperty albumProperty() {
 		return album;
 	}
@@ -213,7 +213,7 @@ public class Track{
 	public StringProperty getGenre() {
 		return genre;
 	}
-	
+
 	public StringProperty genreProperty() {
 		return genre;
 	}
@@ -227,7 +227,7 @@ public class Track{
 	public StringProperty getYear() {
 		return year;
 	}
-	
+
 	public StringProperty yearProperty() {
 		return year;
 	}
