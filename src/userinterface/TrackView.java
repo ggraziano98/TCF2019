@@ -1,15 +1,20 @@
 package userinterface;
 
+import controllers.PlayerController;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import models.Track;
 import models.TrackList;
 
-public class trackView {
+public class TrackView {
 	
-	public static TableView<Track> tableFromTracklist(TrackList tracklist) {
+	public static VBox tableFromTracklist(TrackList tracklist, PlayerController pc) {
 		TableView<Track> table = new TableView<>();
 
         TableColumn<Track, StringProperty> column1 = new TableColumn<>("Titolo");
@@ -32,9 +37,26 @@ public class trackView {
         tracklist.forEach((Track t)->{
         	table.getItems().add(t);
         });
+        
+        table.setOnMouseClicked((MouseEvent click) -> {
+            if (click.getClickCount() == 2) {
+                // Use ListView's getSelected Item
+                Track selectedTrack = table.getSelectionModel().getSelectedItem();
+                if (selectedTrack != null) {
+                    pc.setTracklist(tracklist);
+                    pc.setCurrentTrack(new SimpleIntegerProperty(pc.getTracklist().indexOf(selectedTrack)));
+                    pc.refresh();
+                    pc.play();
+                }
+            }
+        });
 		
+		table.setMinHeight(400);
 		
-		return table;
+        VBox vbox = new VBox(table);
+        VBox.setVgrow(table, Priority.ALWAYS);
+        
+		return vbox;
 	}
 
 }

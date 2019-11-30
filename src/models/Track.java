@@ -7,7 +7,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.MapChangeListener;
 import javafx.collections.MapChangeListener.Change;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.image.Image;
@@ -64,10 +63,6 @@ public class Track{
 		this.ready = new SimpleBooleanProperty(false);
 		this.setPath(path);
 		this.setMetadata();
-
-		this.getArtist().addListener((ev)->{
-			System.out.println(this.getTitle().getValue() + " " + this.getArtist().getValue());
-		});
 	}
 
 
@@ -111,6 +106,7 @@ public class Track{
 			this.setDuration(media.getDuration());
 		} catch (RuntimeException re) {
 			re.printStackTrace();
+			System.out.println(cleanPathS);
 		}
 	}
 

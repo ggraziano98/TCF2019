@@ -9,7 +9,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
+import models.Track;
 import models.TrackList;
+import utils.Tools;
 
 public class PlayerController {
 	//TODO make sure songs are closed properly
@@ -25,6 +27,7 @@ public class PlayerController {
 	private BooleanProperty muted;
 	private DoubleProperty totalDuration;
 	private DoubleProperty currentTime;
+	private BooleanProperty playing;
 	/**
 	 * costruttore di default
 	 */
@@ -33,6 +36,7 @@ public class PlayerController {
 
 
 	public PlayerController(TrackList tracklist) {
+		this.playing = new SimpleBooleanProperty(false);
 		this.setTracklist(tracklist);
 		this.setCurrentTrack(new SimpleIntegerProperty(0));
 		this.muted = new SimpleBooleanProperty(false);
@@ -47,6 +51,7 @@ public class PlayerController {
 
 
 	public PlayerController(TrackList tracklist, int firstSongPosition) {
+		this.playing = new SimpleBooleanProperty(false);
 		this.setTracklist(tracklist);
 		this.setCurrentTrack(new SimpleIntegerProperty(firstSongPosition));
 		this.muted = new SimpleBooleanProperty(false);
@@ -72,6 +77,8 @@ public class PlayerController {
 			});
 			this.getPlayer().setOnEndOfMedia(()->this.next());
 		}
+		
+		this.setPlaying(new SimpleBooleanProperty(true));
 
 	}
 
@@ -80,6 +87,7 @@ public class PlayerController {
 		if(this.getPlayer().getStatus().equals(Status.PLAYING)) {
 			this.getPlayer().pause();
 		}
+		this.setPlaying(new SimpleBooleanProperty(false));
 	}
 
 
@@ -124,7 +132,7 @@ public class PlayerController {
 
 
 
-	private void refresh() {
+	public void refresh() {
 		if(this.getLoadingPlayer() != null && this.getLoadingPlayer().equals(this.getTracklist().get(this.currentInt()+1).getMediaPlayer())) {
 			this.setPlayer(this.getLoadingPlayer());
 			this.setLoadingPlayer(this.getTracklist().get(this.currentInt()+1).getMediaPlayer());
@@ -176,6 +184,7 @@ public class PlayerController {
 
 	public void setPlayer(MediaPlayer player) {
 		this.player = player;
+		this.setPlaying(new SimpleBooleanProperty(player.getStatus().equals(Status.PLAYING)));
 		this.setVolume();
 		this.player.currentTimeProperty().addListener((obs, oldv, newv)->{
 			this.setCurrentTime(new SimpleDoubleProperty(newv.toSeconds()));
@@ -258,6 +267,18 @@ public class PlayerController {
 
 	public void setCurrentTime(DoubleProperty currentTime) {
 		this.currentTime.set(currentTime.doubleValue());
+	}
+
+
+	
+	public BooleanProperty getPlaying() {
+		return playing;
+	}
+	
+	
+	
+	public void setPlaying(BooleanProperty playing) {
+		this.playing.set(playing.getValue());
 	}
 	
 	

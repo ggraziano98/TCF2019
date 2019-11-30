@@ -1,28 +1,35 @@
 package userinterface;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
+import controllers.FileController;
 import controllers.PlayerController;
 import javafx.application.Application;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -63,7 +70,24 @@ public class Root extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-
+		TrackList mainTracklist = new TrackList();
+		Path mainDirFile = Paths.get("C:\\Users\\giova\\git\\TCF2019", "files", "mainDir.txt");
+		String mainDir = "";
+		try {
+			BufferedReader br= Files.newBufferedReader(mainDirFile);
+			mainDir = br.readLine();
+			br.close();	
+		} catch (IOException e) { 
+			e.printStackTrace();
+		}
+		
+		if(mainDir == "") {
+			//confirmation
+		}
+		
+		FileController fc = new FileController(Paths.get(mainDir));
+		
+		mainTracklist = fc.getFilesFromDir();
 
 
 		//GRIDPANE è il pane di livello piu alto, contiene tutti gli altri
@@ -78,7 +102,7 @@ public class Root extends Application {
 		column1.setMinWidth(300);
 		column1.setMaxWidth(300);
 		ColumnConstraints column2 = new ColumnConstraints();
-		column2.setMinWidth(400);
+		column2.setMinWidth(600);
 		column2.setHgrow(Priority.ALWAYS);
 		root.getColumnConstraints().addAll(column1, column2); 
 
@@ -94,7 +118,6 @@ public class Root extends Application {
 		root.getRowConstraints().addAll(row1, row2, row3); 
 		
 		Scene scene = new Scene(root, 650, 600);
-		scene.getStylesheets().add(Tools.cleanURL(System.getProperty("user.dir")+ "\\files\\styles.css"));
 
 
 
@@ -160,9 +183,11 @@ public class Root extends Application {
 		AtomicBoolean play = new AtomicBoolean(false);
 		playButton.setOnMouseClicked((e) -> {
 			playPause(play);
-			if (play.get()) playButton.setGraphic(playView);
-			else playButton.setGraphic(pauseView);
-			play.set(!play.get());
+			setPlayingImage(playButton, play, playView, pauseView);
+		});
+		pc.getPlaying().addListener((obs, oldv, newv)->{
+			play.set(newv.booleanValue());
+			setPlayingImage(playButton, play, playView, pauseView);
 		});
 
 		prevButton.setOnMouseClicked((e) -> previousSong());
@@ -283,7 +308,8 @@ public class Root extends Application {
 		RadioButton songsButton = new RadioButton("songs");
 		songsButton.getStyleClass().remove("radio-button");
 		songsButton.getStyleClass().add("toggle-button");
-		TableView<Track> songsPane = new TableView<Track>();
+		VBox songsPane = TrackView.tableFromTracklist(mainTracklist, pc);
+		
 
 		Label songs_artistsLabel = new Label("  ");
 
@@ -325,21 +351,22 @@ public class Root extends Application {
 
 		songsButton.setSelected(true);
 		albumsButton.setSelected(false);
-		artistsButton.setSelected(true);
+		artistsButton.setSelected(false);
 
 		songsPane.setVisible(true);
 		albumsPane.setVisible(false);
-		artistsPane.setVisible(true);
+		artistsPane.setVisible(false);
 
 		mainPanel.selectedToggleProperty().addListener((obs, oldv, newv) ->{
 			if(newv != null) {
-//				((Node) oldv.getUserData()).setVisible(false);
-				System.out.println(((ToggleButton) newv).getText());
+				((Node) oldv.getUserData()).setVisible(false);
 			}
-//			((Node) newv.getUserData()).setVisible(true);
+			((Node) newv.getUserData()).setVisible(true);
 		});
 
 		VBox playlistsVbox = new VBox();
+		ScrollPane scroll = new ScrollPane();
+		scroll.setContent(playlistsVbox);
 
 
 
@@ -348,10 +375,11 @@ public class Root extends Application {
 		root.add(playerV, 0, 2);
 		root.add(findHBox, 0, 0);
 		root.add(listsPane, 1, 0);
-		root.add(playlistsVbox, 0, 1);
+		root.add(scroll, 0, 1);
 
 		root.add(albumsPane, 1, 1, 1, 2);
 		root.add(artistsPane, 1, 1, 1, 2);
+		root.add(songsPane, 1, 1, 1, 2);
 
 
 
@@ -361,15 +389,11 @@ public class Root extends Application {
 			if(k.getTarget() != findText) {
 				if ( k.getCode() == KeyCode.SPACE){
 					playPause(play);
-					if (play.get()) playButton.setGraphic(playView);
-					else playButton.setGraphic(pauseView);
-					play.set(!play.get());
+					setPlayingImage(playButton, play, playView, pauseView);
 				}
 				if ( k.getCode() == KeyCode.K){
 					playPause(play);
-					if (play.get()) playButton.setGraphic(playView);
-					else playButton.setGraphic(pauseView);
-					play.set(!play.get());
+					setPlayingImage(playButton, play, playView, pauseView);
 				}
 				if ( k.getCode() == KeyCode.M) {
 					if(muted.get()) volumeButton.setGraphic(volumeView);
@@ -385,11 +409,11 @@ public class Root extends Application {
 
 
 		findButton.setOnMouseClicked((e) -> {
-			find(findText.getText());
+			find(findText.getText(), mainPanel, root, pc);
 		});
 		findHBox.setOnKeyReleased((final KeyEvent KeyEvent) -> {
 			if (KeyEvent.getCode() == KeyCode.ENTER) {
-				find(findText.getText());
+				find(findText.getText(), mainPanel, root, pc);
 			}
 		});
 
@@ -399,19 +423,24 @@ public class Root extends Application {
 		//aggiungo tutto alla window
 		primaryStage.setTitle("Player");
 		primaryStage.setScene(scene);
-		primaryStage.setMinWidth(800);
+		primaryStage.setMinWidth(950);
 		primaryStage.setMinHeight(650);
 		primaryStage.show();
 
 		
-		//TODO togliere e mettere le playlist giuste
-		//TODO scrollview
-		playlists("lel", playlistsVbox, mainPanel);
-		playlists("lul", playlistsVbox, mainPanel);
-		playlists("abracadabra", playlistsVbox, mainPanel);
-		playlists("fofofofollo", playlistsVbox, mainPanel);
-		playlists("best hits", playlistsVbox, mainPanel);
-
+		
+		ObservableList<String> savedPlaylists = Tools.getNamesSavedPlaylists();
+		
+		savedPlaylists.forEach((String name)->{
+			TrackList tracklist = Tools.readPlaylist(name);
+			VBox table = TrackView.tableFromTracklist(tracklist, pc);
+			root.add(table, 1, 1, 1, 2);
+			playlists(name, playlistsVbox, mainPanel, table);
+		});
+		
+		
+		
+		
 	}
 
 	public static void main(String[] args) {
@@ -419,8 +448,26 @@ public class Root extends Application {
 	}
 
 
-	public static void find(String keyWord) {
-		System.out.println(keyWord);		
+	public static void find(String keyWord, ToggleGroup mainPanel, GridPane root, PlayerController pc) {	
+		List<Track> list = pc.getTracklist().stream().filter(t->{
+			return (
+					t.getAlbum().getValue().toLowerCase().contains(keyWord.toLowerCase()) ||
+					t.getArtist().getValue().toLowerCase().contains(keyWord.toLowerCase()) ||
+					t.getTitle().getValue().toLowerCase().contains(keyWord.toLowerCase()) ||
+					t.getGenre().getValue().toLowerCase().contains(keyWord.toLowerCase()));
+		}).collect(Collectors.toList());
+		
+		TrackList filtered = new TrackList();
+		list.forEach(t->{
+			filtered.add(t);
+		});
+		mainPanel.getToggles().forEach(panel ->{
+			((Node) panel.getUserData()).setVisible(false);
+		});
+		
+		VBox findView = TrackView.tableFromTracklist(filtered, pc);
+		
+		root.add(findView, 1, 1, 1, 2); 
 	}
 
 
@@ -443,12 +490,18 @@ public class Root extends Application {
 		pc.setMuted(new SimpleBooleanProperty(muted.get()));
 	}
 
+	public static void setPlayingImage(Button playButton, AtomicBoolean play, ImageView playView, ImageView pauseView) {
+		if (!play.get()) playButton.setGraphic(playView);
+		else playButton.setGraphic(pauseView);
+	}
 
 
-	public static void playlists(String string, VBox box, ToggleGroup mainPanel) {
-		ToggleButton playlistButton = new ToggleButton(string);
-		playlistButton.setMinWidth(300);
-		playlistButton.setMaxWidth(300);
+	public static void playlists(String string, VBox box, ToggleGroup mainPanel, Node dataPane) {
+		RadioButton playlistButton = new RadioButton(string);
+		playlistButton.getStyleClass().remove("radio-button");
+		playlistButton.getStyleClass().add("toggle-button");
+		playlistButton.setMinWidth(280);
+		playlistButton.setMaxWidth(280);
 		playlistButton.setAlignment(Pos.CENTER_LEFT);
 		playlistButton.setToggleGroup(mainPanel);
 		playlistButton.setStyle(Tools.TRANSBUTT);
@@ -466,40 +519,9 @@ public class Root extends Application {
 		});
 		box.getChildren().add(playlistButton);
 		
-//		try {
-//		FileInputStream lel = new FileInputStream("files\\mainPane\\radici.png");
-//		Image lelImage = new Image(lel);
-//		ImageView lelView = new ImageView(lelImage);
-//		box.getChildren().add(lelView);
-//		lelView.setVisible(false);
-//		playlistButton.setUserData(lelView);;
-//		}catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		dataPane.setVisible(false);
+		playlistButton.setUserData(dataPane);;
 
-	}
-	
-	
-	public static TableView<Track> tableFromTracklist(TrackList tracklist) {
-		TableView<Track> table = new TableView<>();
-
-        TableColumn<Track, StringProperty> column1 = new TableColumn<>("Titolo");
-        column1.setCellValueFactory(new PropertyValueFactory<>("title"));
-
-
-        TableColumn<Track, StringProperty> column2 = new TableColumn<>("Artista");
-        column2.setCellValueFactory(new PropertyValueFactory<>("artist"));
-
-
-        table.getColumns().add(column1);
-        table.getColumns().add(column2);
-
-        tracklist.forEach((Track t)->{
-            table.getItems().add(t);
-        });
-		
-		
-		return table;
 	}
 
 }
