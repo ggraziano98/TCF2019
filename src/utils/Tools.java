@@ -147,7 +147,9 @@ public class Tools {
 
 			while ((line = br.readLine()) != null) {
 				Path path = Paths.get(line);
+				if(Files.exists(path)){
 				tracklist.add(new Track(path));;
+				}
 			}	
 
 			br.close();	

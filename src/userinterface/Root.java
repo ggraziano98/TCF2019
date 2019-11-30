@@ -1,12 +1,15 @@
 package userinterface;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -29,6 +32,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -63,32 +67,13 @@ public class Root extends Application {
 	//	int width = gd.getDisplayMode().getWidth();
 	//	int height = gd.getDisplayMode().getHeight();
 
-	static TrackList playlist = Tools.readPlaylist("Playlist playerTester");
-	static PlayerController pc = new PlayerController(playlist);
-
+	static String mainDir = getMainDir();
+	static FileController fc = new FileController(Paths.get(mainDir));
+	static TrackList mainTracklist = fc.getFilesFromDir();
+	static PlayerController pc = new PlayerController(mainTracklist);
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
-		TrackList mainTracklist = new TrackList();
-		Path mainDirFile = Paths.get("C:\\Users\\giova\\git\\TCF2019", "files", "mainDir.txt");
-		String mainDir = "";
-		try {
-			BufferedReader br= Files.newBufferedReader(mainDirFile);
-			mainDir = br.readLine();
-			br.close();	
-		} catch (IOException e) { 
-			e.printStackTrace();
-		}
-		
-		if(mainDir == "") {
-			//confirmation
-		}
-		
-		FileController fc = new FileController(Paths.get(mainDir));
-		
-		mainTracklist = fc.getFilesFromDir();
-
 
 		//GRIDPANE è il pane di livello piu alto, contiene tutti gli altri
 		GridPane root = new GridPane();
@@ -116,7 +101,7 @@ public class Root extends Application {
 		row3.setMinHeight(300);
 		row3.setMaxHeight(300);
 		root.getRowConstraints().addAll(row1, row2, row3); 
-		
+
 		Scene scene = new Scene(root, 650, 600);
 
 
@@ -263,11 +248,17 @@ public class Root extends Application {
 		Label songName = new Label();
 		songName.setPadding(new Insets(0, 3, 0, 3));
 		StringProperty text = new SimpleStringProperty("");
-		text.set(pc.getTracklist().get(pc.getCurrentTrack().intValue()).getTitle().getValue());		
+		if (pc.getTracklist().getSize()>0) {
+			text.set(pc.getTracklist().get(pc.getCurrentTrack().intValue()).getTitle().getValue());		
+		}
+		else text.set("Seleziona una canzone");
 		songName.textProperty().bind(text);
 		pc.getCurrentTrack().addListener((obs, oldv, newv)->{
-			text.set(pc.getTracklist().get(newv.intValue()).getTitle().getValue());
-			songView.setImage(pc.getTracklist().get(pc.currentInt()).getImage());
+			if (pc.getTracklist().getSize()>0) {
+				text.set(pc.getTracklist().get(newv.intValue()).getTitle().getValue());	
+				songView.setImage(pc.getTracklist().get(pc.currentInt()).getImage());
+			}
+			else text.set("Seleziona una canzone");
 		});
 		/**unused
 		Text songTime = new Text();
@@ -309,7 +300,7 @@ public class Root extends Application {
 		songsButton.getStyleClass().remove("radio-button");
 		songsButton.getStyleClass().add("toggle-button");
 		VBox songsPane = TrackView.tableFromTracklist(mainTracklist, pc);
-		
+
 
 		Label songs_artistsLabel = new Label("  ");
 
@@ -427,20 +418,20 @@ public class Root extends Application {
 		primaryStage.setMinHeight(650);
 		primaryStage.show();
 
-		
-		
+
+
 		ObservableList<String> savedPlaylists = Tools.getNamesSavedPlaylists();
-		
+
 		savedPlaylists.forEach((String name)->{
 			TrackList tracklist = Tools.readPlaylist(name);
 			VBox table = TrackView.tableFromTracklist(tracklist, pc);
 			root.add(table, 1, 1, 1, 2);
 			playlists(name, playlistsVbox, mainPanel, table);
 		});
-		
-		
-		
-		
+
+
+
+
 	}
 
 	public static void main(String[] args) {
@@ -456,7 +447,7 @@ public class Root extends Application {
 					t.getTitle().getValue().toLowerCase().contains(keyWord.toLowerCase()) ||
 					t.getGenre().getValue().toLowerCase().contains(keyWord.toLowerCase()));
 		}).collect(Collectors.toList());
-		
+
 		TrackList filtered = new TrackList();
 		list.forEach(t->{
 			filtered.add(t);
@@ -464,9 +455,9 @@ public class Root extends Application {
 		mainPanel.getToggles().forEach(panel ->{
 			((Node) panel.getUserData()).setVisible(false);
 		});
-		
+
 		VBox findView = TrackView.tableFromTracklist(filtered, pc);
-		
+
 		root.add(findView, 1, 1, 1, 2); 
 	}
 
@@ -518,13 +509,59 @@ public class Root extends Application {
 			else playlistButton.setStyle(Tools.TRANSBUTT);
 		});
 		box.getChildren().add(playlistButton);
-		
+
 		dataPane.setVisible(false);
 		playlistButton.setUserData(dataPane);;
 
 	}
 
+
+	public static String getMainDir() {
+		Path mainDirFile = Paths.get("files", "mainDir.txt");
+		String mainDir = "";
+		try {
+			BufferedReader br= Files.newBufferedReader(mainDirFile);
+			mainDir = br.readLine();
+			br.close();	
+		} catch (IOException e) { 
+			e.printStackTrace();
+		}
+
+		while(mainDir == "" || !Files.isDirectory(Paths.get(mainDir))) {
+			TextInputDialog dialog = new TextInputDialog("Select Directory");
+			dialog.setTitle("Enter main directory path");
+			dialog.setContentText("example: C:\\Music");
+
+			Optional<String> result = dialog.showAndWait();
+			if (result.isPresent()){
+				mainDir = result.toString();
+			}
+
+			Path filePath = Paths.get("files", "mainDir.txt");
+			try {
+				Files.createFile(filePath);
+				BufferedWriter bw= Files.newBufferedWriter(filePath);
+				bw.write(mainDir);
+				bw.close();
+			} catch (IOException e) {
+				if (e instanceof FileAlreadyExistsException) {
+					BufferedWriter bw;
+					try {
+						bw = Files.newBufferedWriter(filePath);
+						bw.write(mainDir);
+						bw.close();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+
+				} else 
+					e.printStackTrace();
+			}
+		}
+		return mainDir;
+	}
 }
+
 
 
 

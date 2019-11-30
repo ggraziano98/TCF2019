@@ -74,6 +74,7 @@ public class PlayerController {
 			this.getPlayer().setOnReady(()-> {
 				this.getPlayer().play();
 				this.setTotalDuration(this.getPlayer().getMedia().getDuration());
+				System.out.println("Now i am");
 			});
 			this.getPlayer().setOnEndOfMedia(()->this.next());
 		}
@@ -168,7 +169,7 @@ public class PlayerController {
 				this.currentTrack.set(this.getTracklist().getSize() -1);
 			}
 		} else {
-			if(currentTrack.intValue()>= 0) {
+			if(currentTrack.intValue()>= 0 && this.getTracklist().getSize() != 0) {
 				this.currentTrack = new SimpleIntegerProperty(currentTrack.intValue()%(this.getTracklist().getSize()));
 			} else {
 				this.currentTrack = new SimpleIntegerProperty(this.getTracklist().getSize() -1);
