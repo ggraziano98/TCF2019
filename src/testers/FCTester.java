@@ -45,6 +45,7 @@ public class FCTester {
 		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
 		
 		
+		
 		/*
 		try {
 		fileC.deleteTrack(tracklist.get(3));
