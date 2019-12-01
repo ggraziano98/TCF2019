@@ -1,9 +1,10 @@
 package userinterface;
 
 import controllers.PlayerController;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -19,6 +20,7 @@ public class TrackView {
 
         TableColumn<Track, StringProperty> column1 = new TableColumn<>("Titolo");
         column1.setCellValueFactory(new PropertyValueFactory<>("title"));
+        customFactory(column1);
 
         TableColumn<Track, StringProperty> column2 = new TableColumn<>("Artista");
         column2.setCellValueFactory(new PropertyValueFactory<>("artist"));
@@ -43,9 +45,11 @@ public class TrackView {
                 // Use ListView's getSelected Item
                 Track selectedTrack = table.getSelectionModel().getSelectedItem();
                 if (selectedTrack != null) {
-                    pc.setTracklist(tracklist);
-                    pc.setCurrentTrack(new SimpleIntegerProperty(pc.getTracklist().indexOf(selectedTrack)));
-                    pc.refresh();
+                	if(!pc.getTracklist().equals(tracklist)) {
+                		pc.setTracklist(tracklist);
+                		System.out.println("changing tracklist");
+                	}
+                	pc.setCurrentTrack(selectedTrack);
                     pc.play();
                 }
             }
@@ -57,6 +61,31 @@ public class TrackView {
         VBox.setVgrow(table, Priority.ALWAYS);
         
 		return vbox;
+	}
+	
+	private static void customFactory(TableColumn<Track, StringProperty> calltypel) {
+		calltypel.setCellFactory(column -> {
+            return new TableCell<Track, StringProperty>() {
+                @Override
+                protected void updateItem(StringProperty item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    TableRow<Track> row = getTableRow();
+                    
+                    setText(null);
+                    setGraphic(null);
+
+                    if (!isEmpty()) {
+                    	setText(item.get());
+
+                        if(row.getItem().getPlaying()) 
+                            row.setStyle("-fx-background-color:lightcoral");
+                        else
+                            row.setStyle("-fx-background-color:lightgreen");
+                    }
+                }
+            };
+        });
 	}
 
 }

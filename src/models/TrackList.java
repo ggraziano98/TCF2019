@@ -4,11 +4,12 @@ import java.nio.file.Path;
 import java.util.Collections;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.util.Duration;
 
 
 
@@ -28,6 +29,7 @@ import javafx.util.Duration;
  */
 
 public class TrackList extends SimpleListProperty<Track> {
+
 	/**
 	 * Default constructor for the class
 	 */
@@ -43,20 +45,11 @@ public class TrackList extends SimpleListProperty<Track> {
 	 */
 	public TrackList(ObservableList<Track> songList) {
 		super(songList);
+		this.refreshPositions();
 	}
 
 
 	//metodi principali
-
-
-	public int getIndex(Track track) {
-		int i=0;
-		while (this.get(i)==track.getPath()) {
-			i++;
-		}
-		int position1 = i - 1;
-		return position1;
-	}
 
 
 
@@ -80,6 +73,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	public void addTrackToPosition(int position, Track track) {
 		try {
 			this.add(position, track);
+			this.refreshPositions();
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -106,6 +100,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	public void removeTrackToPosition(int position) {
 		try {
 			this.remove(position);
+			this.refreshPositions();
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -119,6 +114,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	 */
 	public void shuffleTrack () {
 		Collections.shuffle(this);
+		this.refreshPositions();
 	}
 
 
@@ -142,6 +138,7 @@ public class TrackList extends SimpleListProperty<Track> {
 		Track track = this.get(position1);
 		removeTrackToPosition(position1);
 		addTrackToPosition(position2, track);
+		this.refreshPositions();
 	}
 
 
@@ -154,10 +151,8 @@ public class TrackList extends SimpleListProperty<Track> {
 	public DoubleProperty totalDuration() {
 		DoubleProperty totalduration = new SimpleDoubleProperty(0);
 		for (Track track : this) {
-			track.getReady().addListener((obs, oldv, newv) ->{
-				if (newv.booleanValue()) {
-					totalduration.set(totalduration.get() + track.getDuration().toMillis());
-				}
+			track.durationProperty().addListener((obs, oldv, newv) ->{
+				totalduration.set(totalduration.get() + track.getDuration().toSeconds());
 			});
 		}
 		return totalduration;
@@ -192,11 +187,10 @@ public class TrackList extends SimpleListProperty<Track> {
 	 */
 	public void addTrackToPosition(int position, Path path) {
 		try {
-			this.add(position, new Track(path));
+			this.addTrackToPosition(position, new Track(path));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(path);
 		}
 	}
 
@@ -210,7 +204,8 @@ public class TrackList extends SimpleListProperty<Track> {
 	 */
 	public void RemoveTrack(Path path) {
 		try {
-			this.remove(path);
+			this.remove(new Track(path));
+			this.refreshPositions();
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -229,6 +224,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	public void RemoveTrack(Track track) {
 		try {
 			this.remove(track);
+			this.refreshPositions();
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -273,6 +269,12 @@ public class TrackList extends SimpleListProperty<Track> {
 		removeTrackToPosition(position1);
 		addTrackToPosition(position2, track1);
 	}
-
+	
+	
+	private void refreshPositions() {
+		for (int i = 0; i < this.getSize(); i++) {
+			this.get(i).setPosition(i);
+		}
+	}
 
 }

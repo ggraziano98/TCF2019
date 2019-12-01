@@ -170,7 +170,7 @@ public class Root extends Application {
 			playPause(play);
 			setPlayingImage(playButton, play, playView, pauseView);
 		});
-		pc.getPlaying().addListener((obs, oldv, newv)->{
+		pc.playingProperty().addListener((obs, oldv, newv)->{
 			play.set(newv.booleanValue());
 			setPlayingImage(playButton, play, playView, pauseView);
 		});
@@ -201,6 +201,8 @@ public class Root extends Application {
 			else {
 				volumeButton.setGraphic(muteView);
 			}
+			
+			pc.getTracklist().forEach(t->System.out.println(t.getTitle() + "\t" + t.getArtist() + "\t" + t.getAlbum()));
 			muted.set(!muted.get());
 			volumeMute(muted);
 
@@ -211,7 +213,7 @@ public class Root extends Application {
 		volumeSlider.setMin(0);
 		volumeSlider.setValue(1);
 		volumeSlider.setMaxWidth(80);
-		volumeSlider.valueProperty().bindBidirectional(pc.getVolumeValue());
+		volumeSlider.valueProperty().bindBidirectional(pc.volumeValueProperty());
 
 		playerButtons.getChildren().addAll(prevButton, playButton, nextButton, volumeButton, volumeSlider);
 
@@ -225,14 +227,14 @@ public class Root extends Application {
 		final Label timeLabel = new Label();
 
 		timeSlider.setOnMouseReleased((ev)->{
-			double currentTime = pc.getCurrentTime().doubleValue()/pc.getTotalDuration().doubleValue()*100;
+			double currentTime = pc.getCurrentTime()/pc.getTotalDuration()*100;
 			if (Math.abs(currentTime - timeSlider.getValue()) > 0.1) {
-				pc.seek(new Duration(pc.getTotalDuration().doubleValue()*(timeSlider.getValue()*10)));
+				pc.seek(new Duration(pc.getTotalDuration()*(timeSlider.getValue()*10)));
 			}
 		});
-		pc.getCurrentTime().addListener((obs, oldv, newv)->{
+		pc.currentTimeProperty().addListener((obs, oldv, newv)->{
 			if (!timeSlider.isValueChanging() && !timeSlider.isPressed()) {
-				timeSlider.setValue(newv.doubleValue()/pc.getTotalDuration().doubleValue()*100);
+				timeSlider.setValue(newv.doubleValue()/pc.getTotalDuration()*100);
 			}
 		});
 		timeLabel.setTextFill(Color.WHITE);
@@ -249,14 +251,14 @@ public class Root extends Application {
 		songName.setPadding(new Insets(0, 3, 0, 3));
 		StringProperty text = new SimpleStringProperty("");
 		if (pc.getTracklist().getSize()>0) {
-			text.set(pc.getTracklist().get(pc.getCurrentTrack().intValue()).getTitle().getValue());		
+			text.set(pc.getTracklist().get(pc.getCurrentInt()).getTitle());		
 		}
 		else text.set("Seleziona una canzone");
 		songName.textProperty().bind(text);
-		pc.getCurrentTrack().addListener((obs, oldv, newv)->{
+		pc.currentIntProperty().addListener((obs, oldv, newv)->{
 			if (pc.getTracklist().getSize()>0) {
-				text.set(pc.getTracklist().get(newv.intValue()).getTitle().getValue());	
-				songView.setImage(pc.getTracklist().get(pc.currentInt()).getImage());
+				text.set(pc.getTracklist().get(newv.intValue()).getTitle());	
+				songView.setImage(pc.getTracklist().get(pc.getCurrentInt()).getImage());
 			}
 			else text.set("Seleziona una canzone");
 		});
@@ -442,10 +444,10 @@ public class Root extends Application {
 	public static void find(String keyWord, ToggleGroup mainPanel, GridPane root, PlayerController pc) {	
 		List<Track> list = pc.getTracklist().stream().filter(t->{
 			return (
-					t.getAlbum().getValue().toLowerCase().contains(keyWord.toLowerCase()) ||
-					t.getArtist().getValue().toLowerCase().contains(keyWord.toLowerCase()) ||
-					t.getTitle().getValue().toLowerCase().contains(keyWord.toLowerCase()) ||
-					t.getGenre().getValue().toLowerCase().contains(keyWord.toLowerCase()));
+					t.getAlbum().toLowerCase().contains(keyWord.toLowerCase()) ||
+					t.getArtist().toLowerCase().contains(keyWord.toLowerCase()) ||
+					t.getTitle().toLowerCase().contains(keyWord.toLowerCase()) ||
+					t.getGenre().toLowerCase().contains(keyWord.toLowerCase()));
 		}).collect(Collectors.toList());
 
 		TrackList filtered = new TrackList();
@@ -478,7 +480,7 @@ public class Root extends Application {
 
 
 	public static void volumeMute(AtomicBoolean muted) {
-		pc.setMuted(new SimpleBooleanProperty(muted.get()));
+		pc.setMuted(muted.get());
 	}
 
 	public static void setPlayingImage(Button playButton, AtomicBoolean play, ImageView playView, ImageView pauseView) {

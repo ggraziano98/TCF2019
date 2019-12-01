@@ -51,16 +51,16 @@ public class TrackTester extends Application{
 	    hbox.setSpacing(8);
 
 	    Text title = new Text();
-	    title.textProperty().bind(track.getTitle());
+	    title.textProperty().bind(track.titleProperty());
 	    Text album = new Text();
-	    album.textProperty().bindBidirectional(track.getAlbum());
-	    track.getAlbum().addListener((a, b, c)-> System.out.println("change: " + b));
+	    album.textProperty().bindBidirectional(track.albumProperty());
+	    track.albumProperty().addListener((a, b, c)-> System.out.println("change: " + b));
 	    Text artist = new Text();
-	    artist.accessibleTextProperty().bind(track.getArtist());
+	    artist.accessibleTextProperty().bind(track.artistProperty());
 	    Text duration = new Text();
 	    duration.textProperty().bind(new SimpleStringProperty(track.getDuration().toString()));
 	    Text genre = new Text();
-	    genre.textProperty().bind(track.getGenre());
+	    genre.textProperty().bind(track.genreProperty());
 	    
 	    
 	    hbox.getChildren().addAll(title, artist, album, genre, duration);
