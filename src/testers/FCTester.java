@@ -3,10 +3,14 @@ package testers;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import controllers.FileController;
 import controllers.PlayerController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import models.Track;
 import models.TrackList;
 import utils.Tools;
@@ -84,7 +88,7 @@ public class FCTester {
 		
 		
 		System.out.println("\n \n \n provo la funzione saveasplaylist");
-		Tools.saveAsPlaylist(tracklist, "Playlist playerTester");
+		Tools.saveAsPlaylist(tracklist, "Nuova Playlist");
 		
 //		
 		TrackList playlist1 = new TrackList();
@@ -93,7 +97,7 @@ public class FCTester {
 		Tools.cout(playlist1);
 		
 		System.out.println("\n\n\n");
-		Tools.deletePlaylist("Nuova Playlist");
+//		Tools.deletePlaylist("Nuova Playlist");
 		Tools.deletePlaylist("notAPlaylist");
 		
 		System.out.println("\n\n\n");
@@ -121,5 +125,12 @@ public class FCTester {
 				"year " + track.getYear() + "\n"+
 				"duration " + track.getDuration() + "\n"+
 				"image " + track.getImage() + "\n");		
+		
+		//provo il metodo getNamesSavedPlaylists
+		ObservableList<String> provaplaylists = Tools.getNamesSavedPlaylists();
+		for (String string : provaplaylists) {
+			System.out.println(string);
+		}
+		
 	}
 }

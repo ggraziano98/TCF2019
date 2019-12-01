@@ -75,7 +75,7 @@ public class Root extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		//GRIDPANE è il pane di livello piu alto, contiene tutti gli altri
+		//GRIDPANE Ã¨ il pane di livello piu alto, contiene tutti gli altri
 		GridPane root = new GridPane();
 		root.setVgap(10);
 		root.setHgap(20);
@@ -363,7 +363,11 @@ public class Root extends Application {
 
 
 
-
+		FileInputStream gioFile = new FileInputStream("files\\gio.png");
+		Image gioImage = new Image(gioFile);
+		ImageView gioView = new ImageView(gioImage);
+		primaryStage.getIcons().add(gioImage);
+		
 		//aggiungo i pane al gridpane
 		root.add(playerV, 0, 2);
 		root.add(findHBox, 0, 0);

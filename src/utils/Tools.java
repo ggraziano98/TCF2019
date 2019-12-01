@@ -9,14 +9,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import models.Track;
 import models.TrackList;
@@ -209,8 +214,6 @@ public class Tools {
 
 	}
 
-
-
 	/**
 	 * tool per debugging, printa il contenuto di una playlist
 	 * TODO togliere quando non serve piu
@@ -220,11 +223,10 @@ public class Tools {
 	public static void cout(TrackList tracklist) {
 		for (int i = 0; i < tracklist.size(); i++) {
 			System.out.println(tracklist.get(i).getPath().getFileName() + "\t\t\t" + i);
-		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
-
+		}	// uso un loop for anzichÃ© foreach per avere l'indice delle canzoni
 	}
-	
-	
+
+
 	public static ObservableList<String> getNamesSavedPlaylists(){
 		List<String> namesarray = new ArrayList<String>();
 		ObservableList<String> nameplaylists = FXCollections.observableList(namesarray);
@@ -234,7 +236,7 @@ public class Tools {
 
 		for (File file : directoryPath.listFiles()) {
 			if (file.getName().endsWith(".txt")) {
-				nameplaylists.add(file.getName().replace(".txt", ""));
+				nameplaylists.add(file.getName());
 			} else {
 				System.out.println(file.getName() + " is not a readable playlist");
 			}
@@ -245,5 +247,4 @@ public class Tools {
 
 
 	}
-
 }
