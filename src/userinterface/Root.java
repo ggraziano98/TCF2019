@@ -83,9 +83,10 @@ public class Root extends Application {
 		root.setGridLinesVisible(true);
 
 		//imposto i constraints del gridpane per settare anche il comportamento quando riscalo
+		double columnOneWidht = 300;
 		ColumnConstraints column1 = new ColumnConstraints();
-		column1.setMinWidth(300);
-		column1.setMaxWidth(300);
+		column1.setMinWidth(columnOneWidht);
+		column1.setMaxWidth(columnOneWidht);
 		ColumnConstraints column2 = new ColumnConstraints();
 		column2.setMinWidth(600);
 		column2.setHgrow(Priority.ALWAYS);
@@ -201,7 +202,7 @@ public class Root extends Application {
 			else {
 				volumeButton.setGraphic(muteView);
 			}
-			
+
 			pc.getTracklist().forEach(t->System.out.println(t.getTitle() + "\t" + t.getArtist() + "\t" + t.getAlbum()));
 			muted.set(!muted.get());
 			volumeMute(muted);
@@ -214,6 +215,11 @@ public class Root extends Application {
 		volumeSlider.setValue(1);
 		volumeSlider.setMaxWidth(80);
 		volumeSlider.valueProperty().bindBidirectional(pc.volumeValueProperty());
+		
+		playerV.setOnScroll((ev)->{
+			double volumeAmount = ev.getDeltaY();
+			pc.setVolumeValue(pc.getVolumeValue() + volumeAmount/300);
+		});
 
 		playerButtons.getChildren().addAll(prevButton, playButton, nextButton, volumeButton, volumeSlider);
 
@@ -224,9 +230,9 @@ public class Root extends Application {
 		timeSlider.setMax(100);
 		timeSlider.setMin(0);
 		timeSlider.setMaxWidth(460);
-		
+
 		Label timeLabel = new Label();
-		timeLabel.setText(Double.toString(pc.getCurrentTime()) + " / " + Double.toString(pc.getTotalDuration()));
+		timeLabel.setText(timeMinutes(pc.getCurrentTime()) + " / " +timeMinutes(pc.getTotalDuration()));
 
 		timeSlider.setOnMouseReleased((ev)->{
 			double currentTime = pc.getCurrentTime()/pc.getTotalDuration()*100;
@@ -238,11 +244,15 @@ public class Root extends Application {
 			if (!timeSlider.isValueChanging() && !timeSlider.isPressed()) {
 				timeSlider.setValue(newv.doubleValue()/pc.getTotalDuration()*100);
 			}
-			timeLabel.setText(Double.toString(pc.getCurrentTime()) + " / " + Double.toString(pc.getTotalDuration()));
+			timeLabel.setText(timeMinutes(pc.getCurrentTime()) + " / " +timeMinutes(pc.getTotalDuration()));
 		});
-		
+
 		sliderBox.getChildren().addAll(timeSlider, timeLabel);
-		
+		sliderBox.setMaxWidth(0.9*columnOneWidht);
+		HBox.setHgrow(timeSlider, Priority.ALWAYS);
+		HBox.setHgrow(timeLabel, Priority.ALWAYS);
+		sliderBox.setAlignment(Pos.CENTER);
+
 
 		// TODO cambiarla con una default image, fix height
 		Image songImage = new Image(volumeFile);
@@ -369,9 +379,8 @@ public class Root extends Application {
 
 		FileInputStream gioFile = new FileInputStream("files\\gio.png");
 		Image gioImage = new Image(gioFile);
-		ImageView gioView = new ImageView(gioImage);
 		primaryStage.getIcons().add(gioImage);
-		
+
 		//aggiungo i pane al gridpane
 		root.add(playerV, 0, 2);
 		root.add(findHBox, 0, 0);
@@ -404,6 +413,8 @@ public class Root extends Application {
 				}
 				if ( k.getCode() == KeyCode.L) nextSong();
 				if ( k.getCode() == KeyCode.J) previousSong();
+				if ( k.getCode() == KeyCode.O) pc.seek(Duration.seconds(pc.getCurrentTime() + 10));
+				if ( k.getCode() == KeyCode.I) pc.seek(Duration.seconds(pc.getCurrentTime() - 10));
 			}
 
 		});
@@ -450,6 +461,7 @@ public class Root extends Application {
 
 
 	public static void find(String keyWord, ToggleGroup mainPanel, GridPane root, PlayerController pc) {	
+		// TODO espandere 
 		List<Track> list = pc.getTracklist().stream().filter(t->{
 			return (
 					t.getAlbum().toLowerCase().contains(keyWord.toLowerCase()) ||
@@ -531,7 +543,7 @@ public class Root extends Application {
 		String mainDir = "";
 		try {
 			BufferedReader br= Files.newBufferedReader(mainDirFile);
-				mainDir = br.readLine();
+			mainDir = br.readLine();
 			br.close();	
 		} catch (IOException e) { 
 			System.out.println("mainDir non selezionata");
@@ -569,6 +581,22 @@ public class Root extends Application {
 		}
 		System.out.println(mainDir);
 		return mainDir;
+	}
+
+
+	private String timeMinutes(double time) {
+
+		String mS = "";
+		String m = Integer.toString((int) time/60);
+		String s = Integer.toString((int)time%60);
+		if(s.length() == 1) {
+			s = "0"+s;
+		}
+		
+		mS = m + ":" +s;
+		
+		return mS;
+
 	}
 }
 

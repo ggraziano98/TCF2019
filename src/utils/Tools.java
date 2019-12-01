@@ -144,7 +144,7 @@ public class Tools {
 	 */
 	public static TrackList readPlaylist(String playlist) {
 		TrackList tracklist = new TrackList();
-		Path filePath = Paths.get("playlists", playlist + ".txt");
+		Path filePath = Paths.get("playlists", playlist);
 		try {
 
 			BufferedReader br= Files.newBufferedReader(filePath);
@@ -155,6 +155,7 @@ public class Tools {
 				if(Files.exists(path)){
 				tracklist.addTrack(path);;
 				}
+				else System.out.println(path.toString() + "\tNon è un file corretto");
 			}	
 
 			br.close();	
