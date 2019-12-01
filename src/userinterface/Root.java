@@ -445,7 +445,7 @@ public class Root extends Application {
 
 		savedPlaylists.forEach((String name)->{
 			TrackList tracklist = Tools.readPlaylist(name);
-			VBox table = TrackView.tableFromTracklist(tracklist, pc);
+			VBox table = TrackView.tableFromTracklist(tracklist, pc, true);
 			root.add(table, 1, 1, 1, 2);
 			playlists(name, playlistsVbox, mainPanel, table);
 		});

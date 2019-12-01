@@ -114,6 +114,7 @@ public class PlayerController {
 	 */
 	public void seek(Duration time) {
 		this.getPlayer().seek(time);
+		System.out.println("seeked: " + time.toSeconds());
 	}
 
 
@@ -121,9 +122,9 @@ public class PlayerController {
 
 
 	public void refreshPlayer() {
+		if (this.getCurrentTrack() != null) this.getCurrentTrack().setPlaying(false);
 		this.currentTrack = this.getTracklist().get(this.getCurrentInt());
-		Track track = this.currentTrack;
-		track.setMetadata();
+		this.currentTrack.setPlaying(true);
 		if(player != null) {
 			player.stop();
 			player = null;
@@ -134,7 +135,7 @@ public class PlayerController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		this.tracklist.forEach(t->System.out.println(t.getPosition() + "\t" + t.getPlaying()));
 		this.setTotalDuration(this.getCurrentTrack().getDuration());
 	}
 
