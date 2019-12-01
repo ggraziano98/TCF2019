@@ -1,69 +1,46 @@
 package testers;
 
 
-import javafx.application.Application;
-import javafx.beans.property.StringProperty;
-import javafx.scene.Scene;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import models.Track;
-import models.TrackList;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javafx.collections.MapChangeListener.Change;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import utils.Tools;
 
-public class randomTester extends Application{
-
+public class randomTester{
+	
+	
+	private static final Object obj = new Object();
 
 	public static void main(String[] args) {
-		launch(args);
-	}
-
-	@Override
-	public void start(Stage primaryStage) {
-		TrackList playlist = Tools.readPlaylist("Playlist playerTester");
-		TableView<Track> tableView = tableFromTracklist(playlist);
-        VBox vbox = new VBox(tableView);
-
-        Scene scene = new Scene(vbox);
-
-        primaryStage.setScene(scene);
-
-        primaryStage.show();
-	}
-	
-	
-	
-	public static TableView<Track> tableFromTracklist(TrackList tracklist) {
-		TableView<Track> table = new TableView<>();
-
-        TableColumn<Track, StringProperty> column1 = new TableColumn<>("Titolo");
-        column1.setCellValueFactory(new PropertyValueFactory<>("title"));
-
-        TableColumn<Track, StringProperty> column2 = new TableColumn<>("Artista");
-        column2.setCellValueFactory(new PropertyValueFactory<>("artist"));
-        
-        TableColumn<Track, StringProperty> column3 = new TableColumn<>("Album");
-        column3.setCellValueFactory(new PropertyValueFactory<>("album"));
-        
-        TableColumn<Track, StringProperty> column4 = new TableColumn<>("Genere");
-        column4.setCellValueFactory(new PropertyValueFactory<>("genre"));
-
-        table.getColumns().add(column1);
-        table.getColumns().add(column2);
-        table.getColumns().add(column3);
-        table.getColumns().add(column4);
-
-        for(int i=0; i<tracklist.getSize(); i++) {
-        	table.getItems().add(tracklist.get(i));
-        }
+		Path path = Paths.get("D:\\Music\\Dragonforce\\09 Heart of a Dragon.mp3");
+		String cleanPathS = Tools.cleanURL(path.toString());
 		
-		
-		return table;
+
+		JFXPanel panel = new JFXPanel();
+		try {
+			Media media = new Media(cleanPathS);	
+			
+			MediaPlayer mp = new MediaPlayer(media);
+
+			//QUESTION create listener class? 
+			mp.setOnReady(()->{
+			            String artistName=(String) mp.getMedia().getMetadata().get("artist");
+			            System.out.println(artistName);
+			            synchronized(obj){
+			                obj.notify();
+			        }
+			});
+			System.out.println("done");
+
+
+		} catch (RuntimeException re) {
+			System.out.println("path non leggibile");
+			System.out.println(cleanPathS);
+		}
 	}
-	
 
 }

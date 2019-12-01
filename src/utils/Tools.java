@@ -24,10 +24,10 @@ import models.TrackList;
 
 public class Tools {
 
-	public static final StringProperty DALBUM = new SimpleStringProperty("Album Sconosciuto");
-	public static final StringProperty DYEAR = new SimpleStringProperty("Anno Sconosciuto");
-	public static final StringProperty DARTIST = new SimpleStringProperty("Artista Sconosciuto");
-	public static final StringProperty DGENRE = new SimpleStringProperty("Genere Sconosciuto");
+	public static final String DALBUM = "Album Sconosciuto";
+	public static final String DYEAR = "Anno Sconosciuto";
+	public static final String DARTIST = "Artista Sconosciuto";
+	public static final String DGENRE = "Genere Sconosciuto";
 	
 	
 	public static final String TRANSBUTT = "    -fx-border-color: transparent;\n" + 
@@ -148,7 +148,7 @@ public class Tools {
 			while ((line = br.readLine()) != null) {
 				Path path = Paths.get(line);
 				if(Files.exists(path)){
-				tracklist.add(new Track(path));;
+				tracklist.addTrack(path);;
 				}
 			}	
 

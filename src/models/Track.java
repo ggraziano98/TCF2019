@@ -4,20 +4,25 @@ import java.io.IOError;
 import java.nio.file.Path;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.MapChangeListener.Change;
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import utils.DataChangeListener;
 import utils.Tools;
 
 
 /**
  * Class model for a Track 
+ * 
+ * TODO fix playercontroller
  * 
  * @param title
  * @param artist
@@ -36,10 +41,10 @@ public class Track{
 	private StringProperty album;
 	private StringProperty genre;
 	private StringProperty year;
-	private Duration duration;
+	private DoubleProperty duration;
 	private Image image;
-	private MediaPlayer mediaPlayer;
-	private BooleanProperty ready;
+	private BooleanProperty playing;
+	private IntegerProperty position;
 
 
 	/**
@@ -55,12 +60,12 @@ public class Track{
 	 * @param path			oggetto Path 
 	 */
 	public Track(Path path) {
-		this.album = Tools.DALBUM;
-		this.artist = Tools.DARTIST;
-		this.year = Tools.DYEAR;
+		this.album = new SimpleStringProperty(Tools.DALBUM);
+		this.artist = new SimpleStringProperty(Tools.DARTIST);
+		this.year = new SimpleStringProperty(Tools.DYEAR);
 		this.title = new SimpleStringProperty(path.getFileName().toString());
-		this.genre = Tools.DGENRE;
-		this.ready = new SimpleBooleanProperty(false);
+		this.genre = new SimpleStringProperty(Tools.DGENRE);
+		this.playing = new SimpleBooleanProperty(false);
 		this.setPath(path);
 		this.setMetadata();
 	}
@@ -72,12 +77,12 @@ public class Track{
 		setArtist(Tools.DARTIST);
 		setGenre(Tools.DGENRE);
 		setYear(Tools.DYEAR);
-		setTitle(new SimpleStringProperty(this.getPath().getFileName().toString()));
+		setTitle(this.getPath().getFileName().toString());
 	}
 
 	/*
 	 */
-	private void setMetadata() {
+	public void setMetadata() {
 
 
 		Path path = this.getPath();
@@ -85,55 +90,55 @@ public class Track{
 
 		this.resetProperties();
 		try {
-			final Media media = new Media(cleanPathS);
-			MediaPlayer mediaPlayer = new MediaPlayer(media);
-			this.setMediaPlayer(mediaPlayer);
-			media.getMetadata().addListener((Change<? extends String,
-					? extends Object> ch) -> {
-						if (ch.wasAdded()) {
-							handleMetadata(ch.getKey(), ch.getValueAdded());
-						}
-					});
+			Media media = new Media(cleanPathS);				
 
-			mediaPlayer.setOnReady(()-> {
-				this.setDuration(media.getDuration());
-				this.setReady(true);
+			DataChangeListener metadataChangeListener = new DataChangeListener(this);
+
+			//QUESTION create listener class? yaaas
+			media.getMetadata().addListener(metadataChangeListener);
+			
+			MediaPlayer mp = new MediaPlayer(media);
+			mp.setOnReady(()->{
+				this.setDuration(mp.getTotalDuration());
 			});
 
 			this.setDuration(media.getDuration());
+			
 		} catch (RuntimeException re) {
-			re.printStackTrace();
+			System.out.println("path non leggibile");
 			System.out.println(cleanPathS);
 		}
 	}
 
 
-	public void handleMetadata(String key, Object value) {
-		if (key.equals("album") ) {
-			if(value.toString() == "" || value == null) {
-				this.setAlbum(Tools.DALBUM);
+	public void handleMetadata(String key, Object value, Track track) {
+		if(track.getPath().equals(this.getPath())) {
+			if (key.equals("album") ) {
+				if(value.toString() == "" || value == null) {
+					this.setAlbum(Tools.DALBUM);
+				}
+				else {
+					this.setAlbum(value.toString());
+				}
+			} else if (key.equals("artist") || key.equals("album artist") || key.equals("contributing artists")) {
+				if(value.toString() == "" && this.getArtist() == "") this.setArtist(Tools.DARTIST);
+				else this.setArtist(value.toString());
+
+			} if (key.equals("title")) {
+				if(value.toString() == "") this.setTitle(getPath().getFileName().toString());
+				else this.setTitle(value.toString());
+
+			} if (key.equals("year")) {
+				if(value.toString() == "") this.setYear(Tools.DYEAR);
+				else this.setYear(value.toString());
+
+			} if (key.equals("image")) {
+				this.setImage((Image) value);
+
+			} if (key.equals("genre")) {
+				if(value.toString() == "") this.setGenre(Tools.DGENRE);
+				else this.setGenre(value.toString());
 			}
-			else {
-				this.setAlbum(new SimpleStringProperty(value.toString()));
-			}
-		} else if (key.equals("artist") || key.equals("album artist")) {
-			if(value.toString() == "" && this.getArtist().getValueSafe() == "") this.setArtist(Tools.DARTIST);
-			else this.setArtist(new SimpleStringProperty(value.toString()));
-
-		} if (key.equals("title")) {
-			if(value.toString() == "") this.setTitle(new SimpleStringProperty(getPath().getFileName().toString()));
-			else this.setTitle(new SimpleStringProperty(value.toString()));
-
-		} if (key.equals("year")) {
-			if(value.toString() == "") this.setYear(Tools.DYEAR);
-			else this.setYear(new SimpleStringProperty(value.toString()));
-
-		} if (key.equals("image")) {
-			this.setImage((Image) value);
-
-		} if (key.equals("genre")) {
-			if(value.toString() == "") this.setGenre(Tools.DGENRE);
-			else this.setGenre(new SimpleStringProperty(value.toString()));
 		}
 	}
 
@@ -143,12 +148,12 @@ public class Track{
 	 * Setter e getter di ogni variabile
 	 */
 
-	public Path getPath() {
+	public final Path getPath() {
 		return path;
 	}
 
 
-	public void setPath(Path path) {
+	public final void setPath(Path path) {
 		try {	
 			this.path = path.toAbsolutePath();
 		}
@@ -158,8 +163,10 @@ public class Track{
 		}
 	}
 
-	public StringProperty getTitle() {
-		return title;
+	
+	
+	public final String getTitle() {
+		return title.get();
 	}
 
 
@@ -168,13 +175,13 @@ public class Track{
 	}
 
 
-	public void setTitle(StringProperty title) {
-		this.title.set(title.getValue());
+	public final void setTitle(String title) {
+		this.title.set(title);
 	}
 
 
-	public StringProperty getArtist() {
-		return artist;
+	public final String getArtist() {
+		return artist.get();
 	}
 
 
@@ -183,13 +190,13 @@ public class Track{
 	}
 
 
-	public void setArtist(StringProperty artist) {
-		this.artist.set(artist.getValue());
+	public final void setArtist(String artist) {
+		this.artist.set(artist);
 	}
 
 
-	public StringProperty getAlbum() {
-		return album;
+	public final String getAlbum() {
+		return album.get();
 	}
 
 
@@ -198,13 +205,13 @@ public class Track{
 	}
 
 
-	public void setAlbum(StringProperty album) {
-		this.album.set(album.getValue());
+	public final void setAlbum(String album) {
+		this.album.set(album);;
 	}
 
 
-	public StringProperty getGenre() {
-		return genre;
+	public final String getGenre() {
+		return genre.get();
 	}
 
 	public StringProperty genreProperty() {
@@ -212,13 +219,13 @@ public class Track{
 	}
 
 
-	public void setGenre(StringProperty genre) {
-		this.genre.set(genre.getValue());;
+	public final void setGenre(String genre) {
+		this.genre.set(genre);
 	}
 
 
-	public StringProperty getYear() {
-		return year;
+	public final String getYear() {
+		return year.get();
 	}
 
 	public StringProperty yearProperty() {
@@ -226,49 +233,64 @@ public class Track{
 	}
 
 
-	public void setYear(StringProperty year) {
-		this.year.set(year.getValue());
+	public final void setYear(String year) {
+		this.year.set(year);
 	}
 
 
-	public Duration getDuration() {
+	public final Duration getDuration() {
+		return Duration.seconds(duration.get());
+	}
+	
+	
+	public DoubleProperty durationProperty() {
 		return duration;
 	}
 
 
-	public void setDuration(Duration duration) {
-		this.duration = duration;
+	public final void setDuration(Duration duration) {
+		if (this.duration == null) this.duration = new SimpleDoubleProperty(0);
+		this.duration.set(duration.toSeconds());
 	}
 
 
-	public Image getImage() {
+	public final Image getImage() {
 		return image;
 	}
 
 
-	public void setImage(Image image) {
+	public final void setImage(Image image) {
 		this.image = image;
 	}
 
-	public MediaPlayer getMediaPlayer() {
-		return this.mediaPlayer;
+
+	public final boolean getPlaying() {
+		return playing.get();
+	}
+	
+	public BooleanProperty playingProperty() {
+		return playing;
 	}
 
 
-	public void setMediaPlayer(MediaPlayer mediaPlayer) {
-		this.mediaPlayer = mediaPlayer;
+	public final void setPlaying(boolean playing) {
+		this.playing.set(playing);
 	}
 
 
-	public BooleanProperty getReady() {
-		return ready;
+	public final int getPosition() {
+		return position.get();
 	}
 
 
-	public void setReady(boolean ready) {
-		this.ready.set(ready);
+	public final void setPosition(int position) {
+		if (this.position == null) this.position = new SimpleIntegerProperty(-1);
+		this.position.set(position);;
 	}
-
-
+	
+	
+	public IntegerProperty positionProperty() {
+		return position;
+	}
 
 }

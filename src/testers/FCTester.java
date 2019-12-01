@@ -115,11 +115,11 @@ public class FCTester {
 		}}
 		*/
 		Track track = playlist1.get(3);
-		System.out.println("album " + track.getAlbum().getValue() + "\n" +
-				"artist " + track.getArtist().getValue() + "\n" +
-				"genre " + track.getGenre().getValue() + "\n"+
-				"year " + track.getYear().getValue() + "\n"+
-				"duration " + track.getDuration().toMinutes() + "\n"+
+		System.out.println("album " + track.getAlbum() + "\n" +
+				"artist " + track.getArtist() + "\n" +
+				"genre " + track.getGenre() + "\n"+
+				"year " + track.getYear() + "\n"+
+				"duration " + track.getDuration() + "\n"+
 				"image " + track.getImage() + "\n");		
 	}
 }
