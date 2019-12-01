@@ -119,7 +119,10 @@ public class Root extends Application {
 
 		//PLAYER play, pause, next, previous
 		GridPane playerV = new GridPane();
+		VBox controlButtons = new VBox();
 		HBox playerButtons = new HBox();
+		HBox progressionButtons = new HBox();
+		
 
 		RowConstraints row60 = new RowConstraints(35, 35, 35);
 		row60.setValignment(VPos.CENTER);
@@ -156,10 +159,24 @@ public class Root extends Application {
 		ImageView nextView = new ImageView(nextImage);
 		nextView.setFitHeight(25);
 		nextView.setFitWidth(25);
+		
+		FileInputStream shuffleFile = new FileInputStream("files\\Player\\shuffle.png");
+		Image shuffleImage = new Image(shuffleFile);
+		ImageView shuffleView = new ImageView(shuffleImage);
+		shuffleView.setFitHeight(25);
+		shuffleView.setFitWidth(25);
+		
+		FileInputStream repeatFile = new FileInputStream("files\\Player\\repeat.png");
+		Image repeatImage = new Image(repeatFile);
+		ImageView repeatView = new ImageView(repeatImage);
+		repeatView.setFitHeight(25);
+		repeatView.setFitWidth(25);
 
 		Button playButton = new Button("",playView);
 		Button prevButton = new Button("",prevView);
 		Button nextButton = new Button("",nextView);
+		Button shuffleButton = new Button("",shuffleView);
+		Button repeatButton = new Button("",repeatView);
 
 
 		AtomicBoolean play = new AtomicBoolean(false);
@@ -217,7 +234,10 @@ public class Root extends Application {
 			pc.setVolumeValue(pc.getVolumeValue() + volumeAmount/300);
 		});
 
-		playerButtons.getChildren().addAll(prevButton, playButton, nextButton, volumeButton, volumeSlider);
+		playerButtons.getChildren().addAll(prevButton, playButton, nextButton, volumeButton, volumeSlider, shuffleButton, repeatButton );
+	//	progressionButtons.getChildren().addAll(shuffleButton, repeatButton);
+		controlButtons.getChildren().addAll(playerButtons, progressionButtons);
+		
 
 
 
