@@ -6,22 +6,30 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
+import javafx.util.Duration;
+import models.Track;
 import models.TrackList;
+import utils.Tools;
 
 public class PlayerController {
 	//TODO make sure songs are closed properly
-	// TODO handle media duration
 
 	/**
 	 * inizializzo i data member, mi dicono la canzone corrente e quella successiva
 	 */
-	private IntegerProperty currentTrack;
+	private Track currentTrack;
 	private MediaPlayer player;
-	private MediaPlayer loadingPlayer;
 	private TrackList tracklist;
+	private IntegerProperty currentInt;
+
 	private DoubleProperty volumeValue;
+	private DoubleProperty totalDuration;
+	private DoubleProperty currentTime;
+
+	private BooleanProperty playing;
 	private BooleanProperty muted;
 	/**
 	 * costruttore di default
@@ -32,29 +40,45 @@ public class PlayerController {
 
 	public PlayerController(TrackList tracklist) {
 		this.setTracklist(tracklist);
-		this.setCurrentTrack(new SimpleIntegerProperty(0));
+
+		this.playing = new SimpleBooleanProperty(false);
+		this.setTracklist(tracklist);
 		this.muted = new SimpleBooleanProperty(false);
 		this.volumeValue = new SimpleDoubleProperty(1);
 		this.volumeValue.addListener((obs, oldv, newv)->{
 			this.setVolume();
 		});
-		this.refresh();
+		this.totalDuration = new SimpleDoubleProperty(0);
+		this.currentTime = new SimpleDoubleProperty(0);
+		this.setCurrentInt(0);
 	}
 
 
 	public PlayerController(TrackList tracklist, int firstSongPosition) {
+		this.playing = new SimpleBooleanProperty(false);
 		this.setTracklist(tracklist);
-		this.setCurrentTrack(new SimpleIntegerProperty(firstSongPosition));
-		this.refresh();
+		this.setCurrentInt(firstSongPosition);
+		this.muted = new SimpleBooleanProperty(false);
+		this.volumeValue = new SimpleDoubleProperty(1);
+		this.volumeValue.addListener((obs, oldv, newv)->{
+			this.setVolume();
+		});
+		this.totalDuration = new SimpleDoubleProperty(0);
+		this.currentTime = new SimpleDoubleProperty(0);
+		this.refreshPlayer();
 	}
 
 	public void play() {
-		if(!this.getPlayer().getStatus().equals(Status.UNKNOWN)) this.getPlayer().play();
-		else {
-			this.getPlayer().setOnReady(()-> {
-				this.getPlayer().play();
-			});
-		}
+		this.getPlayer().setOnReady(()-> {
+			this.getPlayer().play();
+			this.setTotalDuration(this.getPlayer().getMedia().getDuration());
+		});
+		this.setTotalDuration(this.getPlayer().getMedia().getDuration());
+		this.getPlayer().play();
+
+
+		this.getPlayer().setOnEndOfMedia(()->this.next());
+		this.setPlaying(true);
 
 	}
 
@@ -63,146 +87,211 @@ public class PlayerController {
 		if(this.getPlayer().getStatus().equals(Status.PLAYING)) {
 			this.getPlayer().pause();
 		}
+		this.setPlaying(false);
 	}
 
 
 	public void next() {
-		boolean playing = false;
-		this.setCurrentTrack(new SimpleIntegerProperty(this.currentInt() + 1));
-		if(this.getPlayer().getStatus().equals(Status.PLAYING)) {
-			this.refresh();
+		this.setCurrentInt(this.getCurrentInt() + 1);
+		if(this.getPlaying()) {
 			this.play();
 		}
-		else this.refresh();
 	}
 
 
 	public void prev() {
-		boolean playing = false;
-		this.setCurrentTrack(new SimpleIntegerProperty(this.currentInt() - 1));
-		if(this.getPlayer().getStatus().equals(Status.PLAYING)) {
-			this.refresh();
+		this.setCurrentInt(this.getCurrentInt() - 1);
+		if(this.getPlaying()) {
 			this.play();
 		}
-		else this.refresh();
-	}
-	
-	
-	
-	public void setVolumeValue(double volume) {
-		this.setVolumeValue(new SimpleDoubleProperty((int) volume));
 	}
 
 
+	/**
+	 * sposta il player al time desiderato 
+	 * 
+	 * @param time (Duration) tempo in millisecondi
+	 */
+	public void seek(Duration time) {
+		this.getPlayer().seek(time);
+	}
 
 
 
-	private void refresh() {
-		if(this.getLoadingPlayer() != null && this.getLoadingPlayer().equals(this.getTracklist().get(this.currentInt()+1).getMediaPlayer())) {
-			this.setPlayer(this.getLoadingPlayer());
-			this.setLoadingPlayer(this.getTracklist().get(this.currentInt()+1).getMediaPlayer());
+
+
+	public void refreshPlayer() {
+		this.currentTrack = this.getTracklist().get(this.getCurrentInt());
+		Track track = this.currentTrack;
+		track.setMetadata();
+		if(player != null) {
+			player.stop();
+			player = null;
 		}
-		else {
-			if(player != null) {
-				player.stop();
-				player = null;
-			}
-			try {
-				this.setPlayer(this.getTracklist().get(this.getCurrentTrack().getValue()).getMediaPlayer());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		try {
+			MediaPlayer mp = new MediaPlayer(new Media(Tools.cleanURL(this.getCurrentTrack().getPath().toString())));
+			this.setPlayer(mp);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
-
+		this.setTotalDuration(this.getCurrentTrack().getDuration());
 	}
 
 
 
 
-	public IntegerProperty getCurrentTrack() {
+	public final Track getCurrentTrack() {
 		return currentTrack;
 	}
 
 
-	public void setCurrentTrack(IntegerProperty currentTrack) {
-		if(this.currentTrack != null) {
-			if(currentTrack.intValue()>= 0) {
-				this.currentTrack.set(currentTrack.intValue()%this.getTracklist().getSize());
-			} else {
-				//TODO better handling of this
-				this.currentTrack.set(this.getTracklist().getSize() -1);
-			}
-		} else {
-			if(currentTrack.intValue()>= 0) {
-				this.currentTrack = new SimpleIntegerProperty(currentTrack.intValue()%(this.getTracklist().getSize()));
-			} else {
-				//TODO better handling of this
-				this.currentTrack = new SimpleIntegerProperty(this.getTracklist().getSize() -1);
-			}
-		}
+	//TODO controllare se giusto
+	public final void setCurrentTrack(Track currentTrack) {
+		this.setCurrentInt(currentTrack.getPosition());
 	}
 
 
-	public MediaPlayer getPlayer() {
+	public final MediaPlayer getPlayer() {
 		return player;
 	}
 
 
-	public void setPlayer(MediaPlayer player) {
+	private final void setPlayer(MediaPlayer player) {
 		this.player = player;
 		this.setVolume();
+		this.player.currentTimeProperty().addListener((obs, oldv, newv)->{
+			this.setCurrentTime(newv.toSeconds());
+		});
 	}
 
 
-	public MediaPlayer getLoadingPlayer() {
-		return loadingPlayer;
-	}
-
-
-	public void setLoadingPlayer(MediaPlayer loadingPlayer) {
-		this.loadingPlayer = loadingPlayer;
-	}
-
-
-	public TrackList getTracklist() {
+	public final TrackList getTracklist() {
 		return tracklist;
 	}
 
 
-	public void setTracklist(TrackList tracklist) {
+	public final void setTracklist(TrackList tracklist) {
 		this.tracklist = tracklist;
 	}
 
-	private int currentInt() {
-		return this.getCurrentTrack().getValue();
+
+	public final int getCurrentInt() {
+		return currentInt.get();
+	}
+	
+	
+	public IntegerProperty currentIntProperty() {
+		return currentInt;
 	}
 
 
-	public  DoubleProperty getVolumeValue() {
+	private final void setCurrentInt(int currentInt) {
+		if(this.currentInt == null) this.currentInt = new SimpleIntegerProperty(0);
+		if(currentInt>= 0) {
+			this.currentInt.set(currentInt%this.getTracklist().getSize());
+		} else {
+			this.currentInt.set(this.getTracklist().getSize() -1);
+		}
+		this.refreshPlayer();
+	}
+
+
+	public final double getVolumeValue() {
+		return volumeValue.get();
+	}
+	
+	
+	public DoubleProperty volumeValueProperty() {
 		return volumeValue;
 	}
 
 
-	public  void setVolumeValue(DoubleProperty volumeValue) {
-		this.volumeValue.set(volumeValue.intValue());
+	public final void setVolumeValue(double volumeValue) {
+		if(this.volumeValue==null) this.setVolumeValue(volumeValue);
+		this.volumeValue.set(volumeValue);
 		this.setVolume();
 	}
 
 
-	public  BooleanProperty getMuted() {
+	public final boolean getMuted() {
+		return muted.get();
+	}
+	
+	
+	public BooleanProperty mutedProperty() {
 		return muted;
 	}
 
 
-	public void setMuted(BooleanProperty muted) {
-		this.muted.set(muted.getValue());
+	public final void setMuted(boolean muted) {
+		if (this.muted == null) this.muted = new SimpleBooleanProperty(false);
+		this.muted.set(muted);
 		this.setVolume();
 	}
 	
+	
+
 	private void setVolume() {
-		this.player.setVolume(this.getVolumeValue().doubleValue());
-		this.player.setMute(this.getMuted().getValue());
+		this.player.setVolume(this.getVolumeValue());
+		this.player.setMute(this.getMuted());
+	}
+
+
+	/**
+	 * 
+	 * @return duration in seconds
+	 */
+	public final double getTotalDuration() {
+		return totalDuration.get();
+	}
+	
+	
+	public DoubleProperty totalDurationProperty() {
+		return totalDuration;
+	}
+	
+
+	private final void setTotalDuration(Duration totalDuration) {
+		if(this.totalDuration == null) this.totalDuration = new SimpleDoubleProperty(totalDuration.toSeconds());
+		this.totalDuration.set(totalDuration.toSeconds());
+	}
+
+	/**
+	 * 
+	 * @return time in seconds
+	 */
+	public final double getCurrentTime() {
+		return currentTime.get();
+	}
+	
+	
+	public DoubleProperty currentTimeProperty() {
+		return currentTime;
+	}
+
+
+	private final void setCurrentTime(double currentTime) {
+		if(this.currentTime == null) this.currentTime = new SimpleDoubleProperty(0);
+		this.currentTime.set(currentTime);
+	}
+
+
+
+	public final boolean getPlaying() {
+		return playing.get();
+	}
+	
+	
+	public BooleanProperty playingProperty() {
+		return playing;
+	}
+
+
+	public final void setPlaying(boolean playing) {
+		if(this.playing == null) this.playing = new SimpleBooleanProperty(false);
+		this.playing.set(playing);
+
 	}
 
 }

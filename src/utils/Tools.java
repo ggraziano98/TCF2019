@@ -29,12 +29,30 @@ import models.TrackList;
 
 public class Tools {
 
-	public static final StringProperty DALBUM = new SimpleStringProperty("Album Sconosciuto");
-	public static final StringProperty DYEAR = new SimpleStringProperty("Anno Sconosciuto");
-	public static final StringProperty DARTIST = new SimpleStringProperty("Artista Sconosciuto");
-	public static final StringProperty DGENRE = new SimpleStringProperty("Genere Sconosciuto");
+	public static final String DALBUM = "Album Sconosciuto";
+	public static final String DYEAR = "Anno Sconosciuto";
+	public static final String DARTIST = "Artista Sconosciuto";
+	public static final String DGENRE = "Genere Sconosciuto";
+	
+	
+	public static final String TRANSBUTT = "    -fx-border-color: transparent;\n" + 
+			"    -fx-border-width: 0;\n" + 
+			"    -fx-background-radius: 0;\n" + 
+			"    -fx-background-color: transparent;\n}";
+	public static final String BOLDBUTT = "    -fx-border-color: transparent;\n" + 
+			"    -fx-border-width: 0;\n" + 
+			"    -fx-background-radius: 0;\n" + 
+			"    -fx-background-color: transparent;\n" +
+			"    -fx-font-weight: bold}";
+	public static final String SELBUTT = "    -fx-border-color: red;\n" + 
+			"    -fx-border-width: 0;\n" + 
+			"    -fx-background-radius: 0;\n" + 
+			"    -fx-background-color: #bebdbf;\n" +
+			"    -fx-font-weight: bold;\n}";
 
-
+	
+	
+	
 	/**
 	 * funzione che ritorna una lista di path ai file contenuti nella directory
 	 * @param 		path
@@ -90,8 +108,7 @@ public class Tools {
 
 
 
-	/**TODO errore
-	 * 
+	/**TODO errore 
 	 * funzione che salva la tracklist come file di testo
 	 * 
 	 * @param tracklist
@@ -135,7 +152,9 @@ public class Tools {
 
 			while ((line = br.readLine()) != null) {
 				Path path = Paths.get(line);
-				tracklist.add(new Track(path));;
+				if(Files.exists(path)){
+				tracklist.addTrack(path);;
+				}
 			}	
 
 			br.close();	
@@ -195,17 +214,16 @@ public class Tools {
 
 	}
 
-
 	/**
 	 * tool per debugging, printa il contenuto di una playlist
+	 * TODO togliere quando non serve piu
 	 * 
 	 * @param tracklist
 	 */
 	public static void cout(TrackList tracklist) {
 		for (int i = 0; i < tracklist.size(); i++) {
 			System.out.println(tracklist.get(i).getPath().getFileName() + "\t\t\t" + i);
-		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
-
+		}	// uso un loop for anzichÃ© foreach per avere l'indice delle canzoni
 	}
 
 

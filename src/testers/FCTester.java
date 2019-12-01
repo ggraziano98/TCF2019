@@ -45,11 +45,9 @@ public class FCTester {
 		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
 		
 		
-		
-		/*funziona ma non vogliamo cancellare una canzone a ogni test
-		 * 
+		/*
 		try {
-		fileC.deleteTrack(tracklist.getSongList().get(3));
+		fileC.deleteTrack(tracklist.get(3));
 		} 
 		catch (Exception e) {
 			System.out.println("Error: " + e.getMessage());
@@ -57,8 +55,8 @@ public class FCTester {
 
 		Path notATrack = Paths.get("notATrack.mp3");
 		fileC.deleteTrack(notATrack);
-		*/
 		
+		*/
 		
 //		System.out.println("\n \n \n provo la funzione shuffle");
 //		tracklist.shuffleTrack();
@@ -85,9 +83,6 @@ public class FCTester {
 //		cout(tracklist);
 //
 //		
-//		/**
-//		 * TODO il metodo funziona ma non funziona il handle metadata	
-//		 */
 //		System.out.println("\n \n \n provo la funzione totalduration");
 //		System.out.println(tracklist.totalDuration());
 		
@@ -96,9 +91,6 @@ public class FCTester {
 		Tools.saveAsPlaylist(tracklist, "Nuova Playlist");
 		
 //		
-		/**
-		 * TODO trovare un modo per prendere il nome della playlist per esempio aggiungere un metadata alla classe tracklist
-		 */
 		TrackList playlist1 = new TrackList();
 		playlist1 = Tools.readPlaylist("Nuova Playlist");
 		System.out.println("\n\n\nNuova playlist:");
@@ -127,11 +119,11 @@ public class FCTester {
 		}}
 		*/
 		Track track = playlist1.get(3);
-		System.out.println("album " + track.getAlbum().getValue() + "\n" +
-				"artist " + track.getArtist().getValue() + "\n" +
-				"genre " + track.getGenre().getValue() + "\n"+
-				"year " + track.getYear().getValue() + "\n"+
-				"duration " + track.getDuration().toMinutes() + "\n"+
+		System.out.println("album " + track.getAlbum() + "\n" +
+				"artist " + track.getArtist() + "\n" +
+				"genre " + track.getGenre() + "\n"+
+				"year " + track.getYear() + "\n"+
+				"duration " + track.getDuration() + "\n"+
 				"image " + track.getImage() + "\n");		
 		
 		//provo il metodo getNamesSavedPlaylists
