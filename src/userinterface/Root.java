@@ -219,12 +219,14 @@ public class Root extends Application {
 
 
 
-
+		HBox sliderBox = new HBox();
 		Slider timeSlider = new Slider();
 		timeSlider.setMax(100);
 		timeSlider.setMin(0);
 		timeSlider.setMaxWidth(460);
-		final Label timeLabel = new Label();
+		
+		Label timeLabel = new Label();
+		timeLabel.setText(Double.toString(pc.getCurrentTime()) + " / " + Double.toString(pc.getTotalDuration()));
 
 		timeSlider.setOnMouseReleased((ev)->{
 			double currentTime = pc.getCurrentTime()/pc.getTotalDuration()*100;
@@ -236,9 +238,11 @@ public class Root extends Application {
 			if (!timeSlider.isValueChanging() && !timeSlider.isPressed()) {
 				timeSlider.setValue(newv.doubleValue()/pc.getTotalDuration()*100);
 			}
+			timeLabel.setText(Double.toString(pc.getCurrentTime()) + " / " + Double.toString(pc.getTotalDuration()));
 		});
-		timeLabel.setTextFill(Color.WHITE);
-		timeLabel.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+		
+		sliderBox.getChildren().addAll(timeSlider, timeLabel);
+		
 
 		// TODO cambiarla con una default image, fix height
 		Image songImage = new Image(volumeFile);
@@ -277,7 +281,7 @@ public class Root extends Application {
 		playerButtons.setAlignment(Pos.CENTER);
 		playerV.add(songName, 0, 0);
 		playerV.add(songView, 0, 1);
-		playerV.add(timeSlider, 0, 2);
+		playerV.add(sliderBox, 0, 2);
 		playerV.add(playerButtons, 0, 3);
 
 

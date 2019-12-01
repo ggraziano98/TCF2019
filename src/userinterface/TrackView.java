@@ -20,7 +20,6 @@ public class TrackView {
 
         TableColumn<Track, StringProperty> column1 = new TableColumn<>("Titolo");
         column1.setCellValueFactory(new PropertyValueFactory<>("title"));
-        customFactory(column1);
 
         TableColumn<Track, StringProperty> column2 = new TableColumn<>("Artista");
         column2.setCellValueFactory(new PropertyValueFactory<>("artist"));
@@ -63,6 +62,7 @@ public class TrackView {
 		return vbox;
 	}
 	
+	/* continua a 
 	private static void customFactory(TableColumn<Track, StringProperty> calltypel) {
 		calltypel.setCellFactory(column -> {
             return new TableCell<Track, StringProperty>() {
@@ -87,5 +87,6 @@ public class TrackView {
             };
         });
 	}
+	*/
 
 }
