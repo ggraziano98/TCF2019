@@ -47,7 +47,7 @@ import utils.Tools;
 
 
 
-public class Root extends Application {
+public class Root extends Application{
 
 	// TODO chiudere le risorse una volta usate 
 	//TODO questo serve per adattare la dimensione della finestra alla definizione del display del pc
@@ -60,12 +60,13 @@ public class Root extends Application {
 	static TrackList mainTracklist = fc.getFilesFromDir();
 	static PlayerController pc = new PlayerController(mainTracklist);
 	static GridPane root = new GridPane();
+	static TextField findText = new TextField();
 
-	@Override
+	
 	public void start(Stage primaryStage) throws Exception {
 
 		//GRIDPANE è il pane di livello piu alto, contiene tutti gli altri
-		GridPane root = new GridPane();
+		
 		root.setVgap(10);
 		root.setHgap(20);
 		root.setPadding(new Insets(5, 10, 5, 10));
@@ -100,7 +101,6 @@ public class Root extends Application {
 		// SEARCHBAR per cercare all'interno della libreria
 		HBox findHBox = new HBox();
 		findHBox.setAlignment(Pos.CENTER);
-		TextField findText = new TextField();
 		findText.setMinWidth(220);
 		Button findButton = new Button("cerca");
 
@@ -199,7 +199,7 @@ public class Root extends Application {
 		Image gioImage = new Image(gioFile);
 		primaryStage.getIcons().add(gioImage);
 
-		GridPane pB = (GridPane) PlayerBuilder.playerBuilder(pc, primaryStage, findText, columnOneWidht);
+		GridPane pB = (GridPane) PlayerBuilder.playerBuilder(pc, findText, columnOneWidht);
 		//aggiungo i pane al gridpane
 		root.add(pB, 0, 2);
 		root.add(findHBox, 0, 0);
@@ -244,6 +244,7 @@ public class Root extends Application {
 			VBox table = TrackView.tableFromTracklist(tracklist, pc);
 			root.add(table, 1, 1, 1, 2);
 			playlists(name, playlistsVbox, mainPanel, table);
+			
 		});
 
 
@@ -356,6 +357,8 @@ public class Root extends Application {
 		System.out.println(mainDir);
 		return mainDir;
 	}
+
+
 
 
 	
