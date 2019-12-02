@@ -3,26 +3,21 @@ package utils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.image.Image;
 import models.Track;
 import models.TrackList;
 
@@ -33,8 +28,8 @@ public class Tools {
 	public static final String DYEAR = "Anno Sconosciuto";
 	public static final String DARTIST = "Artista Sconosciuto";
 	public static final String DGENRE = "Genere Sconosciuto";
-	
-	
+
+
 	public static final String TRANSBUTT = "    -fx-border-color: transparent;\n" + 
 			"    -fx-border-width: 0;\n" + 
 			"    -fx-background-radius: 0;\n" + 
@@ -49,10 +44,19 @@ public class Tools {
 			"    -fx-background-radius: 0;\n" + 
 			"    -fx-background-color: #bebdbf;\n" +
 			"    -fx-font-weight: bold;\n}";
+	
+	public static Image DIMAGE;
+	
+	static {
+		try(FileInputStream playFile = new FileInputStream("files\\Player\\play.png")) {
+			DIMAGE = new Image(playFile);
+		} catch (Exception e) {
+		}
+	}
 
-	
-	
-	
+
+
+
 	/**
 	 * funzione che ritorna una lista di path ai file contenuti nella directory
 	 * @param 		path
@@ -153,7 +157,7 @@ public class Tools {
 			while ((line = br.readLine()) != null) {
 				Path path = Paths.get(line);
 				if(Files.exists(path)){
-				tracklist.addTrack(path);;
+					tracklist.addTrack(path);;
 				}
 				else System.out.println(path.toString() + "\tNon è un file corretto");
 			}	

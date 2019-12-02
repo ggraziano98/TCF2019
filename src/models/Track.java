@@ -1,6 +1,7 @@
 package models;
 
 import java.io.IOError;
+
 import java.nio.file.Path;
 
 import javafx.beans.property.BooleanProperty;
@@ -11,12 +12,13 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
-import utils.DataChangeListener;
 import utils.Tools;
+import javafx.collections.MapChangeListener;
 
 
 /**
@@ -60,50 +62,46 @@ public class Track{
 	 * @param path			oggetto Path 
 	 */
 	public Track(Path path) {
+		this.setPath(path);
+		this.setDuration(Duration.seconds(0));
+		this.setPlaying(false);
+	}
+
+
+
+	private void resetProperties() {
 		this.album = new SimpleStringProperty(Tools.DALBUM);
 		this.artist = new SimpleStringProperty(Tools.DARTIST);
 		this.year = new SimpleStringProperty(Tools.DYEAR);
 		this.title = new SimpleStringProperty(path.getFileName().toString());
 		this.genre = new SimpleStringProperty(Tools.DGENRE);
 		this.playing = new SimpleBooleanProperty(false);
-		this.setPath(path);
-		this.setMetadata();
 	}
 
-
-
-	private void resetProperties() {
-		setAlbum(Tools.DALBUM);
-		setArtist(Tools.DARTIST);
-		setGenre(Tools.DGENRE);
-		setYear(Tools.DYEAR);
-		setTitle(this.getPath().getFileName().toString());
-	}
-
-	/*
+	/**
+	 * sets Track metadata. Does not set image to avoid memory usage 
 	 */
 	public void setMetadata() {
 
+		resetProperties();
 
 		Path path = this.getPath();
 		String cleanPathS = Tools.cleanURL(path.toString());
 
-		this.resetProperties();
 		try {
 			Media media = new Media(cleanPathS);				
 
-			DataChangeListener metadataChangeListener = new DataChangeListener(this);
+			media.getMetadata().addListener((MapChangeListener<String, Object>) change ->{
+				handleMetadata(change.getKey(), change.getValueAdded());
+			});
 
-			//QUESTION create listener class? yaaas
-			media.getMetadata().addListener(metadataChangeListener);
-			
 			MediaPlayer mp = new MediaPlayer(media);
 			mp.setOnReady(()->{
 				this.setDuration(mp.getTotalDuration());
 			});
 
 			this.setDuration(media.getDuration());
-			
+
 		} catch (RuntimeException re) {
 			System.out.println("path non leggibile");
 			System.out.println(cleanPathS);
@@ -111,34 +109,29 @@ public class Track{
 	}
 
 
-	public void handleMetadata(String key, Object value, Track track) {
-		if(track.getPath().equals(this.getPath())) {
-			if (key.equals("album") ) {
-				if(value.toString() == "" || value == null) {
-					this.setAlbum(Tools.DALBUM);
-				}
-				else {
-					this.setAlbum(value.toString());
-				}
-			} else if (key.equals("artist") || key.equals("album artist") || key.equals("contributing artists")) {
-				if(value.toString() == "" && this.getArtist() == "") this.setArtist(Tools.DARTIST);
-				else this.setArtist(value.toString());
-
-			} if (key.equals("title")) {
-				if(value.toString() == "") this.setTitle(getPath().getFileName().toString());
-				else this.setTitle(value.toString());
-
-			} if (key.equals("year")) {
-				if(value.toString() == "") this.setYear(Tools.DYEAR);
-				else this.setYear(value.toString());
-
-			} if (key.equals("image")) {
-				this.setImage((Image) value);
-
-			} if (key.equals("genre")) {
-				if(value.toString() == "") this.setGenre(Tools.DGENRE);
-				else this.setGenre(value.toString());
+	public void handleMetadata(String key, Object value) {
+		if (key.equals("album") ) {
+			if(value.toString() == "" || value == null) {
+				this.setAlbum(Tools.DALBUM);
 			}
+			else {
+				this.setAlbum(value.toString());
+			}
+		} else if (key.equals("artist") || key.equals("album artist") || key.equals("contributing artists")) {
+			if(value.toString() == "" && this.getArtist() == "") this.setArtist(Tools.DARTIST);
+			else this.setArtist(value.toString());
+
+		} if (key.equals("title")) {
+			if(value.toString() == "") this.setTitle(getPath().getFileName().toString());
+			else this.setTitle(value.toString());
+
+		} if (key.equals("year")) {
+			if(value.toString() == "") this.setYear(Tools.DYEAR);
+			else this.setYear(value.toString());
+
+		} if (key.equals("genre")) {
+			if(value.toString() == "") this.setGenre(Tools.DGENRE);
+			else this.setGenre(value.toString());
 		}
 	}
 
@@ -163,8 +156,8 @@ public class Track{
 		}
 	}
 
-	
-	
+
+
 	public final String getTitle() {
 		return title.get();
 	}
@@ -241,8 +234,8 @@ public class Track{
 	public final Duration getDuration() {
 		return Duration.seconds(duration.get());
 	}
-	
-	
+
+
 	public DoubleProperty durationProperty() {
 		return duration;
 	}
@@ -255,7 +248,24 @@ public class Track{
 
 
 	public final Image getImage() {
+		if (image == null) {
+			setImage();
+		}
 		return image;
+	}
+
+
+	public final void setImage() {
+		Path path = this.getPath();
+		String cleanPathS = Tools.cleanURL(path.toString());
+		Media media = new Media(cleanPathS);	
+		setImage(Tools.DIMAGE);
+		media.getMetadata().addListener((MapChangeListener<String, Object>) change ->{
+			if (change.getKey() == "image") {
+				setImage((Image) change.getValueAdded());
+			}
+		});
+
 	}
 
 
@@ -267,13 +277,14 @@ public class Track{
 	public final boolean getPlaying() {
 		return playing.get();
 	}
-	
+
 	public BooleanProperty playingProperty() {
 		return playing;
 	}
 
 
 	public final void setPlaying(boolean playing) {
+		if (this.playing== null) this.playing = new SimpleBooleanProperty(false);
 		this.playing.set(playing);
 	}
 
@@ -287,10 +298,16 @@ public class Track{
 		if (this.position == null) this.position = new SimpleIntegerProperty(-1);
 		this.position.set(position);;
 	}
-	
-	
+
+
 	public IntegerProperty positionProperty() {
 		return position;
+	}
+	
+	
+	public void unload() {
+		this.image = null;
+		this.duration = null;
 	}
 
 }

@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,42 +21,19 @@ import utils.Tools;
  *
  */
 public class FileController {
-	private Path dirPath;
-	public final String[] extensions = {"mp3"};
 
+	public static final String[] extensions = {"mp3"};
 
-	/**
-	 * Default constructor 
-	 */
-	public FileController() {
-		this.dirPath = null;
-	}
-
-
-	/**
-	 * Constructor with parameters for the class
-	 * Can retrieve files with a specific extension, and modify their information
-	 * Supported extensions: mp3
-	 * 
-	 * @param dirPath 		path alla directory in cui sono contenuti i file mp3
-	 */
-	public FileController(Path dirPath) {
-		this.dirPath = dirPath;
-	}
-
-
-
-	/**
-	 * setters and getters
-	 */
-
-	public Path getDirPath() {
-		return this.dirPath;
-	}
-
-
-	public void setDirPath(Path dirPath) {
-		this.dirPath = dirPath;
+	public static TrackList getFilesFromDir(List<String> dirList) {
+		TrackList tracklist = new TrackList();
+		
+		dirList.forEach(dir->{
+			getFilesFromDir(Paths.get(dir)).forEach(t->{
+				tracklist.add(t);
+			});;
+		});
+		
+		return tracklist;
 	}
 
 
@@ -65,7 +43,7 @@ public class FileController {
 	 * 
 	 * @return 	TrackList of the songs in the main directory
 	 */
-	public TrackList getFilesFromDir(Path path) {
+	public static TrackList getFilesFromDir(Path path) {
 		TrackList tracklist = new TrackList();
 		List<Path> pathList;
 		try {
@@ -76,7 +54,7 @@ public class FileController {
 			pathList = new ArrayList<Path>();
 		}
 		try {
-			pathList.removeIf(p -> !this.isViableExtension(p));
+			pathList.removeIf(p -> !isViableExtension(p));
 			/* uso il metodo removeIf dell'ArrayList per rimuovere i file che non sono dell'estensione corretta */
 
 			pathList.forEach(p -> {
@@ -91,23 +69,12 @@ public class FileController {
 		return tracklist;
 	}
 
-
-	/**
-	 * overloading di getFilesFromDir per avere this.dirPath come default directory 
-	 * 
-	 * @return 		TrackList of the songs in the main directory
-	 */
-	public TrackList getFilesFromDir() {
-		return this.getFilesFromDir(this.dirPath);
-	}
-
-
 	/**
 	 * metodo per eliminare una canzone passando una track (futureproofing)
 	 * @param track		Track
 	 */
-	public void deleteTrack(Track track) {
-		this.deleteTrack(track.getPath());
+	public static void deleteTrack(Track track) {
+		deleteTrack(track.getPath());
 	}
 
 
@@ -116,16 +83,16 @@ public class FileController {
 	 * 
 	 * @param path  Path assoluto alla canzone
 	 */
-	public void deleteTrack(Path path) {
+	public static void deleteTrack(Path path) {
 		File file = path.toFile();
 		String fileName = path.getFileName().toString();
-		
+
 		//TODO controllare che funzioni
 
 		Platform.runLater(new Runnable() {
-		    @Override
-		    public void run() {
-		    	Alert confirm = new Alert(AlertType.CONFIRMATION);
+			@Override
+			public void run() {
+				Alert confirm = new Alert(AlertType.CONFIRMATION);
 				confirm.setTitle("Conferma eliminazione");
 				confirm.setHeaderText("Stai per eliminare \"" + fileName + "\"");
 				confirm.setContentText("Confermi?");
@@ -152,11 +119,11 @@ public class FileController {
 					alert.setContentText("Operazione annullata");
 					alert.showAndWait();
 				}
-		    }
+			}
 		});
 	}
 
-/*
+	/*
 	public void editInfo(Track track, String info) {
 		// TODO get info screen
 
@@ -181,16 +148,16 @@ public class FileController {
 			track.setImage(input);
 		}
 	}
- */
+	 */
 
-/**
- * Controllo se un file è della giusta estensione
- * 
- * @param path
- * @return True se il l'estensione è contenuta in this.extensions
- */
-public boolean isViableExtension(Path path) {
-	return Arrays.stream(this.extensions).parallel().anyMatch(path.getFileName().toString()::contains);
-	/* uso uno stream per controllare in parallelo tutte le estensioni permesse, cercando se una di queste è contenuta nel fileName */
-}
+	/**
+	 * Controllo se un file è della giusta estensione
+	 * 
+	 * @param path
+	 * @return True se il l'estensione è contenuta in extensions
+	 */
+	public static boolean isViableExtension(Path path) {
+		return Arrays.stream(extensions).parallel().anyMatch(path.getFileName().toString()::contains);
+		/* uso uno stream per controllare in parallelo tutte le estensioni permesse, cercando se una di queste è contenuta nel fileName */
+	}
 }

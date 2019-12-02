@@ -123,6 +123,7 @@ public class PlayerController {
 
 	public void refreshPlayer() {
 		if (this.getCurrentTrack() != null) this.getCurrentTrack().setPlaying(false);
+		
 		this.currentTrack = this.getTracklist().get(this.getCurrentInt());
 		this.currentTrack.setPlaying(true);
 		if(player != null) {
@@ -173,6 +174,10 @@ public class PlayerController {
 
 	public final void setTracklist(TrackList tracklist) {
 		this.tracklist = tracklist;
+		
+		//TODO change
+		this.tracklist.setMetadata();
+		this.tracklist.forEach(t-> t.getImage());
 	}
 
 

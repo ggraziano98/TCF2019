@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import controllers.FileController;
 import controllers.PlayerController;
 import javafx.application.Application;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -38,17 +37,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.Track;
@@ -67,9 +62,10 @@ public class Root extends Application {
 	//	int width = gd.getDisplayMode().getWidth();
 	//	int height = gd.getDisplayMode().getHeight();
 
+	
+	//TODO refactor
 	static String mainDir = getMainDir();
-	static FileController fc = new FileController(Paths.get(mainDir));
-	static TrackList mainTracklist = fc.getFilesFromDir();
+	static TrackList mainTracklist = FileController.getFilesFromDir(Paths.get(mainDir));
 	static PlayerController pc = new PlayerController(mainTracklist);
 
 	@Override
@@ -264,10 +260,7 @@ public class Root extends Application {
 		Label songName = new Label();
 		songName.setPadding(new Insets(0, 3, 0, 3));
 		StringProperty text = new SimpleStringProperty("");
-		if (pc.getTracklist().getSize()>0) {
-			text.set(pc.getTracklist().get(pc.getCurrentInt()).getTitle());		
-		}
-		else text.set("Seleziona una canzone");
+		text.set("Seleziona una canzone");
 		songName.textProperty().bind(text);
 		pc.currentIntProperty().addListener((obs, oldv, newv)->{
 			if (pc.getTracklist().getSize()>0) {
@@ -461,7 +454,8 @@ public class Root extends Application {
 
 
 	public static void find(String keyWord, ToggleGroup mainPanel, GridPane root, PlayerController pc) {	
-		// TODO espandere 
+		
+		// TODO espandere, aggiungere findView.setVisible(false) a mainPanel
 		List<Track> list = pc.getTracklist().stream().filter(t->{
 			return (
 					t.getAlbum().toLowerCase().contains(keyWord.toLowerCase()) ||

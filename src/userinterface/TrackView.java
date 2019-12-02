@@ -91,6 +91,7 @@ public class TrackView {
 		tracklist.forEach((Track t)->{
 			table.getItems().add(t);
 		});
+		
 
 		table.setOnMouseClicked((MouseEvent click) -> {
 			if (click.getClickCount() == 2) {
@@ -99,7 +100,6 @@ public class TrackView {
 				if (selectedTrack != null) {
 					if(!pc.getTracklist().equals(tracklist)) {
 						pc.setTracklist(tracklist);
-						System.out.println("changing tracklist");
 					}
 					pc.setCurrentTrack(selectedTrack);
 					pc.play();
@@ -114,4 +114,6 @@ public class TrackView {
 
 		return vbox;
 	}
+	
+	
 }

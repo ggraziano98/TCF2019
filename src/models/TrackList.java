@@ -4,9 +4,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -154,6 +152,7 @@ public class TrackList extends SimpleListProperty<Track> {
 			track.durationProperty().addListener((obs, oldv, newv) ->{
 				totalduration.set(totalduration.get() + track.getDuration().toSeconds());
 			});
+			track.setMetadata();
 		}
 		return totalduration;
 	}
@@ -275,6 +274,34 @@ public class TrackList extends SimpleListProperty<Track> {
 		for (int i = 0; i < this.getSize(); i++) {
 			this.get(i).setPosition(i);
 		}
+	}
+	
+	/**
+	 * sets metadata for the whole tracklist
+	 */
+	public void setMetadata() {
+		this.forEach(t->{
+			t.setMetadata();
+		});
+	}
+	
+	
+	/**
+	 * 
+	 * @param lower
+	 * @param upper
+	 */
+	public void setMetadata(int lower, int upper) {
+		this.subList(lower, upper).forEach(t->{
+			t.setMetadata();
+		});
+	}
+	
+	
+	public void unload() {
+		this.forEach(t->{
+			t.unload();
+		});
 	}
 
 }
