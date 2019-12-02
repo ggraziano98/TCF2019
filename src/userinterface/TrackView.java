@@ -75,13 +75,19 @@ public class TrackView {
 			}
 		});
 		
+		
+		/*
+		 * this fucks ram up
+
 		 table.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
 		        @Override
 		        public void handle(ScrollEvent scrollEvent) {
 			           table.refresh();
 		        }
 		 });
-
+		 */
+		
+		
 		tracklist.forEach((Track t)->{
 			table.getItems().add(t);
 		});
@@ -108,43 +114,4 @@ public class TrackView {
 
 		return vbox;
 	}
-
-
-//	protected static void tableRefresh(TableView<Track> table) {
-//		table.getColumns().forEach(col->{
-//			col.setVisible(false);
-//			col.setVisible(true);
-//		});
-//		
-//	}
-	
-
-	/* continua a dare errori
-	 * 
-	private static void customFactory(TableColumn<Track, StringProperty> calltypel) {
-		calltypel.setCellFactory(column -> {
-            return new TableCell<Track, StringProperty>() {
-                @Override
-                protected void updateItem(StringProperty item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    TableRow<Track> row = getTableRow();
-
-                    setText(null);
-                    setGraphic(null);
-
-                    if (!isEmpty()) {
-                    	setText(item.get());
-
-                        if(row.getItem().getPlaying()) 
-                            row.setStyle("-fx-background-color:lightcoral");
-                        else
-                            row.setStyle("-fx-background-color:lightgreen");
-                    }
-                }
-            };
-        });
-	}
-	 */
-
 }

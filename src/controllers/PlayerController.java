@@ -135,7 +135,6 @@ public class PlayerController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		this.tracklist.forEach(t->System.out.println(t.getPosition() + "\t" + t.getPlaying()));
 		this.setTotalDuration(this.getCurrentTrack().getDuration());
 	}
 
