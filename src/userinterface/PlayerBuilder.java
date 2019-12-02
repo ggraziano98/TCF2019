@@ -10,7 +10,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -25,20 +24,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class PlayerBuilder {
 	
 	
-	public static GridPane playerBuilder(PlayerController pc, Stage primaryStage, TextField findText, Double columnOneWidht) throws Exception {
+	public static GridPane playerBuilder(PlayerController pc, TextField findText, Double columnOneWidht) throws Exception {
 		
 		//PlayerController pcPlayer = Root.pc;
 		GridPane playerV = new GridPane();
-		VBox controlButtons = new VBox();
-		HBox playerButtons = new HBox();
-		HBox progressionButtons = new HBox();
+		
 		
 
 		RowConstraints row60 = new RowConstraints(35, 35, 35);
@@ -53,6 +49,37 @@ public class PlayerBuilder {
 		playerV.getColumnConstraints().add(colConstraint);
 		playerV.setGridLinesVisible(true);
 
+		
+		
+		
+		HBox playerButtons = controlStuff(pc, playerV, Root.findText);
+		HBox sliderBox = songTime(pc, columnOneWidht);
+		ImageView songView = songImage(pc);
+		Label songName = songTitle(pc, songView);
+		
+
+		GridPane.setHalignment(songName, HPos.LEFT);
+		playerButtons.setAlignment(Pos.CENTER);
+		playerV.add(songName, 0, 0);
+		playerV.add(songView, 0, 1);
+		playerV.add(sliderBox, 0, 2);
+		playerV.add(playerButtons, 0, 3);
+		
+		
+		
+				
+				
+				
+				
+				return playerV;
+
+	}
+
+
+	
+	public static HBox controlStuff(PlayerController pc, GridPane playerV, TextField findText) throws Exception{
+		HBox playerButtons = new HBox();
+		
 		FileInputStream playFile = new FileInputStream("files\\Player\\play.png");
 		Image playImage = new Image(playFile);
 		ImageView playView = new ImageView(playImage);
@@ -152,12 +179,97 @@ public class PlayerBuilder {
 		});
 
 		playerButtons.getChildren().addAll(prevButton, playButton, nextButton, volumeButton, volumeSlider, shuffleButton, repeatButton );
-	//	progressionButtons.getChildren().addAll(shuffleButton, repeatButton);
-		controlButtons.getChildren().addAll(playerButtons, progressionButtons);
 		
+		// gestisco i keypresses
+		GridPane root = Root.root;
+		root.addEventFilter(KeyEvent.KEY_RELEASED, k -> {
+			if(k.getTarget() != findText) {
+				if ( k.getCode() == KeyCode.SPACE){
+					playPause(play, pc);
+					setPlayingImage(playButton, play, playView, pauseView);
+				}
+				if ( k.getCode() == KeyCode.K){
+					playPause(play, pc);
+					setPlayingImage(playButton, play, playView, pauseView);
+				}
+				if ( k.getCode() == KeyCode.M) {
+					if(muted.get()) volumeButton.setGraphic(volumeView);
+					else volumeButton.setGraphic(muteView);
+					muted.set(!muted.get());
+					volumeMute(muted, pc);
+				}
+				if ( k.getCode() == KeyCode.L) nextSong(pc);
+				if ( k.getCode() == KeyCode.J) previousSong(pc);
+				if ( k.getCode() == KeyCode.O) pc.seek(Duration.seconds(pc.getCurrentTime() + 10));
+				if ( k.getCode() == KeyCode.I) pc.seek(Duration.seconds(pc.getCurrentTime() - 10));
+			}
+
+		});
+		
+		return playerButtons;
+
+	}
+	
+	public static void playPause(AtomicBoolean play, PlayerController pc) {
+		if (play.get()) pc.pause();
+		else pc.play();
+
+	}
+
+	public static void nextSong(PlayerController pc) {
+		pc.next();
+	}
+
+	public static void previousSong(PlayerController pc) {
+		pc.prev();
+	}
 
 
+	public static void volumeMute(AtomicBoolean muted, PlayerController pc) {
+		pc.setMuted(muted.get());
+	}
 
+	public static void setPlayingImage(Button playButton, AtomicBoolean play, ImageView playView, ImageView pauseView) {
+		if (!play.get()) playButton.setGraphic(playView);
+		else playButton.setGraphic(pauseView);
+	}
+	
+	public static Label songTitle (PlayerController pc, ImageView songView) {
+		//TODO songtext che gira (o almeno che ci sta dentro
+				Label songName = new Label();
+				songName.setPadding(new Insets(0, 3, 0, 3));
+				StringProperty text = new SimpleStringProperty("");
+				if (pc.getTracklist().getSize()>0) {
+					text.set(pc.getTracklist().get(pc.getCurrentInt()).getTitle());		
+				}
+				else text.set("Seleziona una canzone");
+				songName.textProperty().bind(text);
+				pc.currentIntProperty().addListener((obs, oldv, newv)->{
+					if (pc.getTracklist().getSize()>0) {
+						text.set(pc.getTracklist().get(newv.intValue()).getTitle());	
+						songView.setImage(pc.getTracklist().get(pc.getCurrentInt()).getImage());
+					}
+					else text.set("Seleziona una canzone");
+				});
+				return songName;
+	}
+	
+	public static ImageView songImage(PlayerController pc) throws Exception {
+		// TODO cambiarla con una default image, fix height
+		FileInputStream nothingYetFile = new FileInputStream("files\\Player\\404.png");
+				Image songImage = new Image(nothingYetFile);
+				ImageView songView = new ImageView(songImage);
+				songView.setFitWidth(170);
+				songView.setFitHeight(170);
+				
+				pc.currentIntProperty().addListener((obs, oldv, newv)->{
+					if (pc.getTracklist().getSize()>0) {	
+						songView.setImage(pc.getTracklist().get(pc.getCurrentInt()).getImage());
+					}});
+				return songView;
+	}
+	
+	public static HBox songTime(PlayerController pc, Double columnOneWidht) {
 		HBox sliderBox = new HBox();
 		Slider timeSlider = new Slider();
 		timeSlider.setMax(100);
@@ -188,100 +300,10 @@ public class PlayerBuilder {
 		HBox.setHgrow(timeSlider, Priority.ALWAYS);
 		HBox.setHgrow(timeLabel, Priority.ALWAYS);
 		sliderBox.setAlignment(Pos.CENTER);
-
-
-		// TODO cambiarla con una default image, fix height
-		Image songImage = new Image(volumeFile);
-		ImageView songView = new ImageView(songImage);
-		songView.setFitWidth(170);
-		songView.setFitHeight(170);
-
-		//TODO songtext che gira (o almeno che ci sta dentro
-		Label songName = new Label();
-		songName.setPadding(new Insets(0, 3, 0, 3));
-		StringProperty text = new SimpleStringProperty("");
-		if (pc.getTracklist().getSize()>0) {
-			text.set(pc.getTracklist().get(pc.getCurrentInt()).getTitle());		
-		}
-		else text.set("Seleziona una canzone");
-		songName.textProperty().bind(text);
-		pc.currentIntProperty().addListener((obs, oldv, newv)->{
-			if (pc.getTracklist().getSize()>0) {
-				text.set(pc.getTracklist().get(newv.intValue()).getTitle());	
-				songView.setImage(pc.getTracklist().get(pc.getCurrentInt()).getImage());
-			}
-			else text.set("Seleziona una canzone");
-		});
 		
-
-		GridPane.setHalignment(songName, HPos.LEFT);
-		playerButtons.setAlignment(Pos.CENTER);
-		playerV.add(songName, 0, 0);
-		playerV.add(songView, 0, 1);
-		playerV.add(sliderBox, 0, 2);
-		playerV.add(playerButtons, 0, 3);
-		
-		
-		// gestisco i keypresses
-				primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, k -> {
-					if(k.getTarget() != findText) {
-						if ( k.getCode() == KeyCode.SPACE){
-							playPause(play, pc);
-							setPlayingImage(playButton, play, playView, pauseView);
-						}
-						if ( k.getCode() == KeyCode.K){
-							playPause(play, pc);
-							setPlayingImage(playButton, play, playView, pauseView);
-						}
-						if ( k.getCode() == KeyCode.M) {
-							if(muted.get()) volumeButton.setGraphic(volumeView);
-							else volumeButton.setGraphic(muteView);
-							muted.set(!muted.get());
-							volumeMute(muted, pc);
-						}
-						if ( k.getCode() == KeyCode.L) nextSong(pc);
-						if ( k.getCode() == KeyCode.J) previousSong(pc);
-						if ( k.getCode() == KeyCode.O) pc.seek(Duration.seconds(pc.getCurrentTime() + 10));
-						if ( k.getCode() == KeyCode.I) pc.seek(Duration.seconds(pc.getCurrentTime() - 10));
-					}
-
-				});
-				
-				
-				
-				
-				return playerV;
-
+		return sliderBox;
 	}
-
-//	public static void main(String[] args) {
-//		// TODO Auto-generated method stub
-//
-//	}
 	
-	public static void playPause(AtomicBoolean play, PlayerController pc) {
-		if (play.get()) pc.pause();
-		else pc.play();
-
-	}
-
-	public static void nextSong(PlayerController pc) {
-		pc.next();
-	}
-
-	public static void previousSong(PlayerController pc) {
-		pc.prev();
-	}
-
-
-	public static void volumeMute(AtomicBoolean muted, PlayerController pc) {
-		pc.setMuted(muted.get());
-	}
-
-	public static void setPlayingImage(Button playButton, AtomicBoolean play, ImageView playView, ImageView pauseView) {
-		if (!play.get()) playButton.setGraphic(playView);
-		else playButton.setGraphic(pauseView);
-	}
 
 
 	private static String timeMinutes(double time) {
