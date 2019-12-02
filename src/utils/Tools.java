@@ -12,14 +12,25 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.swing.JOptionPane;
+
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.image.Image;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
 import models.Track;
 import models.TrackList;
+import userinterface.Root;
 
 
 public class Tools {
@@ -44,11 +55,11 @@ public class Tools {
 			"    -fx-background-radius: 0;\n" +
 			"    -fx-background-color: #bebdbf;\n" +
 			"    -fx-font-weight: bold;\n}";
-	
-	
+
+
 	public static final double[] DWIDTHS= {300, 600};
-	
-	public static final double[] DHEIGHTS = {45, 100, 300};	
+
+	public static final double[] DHEIGHTS = {45, 100, 300};
 
 
 	public static Image DIMAGE;
@@ -144,6 +155,37 @@ public class Tools {
 	}
 
 
+	public static void newPlaylist() {
+
+		TextInputDialog dialog = new TextInputDialog("New Playlist");
+		String playlistName = new String();
+		dialog.setTitle("New playlist");
+		dialog.setHeaderText("Inserire nome playlist");
+		dialog.setContentText("example: PLaylist");
+		Optional<String> result = dialog.showAndWait();
+
+		if (result.isPresent()){
+			playlistName = result.get();
+		}
+
+		Path filePath = Paths.get("playlists", playlistName + ".txt");
+		try {
+			Files.createFile(filePath);
+
+		} catch (IOException e) {
+			if (e instanceof FileAlreadyExistsException) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("error1");
+				alert.setHeaderText("nome playlist gi� usato");
+				alert.setContentText("Usare un altro nome");
+				alert.showAndWait();
+			} else
+				e.printStackTrace();
+		}
+
+	}
+
+
 
 	/**TODO errore
 	 *
@@ -159,13 +201,12 @@ public class Tools {
 
 			BufferedReader br= Files.newBufferedReader(filePath);
 			String line = "";
-
 			while ((line = br.readLine()) != null) {
 				Path path = Paths.get(line);
 				if(Files.exists(path)){
 					tracklist.addTrack(path);;
 				}
-				else System.out.println(path.toString() + "\tNon � un file corretto");
+				else System.out.println(path.toString() + "\tNon è un file corretto");
 			}
 
 			br.close();
@@ -177,13 +218,14 @@ public class Tools {
 		/**
 		 * TODO implementere il codice nel caso tracklist fosse vuota
 		 */
+
 		return tracklist;
 	}
 
 
 
 	public static void deletePlaylist(String playlist) {
-		deletePlaylist(playlist, true);
+		deletePlaylist(playlist, false);
 	}
 
 
@@ -196,12 +238,40 @@ public class Tools {
 	 * @param playlist
 	 */
 	public static void deletePlaylist(String playlist, boolean showMessage) {
+
+
 		Path filePath = Paths.get("playlists", playlist + ".txt");
 		try {
-			if(Files.deleteIfExists(filePath)) {
-				if(showMessage) System.out.println("Playlist " + playlist + " eliminata");
+
+			if (showMessage == true) {
+				Alert selection = new Alert(AlertType.CONFIRMATION);
+				selection.setTitle("Delete Playlist");
+				selection.setHeaderText("Warning");
+				selection.setContentText("Sei sicuro di voler eliminare la playlist " + playlist);
+
+				Optional<ButtonType> result = selection.showAndWait();
+				if (result.get() == ButtonType.OK){
+					if(Files.deleteIfExists(filePath)) {
+						Alert yes = new Alert(AlertType.CONFIRMATION);
+						yes.setTitle("Eliminazione Playlist");
+						yes.setContentText("Playlist eliminata correttament");
+						yes.showAndWait();
+					}
+					else {
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setTitle("error2");
+						alert.setHeaderText("Errore generico");
+						alert.setContentText("Provare a vedere se la playlist selezionata è già stata cancellata");
+						alert.showAndWait();
+					}
+				}
+
+			} else {
+				if(Files.deleteIfExists(filePath)) {
+				}
+				else System.out.println("Non esiste la playlist selezionata");
 			}
-			else System.out.println("Non esiste la playlist selezionata");
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -247,7 +317,7 @@ public class Tools {
 
 		for (File file : directoryPath.listFiles()) {
 			if (file.getName().endsWith(".txt")) {
-				nameplaylists.add(file.getName());
+				nameplaylists.add(file.getName().replace(".txt", ""));
 			} else {
 				System.out.println(file.getName() + " is not a readable playlist");
 			}
