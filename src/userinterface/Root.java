@@ -10,27 +10,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import controllers.FileController;
 import controllers.PlayerController;
 import javafx.application.Application;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleGroup;
@@ -38,19 +31,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import models.Track;
 import models.TrackList;
 import utils.Tools;
@@ -71,6 +59,7 @@ public class Root extends Application {
 	static FileController fc = new FileController(Paths.get(mainDir));
 	static TrackList mainTracklist = fc.getFilesFromDir();
 	static PlayerController pc = new PlayerController(mainTracklist);
+	static GridPane root = new GridPane();
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -122,198 +111,7 @@ public class Root extends Application {
 
 
 		//PLAYER play, pause, next, previous
-		GridPane playerV = new GridPane();
-		VBox controlButtons = new VBox();
-		HBox playerButtons = new HBox();
-		HBox progressionButtons = new HBox();
 		
-
-		RowConstraints row60 = new RowConstraints(35, 35, 35);
-		row60.setValignment(VPos.CENTER);
-		RowConstraints row120 = new RowConstraints(180, 180, 180);
-		row60.setValignment(VPos.CENTER);
-		RowConstraints row50 = new RowConstraints(50, 50, 50);
-		row50.setValignment(VPos.CENTER);
-		playerV.getRowConstraints().addAll(row60, row120, row60, row50);
-		ColumnConstraints colConstraint = new ColumnConstraints(300, 300, 300);
-		colConstraint.setHalignment(HPos.CENTER);
-		playerV.getColumnConstraints().add(colConstraint);
-		playerV.setGridLinesVisible(true);
-
-		FileInputStream playFile = new FileInputStream("files\\Player\\play.png");
-		Image playImage = new Image(playFile);
-		ImageView playView = new ImageView(playImage);
-		playView.setFitHeight(25);
-		playView.setFitWidth(25);
-
-		FileInputStream pauseFile = new FileInputStream("files\\Player\\pause.png");
-		Image pauseImage = new Image(pauseFile);
-		ImageView pauseView = new ImageView(pauseImage);
-		pauseView.setFitHeight(25);
-		pauseView.setFitWidth(25);
-
-		FileInputStream prevFile = new FileInputStream("files\\Player\\ps.png");
-		Image prevImage = new Image(prevFile);
-		ImageView prevView = new ImageView(prevImage);
-		prevView.setFitHeight(25);
-		prevView.setFitWidth(25);
-
-		FileInputStream nextFile = new FileInputStream("files\\Player\\ns.png");
-		Image nextImage = new Image(nextFile);
-		ImageView nextView = new ImageView(nextImage);
-		nextView.setFitHeight(25);
-		nextView.setFitWidth(25);
-		
-		FileInputStream shuffleFile = new FileInputStream("files\\Player\\shuffle.png");
-		Image shuffleImage = new Image(shuffleFile);
-		ImageView shuffleView = new ImageView(shuffleImage);
-		shuffleView.setFitHeight(25);
-		shuffleView.setFitWidth(25);
-		
-		FileInputStream repeatFile = new FileInputStream("files\\Player\\repeat.png");
-		Image repeatImage = new Image(repeatFile);
-		ImageView repeatView = new ImageView(repeatImage);
-		repeatView.setFitHeight(25);
-		repeatView.setFitWidth(25);
-
-		Button playButton = new Button("",playView);
-		Button prevButton = new Button("",prevView);
-		Button nextButton = new Button("",nextView);
-		Button shuffleButton = new Button("",shuffleView);
-		Button repeatButton = new Button("",repeatView);
-
-
-		AtomicBoolean play = new AtomicBoolean(false);
-		playButton.setOnMouseClicked((e) -> {
-			playPause(play);
-			setPlayingImage(playButton, play, playView, pauseView);
-		});
-		pc.playingProperty().addListener((obs, oldv, newv)->{
-			play.set(newv.booleanValue());
-			setPlayingImage(playButton, play, playView, pauseView);
-		});
-
-		prevButton.setOnMouseClicked((e) -> previousSong());
-		nextButton.setOnMouseClicked((e) -> nextSong());
-
-
-		//PLAYER: volume, slider, titolo
-		FileInputStream volumeFile = new FileInputStream("files\\Player\\volume.png");
-		Image volumeImage = new Image(volumeFile);
-		ImageView volumeView = new ImageView(volumeImage);
-		volumeView.setFitHeight(25);
-		volumeView.setFitWidth(25);
-
-		FileInputStream muteFile = new FileInputStream("files\\Player\\mute.png");
-		Image muteImage = new Image(muteFile);
-		ImageView muteView = new ImageView(muteImage);
-		muteView.setFitHeight(25);
-		muteView.setFitWidth(25);
-
-		AtomicBoolean muted = new AtomicBoolean(false);
-		Button volumeButton = new Button("",volumeView);
-		volumeButton.setOnMouseClicked((e) -> {
-			if(muted.get()) {
-				volumeButton.setGraphic(volumeView);
-			}
-			else {
-				volumeButton.setGraphic(muteView);
-			}
-
-			pc.getTracklist().forEach(t->System.out.println(t.getTitle() + "\t" + t.getArtist() + "\t" + t.getAlbum()));
-			muted.set(!muted.get());
-			volumeMute(muted);
-
-		});
-
-		Slider volumeSlider = new Slider();
-		volumeSlider.setMax(1);
-		volumeSlider.setMin(0);
-		volumeSlider.setValue(1);
-		volumeSlider.setMaxWidth(80);
-		volumeSlider.valueProperty().bindBidirectional(pc.volumeValueProperty());
-		
-		playerV.setOnScroll((ev)->{
-			double volumeAmount = ev.getDeltaY();
-			pc.setVolumeValue(pc.getVolumeValue() + volumeAmount/300);
-		});
-
-		playerButtons.getChildren().addAll(prevButton, playButton, nextButton, volumeButton, volumeSlider, shuffleButton, repeatButton );
-	//	progressionButtons.getChildren().addAll(shuffleButton, repeatButton);
-		controlButtons.getChildren().addAll(playerButtons, progressionButtons);
-		
-
-
-
-		HBox sliderBox = new HBox();
-		Slider timeSlider = new Slider();
-		timeSlider.setMax(100);
-		timeSlider.setMin(0);
-		timeSlider.setMaxWidth(460);
-
-		Label timeLabel = new Label();
-		timeLabel.setText(timeMinutes(pc.getCurrentTime()) + " / " +timeMinutes(pc.getTotalDuration()));
-
-		timeSlider.setOnMouseReleased((ev)->{
-			double currentTime = pc.getCurrentTime()/pc.getTotalDuration()*100;
-			if (Math.abs(currentTime - timeSlider.getValue()) > 0.1) {
-				pc.seek(new Duration(pc.getTotalDuration()*(timeSlider.getValue()*10)));
-			}
-		});
-		pc.currentTimeProperty().addListener((obs, oldv, newv)->{
-			if (!timeSlider.isValueChanging() && !timeSlider.isPressed()) {
-				timeSlider.setValue(newv.doubleValue()/pc.getTotalDuration()*100);
-			}
-			timeLabel.setText(timeMinutes(pc.getCurrentTime()) + " / " +timeMinutes(pc.getTotalDuration()));
-		});
-
-		sliderBox.getChildren().addAll(timeSlider, timeLabel);
-		sliderBox.setMaxWidth(0.9*columnOneWidht);
-		HBox.setHgrow(timeSlider, Priority.ALWAYS);
-		HBox.setHgrow(timeLabel, Priority.ALWAYS);
-		sliderBox.setAlignment(Pos.CENTER);
-
-
-		// TODO cambiarla con una default image, fix height
-		Image songImage = new Image(volumeFile);
-		ImageView songView = new ImageView(songImage);
-		songView.setFitWidth(170);
-		songView.setFitHeight(170);
-
-		//TODO songtext che gira (o almeno che ci sta dentro
-		Label songName = new Label();
-		songName.setPadding(new Insets(0, 3, 0, 3));
-		StringProperty text = new SimpleStringProperty("");
-		if (pc.getTracklist().getSize()>0) {
-			text.set(pc.getTracklist().get(pc.getCurrentInt()).getTitle());		
-		}
-		else text.set("Seleziona una canzone");
-		songName.textProperty().bind(text);
-		pc.currentIntProperty().addListener((obs, oldv, newv)->{
-			if (pc.getTracklist().getSize()>0) {
-				text.set(pc.getTracklist().get(newv.intValue()).getTitle());	
-				songView.setImage(pc.getTracklist().get(pc.getCurrentInt()).getImage());
-			}
-			else text.set("Seleziona una canzone");
-		});
-		/**unused
-		Text songTime = new Text();
-		StringProperty time = new SimpleStringProperty("");
-		time.set(String.valueOf(pc.getTracklist().get(pc.currentInt()).getDuration().toMinutes()));
-		songTime.textProperty().bind(time);
-		pc.getTotalDuration().addListener((obs, oldv, newv)->{
-			time.set(String.valueOf(pc.getTracklist().get(pc.currentInt()).getDuration().toMinutes()));
-			songView.setImage(pc.getTracklist().get(pc.currentInt()).getImage());
-		});
-		 */
-
-		GridPane.setHalignment(songName, HPos.LEFT);
-		playerButtons.setAlignment(Pos.CENTER);
-		playerV.add(songName, 0, 0);
-		playerV.add(songView, 0, 1);
-		playerV.add(sliderBox, 0, 2);
-		playerV.add(playerButtons, 0, 3);
-
 
 
 
@@ -401,8 +199,9 @@ public class Root extends Application {
 		Image gioImage = new Image(gioFile);
 		primaryStage.getIcons().add(gioImage);
 
+		GridPane pB = (GridPane) PlayerBuilder.playerBuilder(pc, primaryStage, findText, columnOneWidht);
 		//aggiungo i pane al gridpane
-		root.add(playerV, 0, 2);
+		root.add(pB, 0, 2);
 		root.add(findHBox, 0, 0);
 		root.add(listsPane, 1, 0);
 		root.add(scroll, 0, 1);
@@ -414,30 +213,7 @@ public class Root extends Application {
 
 
 
-		// gestisco i keypresses
-		primaryStage.addEventFilter(KeyEvent.KEY_RELEASED, k -> {
-			if(k.getTarget() != findText) {
-				if ( k.getCode() == KeyCode.SPACE){
-					playPause(play);
-					setPlayingImage(playButton, play, playView, pauseView);
-				}
-				if ( k.getCode() == KeyCode.K){
-					playPause(play);
-					setPlayingImage(playButton, play, playView, pauseView);
-				}
-				if ( k.getCode() == KeyCode.M) {
-					if(muted.get()) volumeButton.setGraphic(volumeView);
-					else volumeButton.setGraphic(muteView);
-					muted.set(!muted.get());
-					volumeMute(muted);
-				}
-				if ( k.getCode() == KeyCode.L) nextSong();
-				if ( k.getCode() == KeyCode.J) previousSong();
-				if ( k.getCode() == KeyCode.O) pc.seek(Duration.seconds(pc.getCurrentTime() + 10));
-				if ( k.getCode() == KeyCode.I) pc.seek(Duration.seconds(pc.getCurrentTime() - 10));
-			}
-
-		});
+		
 
 
 		findButton.setOnMouseClicked((e) -> {
@@ -504,29 +280,7 @@ public class Root extends Application {
 	}
 
 
-	public static void playPause(AtomicBoolean play) {
-		if (play.get()) pc.pause();
-		else pc.play();
-
-	}
-
-	public static void nextSong() {
-		pc.next();
-	}
-
-	public static void previousSong() {
-		pc.prev();
-	}
-
-
-	public static void volumeMute(AtomicBoolean muted) {
-		pc.setMuted(muted.get());
-	}
-
-	public static void setPlayingImage(Button playButton, AtomicBoolean play, ImageView playView, ImageView pauseView) {
-		if (!play.get()) playButton.setGraphic(playView);
-		else playButton.setGraphic(pauseView);
-	}
+	
 
 
 	public static void playlists(String string, VBox box, ToggleGroup mainPanel, Node dataPane) {
@@ -604,20 +358,7 @@ public class Root extends Application {
 	}
 
 
-	private String timeMinutes(double time) {
-
-		String mS = "";
-		String m = Integer.toString((int) time/60);
-		String s = Integer.toString((int)time%60);
-		if(s.length() == 1) {
-			s = "0"+s;
-		}
-		
-		mS = m + ":" +s;
-		
-		return mS;
-
-	}
+	
 }
 
 

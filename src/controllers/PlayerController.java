@@ -114,6 +114,7 @@ public class PlayerController {
 	 */
 	public void seek(Duration time) {
 		this.getPlayer().seek(time);
+		System.out.println(this.getCurrentTime());
 	}
 
 
