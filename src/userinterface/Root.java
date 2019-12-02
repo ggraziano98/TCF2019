@@ -48,23 +48,23 @@ public class Root {
 		RowConstraints row3 = new RowConstraints();
 		row3.setMinHeight(heights[2]);
 		row3.setMaxHeight(heights[2]);
-		
-		
+
+
 		//TODO togliere e metter il menu decentemente
 		RowConstraints row4 = new RowConstraints();
 		row4.setMinHeight(heights[0]);
 		row4.setMaxHeight(heights[0]);
-		
-		
+
+
 		root.getRowConstraints().addAll(row1, row2, row3,row4);
-		
-		 
-		
+
+
+
 		MenuBar menuBar = new MenuBar();
 	     Menu menuFile = new Menu("File directory");
 	     Menu menuEdit = new Menu("Edit");
 	     Menu menuInformation = new Menu("Information");
-	     
+
 	     MenuItem item1 = new MenuItem("Set file directory");
 	     item1.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event) {
@@ -72,12 +72,12 @@ public class Root {
 					}
 			});
 
-	     
+
 	     menuFile.getItems().add(item1);
-	     
-	     
+
+
 	     menuBar.getMenus().addAll(menuFile, menuEdit, menuInformation);
-	     
+
 	     root.add(menuBar, 0, 3, 1, 2);
 
 		return root;

@@ -14,10 +14,16 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.swing.JOptionPane;
+
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -71,8 +77,8 @@ public class Tools {
 		} catch (Exception e) {
 		}
 	}
-	
-	
+
+
 	public static Path DIRFILEPATH = Paths.get("files", "mainDir.txt");
 
 	public static Path ALLSONGSFILEPATH = Paths.get("files", "allSongs.txt");
@@ -142,7 +148,7 @@ public class Tools {
 	 */
 	public static void saveAsPlaylist(TrackList tracklist, String playlistName) {
 		Path filePath = Paths.get("playlists", playlistName + ".txt");
-		
+
 		try {
 			Files.createFile(filePath);
 		} catch (IOException e) {
@@ -169,8 +175,8 @@ public class Tools {
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} 
-			
+		}
+
 	}
 
 
@@ -205,6 +211,37 @@ public class Tools {
 	}
 
 
+	public static void newPlaylist() {
+
+		TextInputDialog dialog = new TextInputDialog("New Playlist");
+		String playlistName = new String();
+		dialog.setTitle("New playlist");
+		dialog.setHeaderText("Inserire nome playlist");
+		dialog.setContentText("example: PLaylist");
+		Optional<String> result = dialog.showAndWait();
+
+		if (result.isPresent()){
+			playlistName = result.get();
+		}
+
+		Path filePath = Paths.get("playlists", playlistName + ".txt");
+		try {
+			Files.createFile(filePath);
+
+		} catch (IOException e) {
+			if (e instanceof FileAlreadyExistsException) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("error1");
+				alert.setHeaderText("nome playlist giï¿½ usato");
+				alert.setContentText("Usare un altro nome");
+				alert.showAndWait();
+			} else
+				e.printStackTrace();
+		}
+
+	}
+
+
 
 	/**TODO errore
 	 *
@@ -215,7 +252,7 @@ public class Tools {
 	 */
 	public static TrackList readPlaylist(String playlist) {
 		TrackList tracklist = new TrackList();
-		Path filePath = Paths.get("playlists", playlist + ".txt");
+		Path filePath = Paths.get("playlists", playlist);
 		try {
 
 			BufferedReader br= Files.newBufferedReader(filePath);
@@ -227,7 +264,7 @@ public class Tools {
 					if(Files.isRegularFile(path)){
 						tracklist.addTrack(new Track(arr));;
 					}
-					else System.out.println(path.toString() + "\tNon è un file corretto");
+					else System.out.println(path.toString() + "\tNon ï¿½ un file corretto");
 				}
 			}
 
@@ -242,8 +279,8 @@ public class Tools {
 	}
 
 	/**invece di usare questi, si puo semplicemente riscrivere la playlist togliendo o aggiungendo track e poi salvando
-	 * gli aggiornamenti in questo modo sono piu facili 
-	 * 
+	 * gli aggiornamenti in questo modo sono piu facili
+	 *
 	public static void addTrackToPlaylist (String playlistName, Track track) {
 		try {
 			TrackList tracklist = readPlaylist(playlistName);
@@ -253,13 +290,13 @@ public class Tools {
 			// TODO Auto-generated catch block
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("error1");
-			alert.setHeaderText("nome playlist già usato");
+			alert.setHeaderText("nome playlist giï¿½ usato");
 			alert.setContentText(e.getMessage());
 			alert.showAndWait();
 		}
 	}
-	
-	
+
+
 	public static void RemoveTrackFromPlaylist (String playlistName, Track track) {
 		try {
 			TrackList tracklist = readPlaylist(playlistName);
@@ -269,7 +306,7 @@ public class Tools {
 			// TODO Auto-generated catch block
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("error1");
-			alert.setHeaderText("nome playlist già usato");
+			alert.setHeaderText("nome playlist giï¿½ usato");
 			alert.setContentText(e.getMessage());
 			alert.showAndWait();
 		}
@@ -328,7 +365,7 @@ public class Tools {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		MainApp.savedPlaylists.remove(playlist);
 	}
 
@@ -353,7 +390,7 @@ public class Tools {
 					Alert alert = new Alert(AlertType.ERROR);
 					alert.setTitle("error2");
 					alert.setHeaderText("Errore generico");
-					alert.setContentText("Provare a vedere se la canzone selezionata è già stata eliminata");
+					alert.setContentText("Provare a vedere se la canzone selezionata ï¿½ giï¿½ stata eliminata");
 					alert.showAndWait();
 				}
 			} catch (IOException e) {
@@ -414,8 +451,8 @@ public class Tools {
 
 		return nameplaylists;
 	}
-	
-	
+
+
 	public static void stackTrace(Exception e) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Error");

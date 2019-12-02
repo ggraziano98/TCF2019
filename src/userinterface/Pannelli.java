@@ -56,7 +56,7 @@ public class Pannelli{
 
 
 //TODO cambiare in modo che differenzi tra songqueue, tracklist e allSongs
-	
+
 	public static void contextMenuTrack(TableView<Track> table, TrackList tracklist) {
 
 		ContextMenu menu = new ContextMenu();
@@ -67,7 +67,7 @@ public class Pannelli{
 		Menu addToPlaylist = new Menu("Add song to");
 
 		MainApp.savedPlaylists.forEach((String name)->{
-			MenuItem item = new MenuItem(name);	
+			MenuItem item = new MenuItem(name);
 			item.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event) {
 					Track track = table.getSelectionModel().getSelectedItem();
@@ -77,16 +77,16 @@ public class Pannelli{
 							Tools.saveAsPlaylist(tl, name);
 						}
 					});
-				}	
+				}
 			});
 
 			addToPlaylist.getItems().add(item);
 		});
-		
+
 		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c->{
 			addToPlaylist.getItems().removeIf(i->true);
 			c.getList().forEach(name->{
-				MenuItem item = new MenuItem(name);	
+				MenuItem item = new MenuItem(name);
 				item.setOnAction(new EventHandler<ActionEvent>() {
 					public void handle(ActionEvent event) {
 						Track track = table.getSelectionModel().getSelectedItem();
@@ -96,12 +96,12 @@ public class Pannelli{
 								Tools.saveAsPlaylist(tl, name);
 							}
 						});
-					}	
+					}
 				});
 				addToPlaylist.getItems().add(item);
 			});
-		});		
-		
+		});
+
 		SeparatorMenuItem separatorMenuItem1 = new SeparatorMenuItem();
 		MenuItem info = new MenuItem("Information");
 
@@ -111,7 +111,7 @@ public class Pannelli{
 				Track track = table.getSelectionModel().getSelectedItem();
 				tracklist.remove(track);
 				Tools.DeleteTrack((Track) track);
-			}	
+			}
 		});
 
 		remove.setOnAction(new EventHandler<ActionEvent>() {
@@ -133,8 +133,8 @@ public class Pannelli{
 								"Album: " + ((Track) item).getAlbum() +"\n" +
 								"Year: " + ((Track) item).getYear() +"\n" +
 								"Duration " + ((Track) item).getDuration()
-								,ButtonType.OK); 
-				informationDialog.show(); 
+								,ButtonType.OK);
+				informationDialog.show();
 			}
 		});
 
@@ -151,4 +151,3 @@ public class Pannelli{
 	}
 
 }
-
