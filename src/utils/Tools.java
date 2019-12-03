@@ -44,6 +44,15 @@ public class Tools {
 			"    -fx-background-radius: 0;\n" +
 			"    -fx-background-color: #bebdbf;\n" +
 			"    -fx-font-weight: bold;\n}";
+<<<<<<< HEAD
+=======
+	
+	
+	public static final double[] DWIDTHS= {300, 600};
+	
+	public static final double[] DHEIGHTS = {45, 100, 300};
+
+>>>>>>> e092e58c84fc88eaf0822091c1f738813e7fd929
 	
 	
 	public static final double[] DWIDTHS= {300, 600};
