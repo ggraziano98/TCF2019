@@ -27,7 +27,6 @@ public class TrackView {
 	public static VBox tableFromTracklist(TrackList tracklist, PlayerController pc, boolean showOrder) {
 		TableView<Track> table = new TableView<>();
 
-<<<<<<< HEAD
 		TableColumn<Track, StringProperty> column1 = new TableColumn<>("Titolo");
 		column1.setCellValueFactory(new PropertyValueFactory<>("title"));
 
@@ -114,47 +113,7 @@ public class TrackView {
 		VBox vbox = new VBox(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 
-=======
-        TableColumn<Track, StringProperty> column1 = new TableColumn<>("Titolo");
-        column1.setCellValueFactory(new PropertyValueFactory<>("title"));
 
-        TableColumn<Track, StringProperty> column2 = new TableColumn<>("Artista");
-        column2.setCellValueFactory(new PropertyValueFactory<>("artist"));
-        
-        TableColumn<Track, StringProperty> column3 = new TableColumn<>("Album");
-        column3.setCellValueFactory(new PropertyValueFactory<>("album"));
-        
-        TableColumn<Track, StringProperty> column4 = new TableColumn<>("Genere");
-        column4.setCellValueFactory(new PropertyValueFactory<>("genre"));
-
-        table.getColumns().add(column1);
-        table.getColumns().add(column2);
-        table.getColumns().add(column3);
-        table.getColumns().add(column4);
-
-        tracklist.forEach((Track t)->{
-        	table.getItems().add(t);
-        });
-        
-        table.setOnMouseClicked((MouseEvent click) -> {
-            if (click.getClickCount() == 2) {
-                // Use ListView's getSelected Item
-                Track selectedTrack = table.getSelectionModel().getSelectedItem();
-                if (selectedTrack != null) {
-                	if(!pc.getTracklist().equals(tracklist)) {
-                		pc.setTracklist(tracklist);
-                		System.out.println("changing tracklist");
-                	}
-                	pc.setCurrentTrack(selectedTrack);
-                    pc.play();
-                }
-            }
-        });
-		
-        VBox vbox = new VBox(table);
-        VBox.setVgrow(table, Priority.ALWAYS);
-        
->>>>>>> e092e58c84fc88eaf0822091c1f738813e7fd929
 		return vbox;
 	}
 
