@@ -252,7 +252,7 @@ public class Tools {
 	 */
 	public static TrackList readPlaylist(String playlist) {
 		TrackList tracklist = new TrackList();
-		Path filePath = Paths.get("playlists", playlist);
+		Path filePath = Paths.get("playlists", playlist + ".txt");
 		try {
 
 			BufferedReader br= Files.newBufferedReader(filePath);

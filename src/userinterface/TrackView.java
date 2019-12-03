@@ -25,8 +25,8 @@ import utils.Tools;
 
 public class TrackView {
 
-	 private static final DataFormat SERIALIZED_MIME_TYPE = new DataFormat("application/x-java-serialized-object");	
-	
+	 private static final DataFormat SERIALIZED_MIME_TYPE = new DataFormat("application/x-java-serialized-object");
+
 	public static TableView<Track> tableFromTracklist(TrackList tracklist, PlayerController pc, boolean showOrder){
 		TableView<Track> table = new TableView<>();
 
@@ -40,7 +40,7 @@ public class TrackView {
 				return result;
 			}
 		});
-		
+
 		TableColumn<Track, String> column1 = new TableColumn<>("Titolo");
 		column1.setCellValueFactory(new Callback<CellDataFeatures<Track, String>, ObservableValue<String>>() {
 			public ObservableValue<String> call(CellDataFeatures<Track, String> t) {
@@ -58,10 +58,10 @@ public class TrackView {
 
 		TableColumn<Track, StringProperty> column4 = new TableColumn<>("Genere");
 		column4.setCellValueFactory(new PropertyValueFactory<>("genre"));
-		
+
 		TableColumn<Track, StringProperty> column5 = new TableColumn<>("Anno");
 		column5.setCellValueFactory(new PropertyValueFactory<>("year"));
-		
+
 		TableColumn<Track, String> column6 = new TableColumn<>("Durata");
 		column6.setCellValueFactory(new Callback<CellDataFeatures<Track, String>, ObservableValue<String>>() {
 			public ObservableValue<String> call(CellDataFeatures<Track, String> t) {
@@ -75,15 +75,15 @@ public class TrackView {
 		table.getColumns().add(column3);
 		table.getColumns().add(column4);
 		table.getColumns().add(column5);
-		table.getColumns().add(column6);		
-		
+		table.getColumns().add(column6);
+
 		columnPlaying.setPrefWidth(20);
 		column1.prefWidthProperty().bind(table.widthProperty().multiply(0.4));
 		column2.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
 		column3.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
-		column4.prefWidthProperty().bind(table.widthProperty().multiply(0.1)); 
-		column5.prefWidthProperty().bind(table.widthProperty().multiply(0.1)); 
-		column6.prefWidthProperty().bind(table.widthProperty().multiply(0.1)); 
+		column4.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
+		column5.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
+		column6.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
 
 		if(showOrder) {
 			TableColumn<Track, StringProperty> column0 = new TableColumn<>("#");
@@ -123,7 +123,7 @@ public class TrackView {
 		return tableFromTracklist(tracklist, pc, false);
 	}
 
-	
+
 	public static void setDragDrop(TableView<Track> table, TrackList tracklist) {
 		 table.setRowFactory(tv -> {
 	            TableRow<Track> row = new TableRow<>();
@@ -156,7 +156,7 @@ public class TrackView {
 	                    int draggedIndex = (Integer) db.getContent(SERIALIZED_MIME_TYPE);
 	                    Track draggedTrack = table.getItems().remove(draggedIndex);
 
-	                    int dropIndex ; 
+	                    int dropIndex ;
 
 	                    if (row.isEmpty()) {
 	                        dropIndex = table.getItems().size() ;
@@ -169,7 +169,7 @@ public class TrackView {
 	                    MainApp.pc.refreshCurrentInt();
 	                    event.setDropCompleted(true);
 	                    table.getSelectionModel().select(dropIndex);
-	                    
+
 	                     event.consume();
 	                }
 	                Tools.saveAsPlaylist(tracklist, tracklist.getPlaylistName());
