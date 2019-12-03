@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import utils.Tools;
 
@@ -31,7 +32,9 @@ public class RightPanels {
 		songsButton.getStyleClass().remove("radio-button");
 		songsButton.getStyleClass().add("toggle-button");
 		
-		songsPane.getChildren().add(TrackView.tableFromTracklist(MainApp.mainTracklist, MainApp.pc));
+		VBox sV = TrackView.tableFromTracklist(MainApp.mainTracklist, MainApp.pc);
+		songsPane.getChildren().add(sV);
+		VBox.setVgrow(sV, Priority.ALWAYS);
 
 		Label songs_artistsLabel = new Label("  ");
 

@@ -55,8 +55,6 @@ public class TrackView {
             }
         });
 		
-		table.setMinHeight(Tools.DHEIGHTS[1] + Tools.DHEIGHTS[2]);
-		
         VBox vbox = new VBox(table);
         VBox.setVgrow(table, Priority.ALWAYS);
         
