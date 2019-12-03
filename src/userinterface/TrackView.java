@@ -16,11 +16,12 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import models.Track;
 import models.TrackList;
+import utils.Tools;
 
 public class TrackView {
 	public static VBox tableFromTracklist(TrackList tracklist, PlayerController pc) {
 		return tableFromTracklist(tracklist, pc, false);
-	}	
+	}
 
 
 	public static VBox tableFromTracklist(TrackList tracklist, PlayerController pc, boolean showOrder) {
@@ -74,8 +75,8 @@ public class TrackView {
 				return row;
 			}
 		});
-		
-		
+
+
 		/*
 		 * this fucks ram up
 
@@ -86,12 +87,12 @@ public class TrackView {
 		        }
 		 });
 		 */
-		
-		
+
+
 		tracklist.forEach((Track t)->{
 			table.getItems().add(t);
 		});
-		
+
 
 		table.setOnMouseClicked((MouseEvent click) -> {
 			if (click.getClickCount() == 2) {
@@ -114,6 +115,6 @@ public class TrackView {
 
 		return vbox;
 	}
-	
-	
+
+
 }

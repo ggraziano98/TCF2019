@@ -30,23 +30,30 @@ public class Tools {
 	public static final String DGENRE = "Genere Sconosciuto";
 
 
-	public static final String TRANSBUTT = "    -fx-border-color: transparent;\n" + 
-			"    -fx-border-width: 0;\n" + 
-			"    -fx-background-radius: 0;\n" + 
+	public static final String TRANSBUTT = "    -fx-border-color: transparent;\n" +
+			"    -fx-border-width: 0;\n" +
+			"    -fx-background-radius: 0;\n" +
 			"    -fx-background-color: transparent;\n}";
-	public static final String BOLDBUTT = "    -fx-border-color: transparent;\n" + 
-			"    -fx-border-width: 0;\n" + 
-			"    -fx-background-radius: 0;\n" + 
+	public static final String BOLDBUTT = "    -fx-border-color: transparent;\n" +
+			"    -fx-border-width: 0;\n" +
+			"    -fx-background-radius: 0;\n" +
 			"    -fx-background-color: transparent;\n" +
 			"    -fx-font-weight: bold}";
-	public static final String SELBUTT = "    -fx-border-color: red;\n" + 
-			"    -fx-border-width: 0;\n" + 
-			"    -fx-background-radius: 0;\n" + 
+	public static final String SELBUTT = "    -fx-border-color: red;\n" +
+			"    -fx-border-width: 0;\n" +
+			"    -fx-background-radius: 0;\n" +
 			"    -fx-background-color: #bebdbf;\n" +
 			"    -fx-font-weight: bold;\n}";
-	
+
+
+	public static final double[] DWIDTHS= {300, 600};
+
+	public static final double[] DHEIGHTS = {45, 100, 300};
+
+
+
 	public static Image DIMAGE;
-	
+
 	static {
 		try(FileInputStream playFile = new FileInputStream("files\\Player\\play.png")) {
 			DIMAGE = new Image(playFile);
@@ -112,9 +119,9 @@ public class Tools {
 
 
 
-	/**TODO errore 
+	/**TODO errore
 	 * funzione che salva la tracklist come file di testo
-	 * 
+	 *
 	 * @param tracklist
 	 */
 	public static void saveAsPlaylist(TrackList tracklist, String playlistName) {
@@ -131,7 +138,7 @@ public class Tools {
 			if (e instanceof FileAlreadyExistsException) {
 				deletePlaylist(playlistName, false);
 				saveAsPlaylist(tracklist, playlistName);
-			} else 
+			} else
 				e.printStackTrace();
 		}
 
@@ -140,9 +147,9 @@ public class Tools {
 
 
 	/**TODO errore
-	 * 
+	 *
 	 * prende il nome del file di testo di una tracklist salvata e crea un oggetto tracklist con i path contenuti nel file di testo
-	 * 
+	 *
 	 * @param String
 	 * @return tracklist
 	 */
@@ -159,12 +166,12 @@ public class Tools {
 				if(Files.exists(path)){
 					tracklist.addTrack(path);;
 				}
-				else System.out.println(path.toString() + "\tNon è un file corretto");
-			}	
+				else System.out.println(path.toString() + "\tNon ï¿½ un file corretto");
+			}
 
-			br.close();	
+			br.close();
 
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			System.out.println("La playlist da leggere non esiste");
 		}
 
@@ -182,11 +189,11 @@ public class Tools {
 
 
 	/**
-	 * 
+	 *
 	 * mi permette di eliminare una playlist in file di testo
-	 * 
+	 *
 	 * TODO messaggio completamento operazione
-	 * 
+	 *
 	 * @param playlist
 	 */
 	public static void deletePlaylist(String playlist, boolean showMessage) {
@@ -222,7 +229,7 @@ public class Tools {
 	/**
 	 * tool per debugging, printa il contenuto di una playlist
 	 * TODO togliere quando non serve piu
-	 * 
+	 *
 	 * @param tracklist
 	 */
 	public static void cout(TrackList tracklist) {

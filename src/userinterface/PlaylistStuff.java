@@ -12,6 +12,12 @@ import utils.Tools;
 
 public class PlaylistStuff {
 	
+	
+	/**
+	 * Usato per definire lo scrollpane a sinistra in cui si vedono tutte le playlist salvate
+	 * 
+	 * @return ScrollPane playlist
+	 */
 	public static ScrollPane playlist() {
 		
 		VBox playlistsVbox = new VBox();
@@ -20,23 +26,34 @@ public class PlaylistStuff {
 		
 		ObservableList<String> savedPlaylists = Tools.getNamesSavedPlaylists();
 
+		//TODO reload tracklist instead of setting visible(true)??
 		savedPlaylists.forEach((String name)->{
 			TrackList tracklist = Tools.readPlaylist(name);
-			VBox table = TrackView.tableFromTracklist(tracklist, Root.pc);
-			Root.root.add(table, 1, 1, 1, 2);
-			playlists(name, playlistsVbox, Root.mainPanel, table);
+			VBox table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
+			MainApp.root.add(table, 1, 1, 1, 2);
+			playlistButton(name, playlistsVbox, MainApp.mainPanel, table);
 			
 		});
 		
 		return scroll;
 	}
-
-	public static void playlists(String string, VBox box, ToggleGroup mainPanel, Node dataPane) {
+	
+	/**
+	 * Funzione che crea i bottoni da aggiungere allo scrollpane delle playlist
+	 * 
+	 * @param string
+	 * @param box
+	 * @param mainPanel
+	 * @param dataPane
+	 */
+	private static void playlistButton(String string, VBox box, ToggleGroup mainPanel, Node dataPane) {
 		RadioButton playlistButton = new RadioButton(string);
 		playlistButton.getStyleClass().remove("radio-button");
 		playlistButton.getStyleClass().add("toggle-button");
-		playlistButton.setMinWidth(280);
-		playlistButton.setMaxWidth(280);
+		
+		double width = Tools.DWIDTHS[0]*0.95;
+		playlistButton.setMinWidth(width);
+		playlistButton.setMaxWidth(width);
 		playlistButton.setAlignment(Pos.CENTER_LEFT);
 		playlistButton.setToggleGroup(mainPanel);
 		playlistButton.setStyle(Tools.TRANSBUTT);

@@ -15,35 +15,38 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import models.Track;
 import models.TrackList;
+import utils.Tools;
 
 public class FindStuff {
 
 	public static HBox findBox() {
-		
-		// SEARCHBAR per cercare all'interno della libreria
-				HBox findHBox = new HBox();
-				findHBox.setAlignment(Pos.CENTER);
-				Root.findText.setMinWidth(220);
-				Button findButton = new Button("cerca");
 
-				findHBox.getChildren().add(Root.findText);	
-				findHBox.getChildren().add(findButton);
-		
-				findButton.setOnMouseClicked((e) -> {
-					find(Root.findText.getText(), Root.mainPanel, Root.root, Root.pc);
-				});
-				findHBox.setOnKeyReleased((final KeyEvent KeyEvent) -> {
-					if (KeyEvent.getCode() == KeyCode.ENTER) {
-						find(Root.findText.getText(), Root.mainPanel, Root.root, Root.pc);
-					}
-				});
-				
-				
+		// SEARCHBAR per cercare all'interno della libreria
+		HBox findHBox = new HBox();
+		findHBox.setAlignment(Pos.CENTER);
+		MainApp.findText.setMinWidth(Tools.DWIDTHS[0]*0.75);
+		Button findButton = new Button("cerca");
+
+		findHBox.getChildren().add(MainApp.findText);	
+		findHBox.getChildren().add(findButton);
+
+		findButton.setOnMouseClicked((e) -> {
+			find(MainApp.findText.getText());
+		});
+		findHBox.setOnKeyReleased((final KeyEvent KeyEvent) -> {
+			if (KeyEvent.getCode() == KeyCode.ENTER) {
+				find(MainApp.findText.getText());
+			}
+		});
+
 		return findHBox;
-		
+
 	}
-	
-	public static void find(String keyWord, ToggleGroup mainPanel, GridPane root, PlayerController pc) {	
+
+	public static void find(String keyWord) {	
+
+		GridPane root = MainApp.root;
+		PlayerController pc = MainApp.pc;
 		// TODO espandere 
 		List<Track> list = pc.getTracklist().stream().filter(t->{
 			return (
@@ -57,14 +60,14 @@ public class FindStuff {
 		list.forEach(t->{
 			filtered.add(t);
 		});
-		mainPanel.getToggles().forEach(panel ->{
-			((Node) panel.getUserData()).setVisible(false);
-		});
+		
+		root.getChildren().remove(MainApp.findView);
+		MainApp.findView = null;
+				
+		MainApp.findView = TrackView.tableFromTracklist(filtered, pc);
 
-		VBox findView = TrackView.tableFromTracklist(filtered, pc);
-
-		root.add(findView, 1, 1, 1, 2); 
+		root.add(MainApp.findView, 1, 1, 1, 2); 
 	}
 
-	
+
 }
