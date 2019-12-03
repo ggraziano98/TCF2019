@@ -12,6 +12,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import models.Track;
 import models.TrackList;
+import utils.Tools;
 
 public class TrackView {
 	
@@ -54,7 +55,7 @@ public class TrackView {
             }
         });
 		
-		table.setMinHeight(400);
+		table.setMinHeight(Tools.DHEIGHTS[1] + Tools.DHEIGHTS[2]);
 		
         VBox vbox = new VBox(table);
         VBox.setVgrow(table, Priority.ALWAYS);
