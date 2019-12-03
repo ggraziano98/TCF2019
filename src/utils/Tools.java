@@ -196,7 +196,7 @@ public class Tools {
 	 */
 	public static TrackList readPlaylist(String playlist) {
 		TrackList tracklist = new TrackList();
-		Path filePath = Paths.get("playlists", playlist);
+		Path filePath = Paths.get("playlists", playlist + ".txt");
 		try {
 
 			BufferedReader br= Files.newBufferedReader(filePath);
@@ -222,7 +222,38 @@ public class Tools {
 		return tracklist;
 	}
 
-
+	public static void addTrackToPlaylist (String playlistName, Track track) {
+		try {
+			TrackList tracklist = readPlaylist(playlistName);
+			tracklist.addTrack(track);
+			deletePlaylist(playlistName, false);
+			saveAsPlaylist(tracklist, playlistName);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("error1");
+			alert.setHeaderText("nome playlist già usato");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
+	}
+	
+	
+	public static void RemoveTrackFromPlaylist (String playlistName, Track track) {
+		try {
+			TrackList tracklist = readPlaylist(playlistName);
+			tracklist.RemoveTrack(track);
+			deletePlaylist(playlistName, false);
+			saveAsPlaylist(tracklist, playlistName);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("error1");
+			alert.setHeaderText("nome playlist già usato");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
+	}
 
 	public static void deletePlaylist(String playlist) {
 		deletePlaylist(playlist, false);
@@ -278,6 +309,39 @@ public class Tools {
 		}
 	}
 
+
+	public static void DeleteTrack(Track track) {
+		Alert selection = new Alert(AlertType.CONFIRMATION);
+		selection.setTitle("Delete song");
+		selection.setHeaderText("Warning");
+		selection.setContentText("Sei sicuro di voler eliminare la canzone " + track.getTitle() + " definitivamente");
+
+		Optional<ButtonType> result = selection.showAndWait();
+		if (result.get() == ButtonType.OK){
+			try {
+				if(Files.deleteIfExists(track.getPath())) {
+					Alert yes = new Alert(AlertType.CONFIRMATION);
+					yes.setTitle("Eliminazione canzone");
+					yes.setContentText("Canzone eliminata correttamente");
+					yes.showAndWait();
+				}
+				else {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("error2");
+					alert.setHeaderText("Errore generico");
+					alert.setContentText("Provare a vedere se la canzone selezionata è già stata eliminata");
+					alert.showAndWait();
+				}
+			} catch (IOException e) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("error2");
+				alert.setHeaderText("Errore generico");
+				alert.setContentText(e.getMessage());
+				alert.showAndWait();
+			}
+		}
+
+	}
 
 	/**
 

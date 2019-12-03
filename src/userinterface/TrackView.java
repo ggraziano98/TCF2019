@@ -25,7 +25,7 @@ public class TrackView {
 		columnPlaying.setCellValueFactory(new Callback<CellDataFeatures<Track, String>, ObservableValue<String>>() {
 			public ObservableValue<String> call(CellDataFeatures<Track, String> t) {
 				// t.getValue() returns the Track instance for a particular TableView row
-				SimpleStringProperty result = new SimpleStringProperty(" "); 
+				SimpleStringProperty result = new SimpleStringProperty(" ");
 				if (t.getValue().getPlaying()) result = new SimpleStringProperty("♪");
 				return result;
 			}
