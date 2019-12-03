@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -55,7 +56,7 @@ public class PlayerBuilder {
 		HBox playerButtons = controlStuff(pc, playerV, Root.findText);
 		HBox sliderBox = songTime(pc, columnOneWidht);
 		ImageView songView = songImage(pc);
-		Label songName = songTitle(pc, songView);
+		Label songName = songTitle(pc);
 		
 
 		GridPane.setHalignment(songName, HPos.LEFT);
@@ -65,9 +66,6 @@ public class PlayerBuilder {
 		playerV.add(sliderBox, 0, 2);
 		playerV.add(playerButtons, 0, 3);
 		
-		
-		
-				
 				
 				
 				
@@ -234,7 +232,7 @@ public class PlayerBuilder {
 		else playButton.setGraphic(pauseView);
 	}
 	
-	public static Label songTitle (PlayerController pc, ImageView songView) {
+	public static Label songTitle (PlayerController pc) {
 		//TODO songtext che gira (o almeno che ci sta dentro
 				Label songName = new Label();
 				songName.setPadding(new Insets(0, 3, 0, 3));
@@ -247,7 +245,6 @@ public class PlayerBuilder {
 				pc.currentIntProperty().addListener((obs, oldv, newv)->{
 					if (pc.getTracklist().getSize()>0) {
 						text.set(pc.getTracklist().get(newv.intValue()).getTitle());	
-						songView.setImage(pc.getTracklist().get(pc.getCurrentInt()).getImage());
 					}
 					else text.set("Seleziona una canzone");
 				});
@@ -265,7 +262,8 @@ public class PlayerBuilder {
 				pc.currentIntProperty().addListener((obs, oldv, newv)->{
 					if (pc.getTracklist().getSize()>0) {	
 						songView.setImage(pc.getTracklist().get(pc.getCurrentInt()).getImage());
-					}});
+					}
+					else songView.setImage(songImage);});
 				return songView;
 	}
 	
@@ -320,5 +318,9 @@ public class PlayerBuilder {
 		return mS;
 
 	}
+
+
+
+
 
 }
