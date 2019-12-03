@@ -49,7 +49,7 @@ import utils.Tools;
 
 public class MainApp extends Application{
 
-	// TODO chiudere le risorse una volta usate 
+	// TODO chiudere le risorse una volta usate
 	//TODO questo serve per adattare la dimensione della finestra alla definizione del display del pc
 	//	GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	//	int width = gd.getDisplayMode().getWidth();
@@ -59,49 +59,50 @@ public class MainApp extends Application{
 	static FileController fc = new FileController(Paths.get(mainDir));
 	static TrackList mainTracklist = fc.getFilesFromDir();
 	static PlayerController pc = new PlayerController(mainTracklist);
-	
+
 	static GridPane root;
-	
+
 	static GridPane playerPane;
 	static HBox findBox;
 	static ScrollPane playlistPane;
 	static HBox buttonBox;
-	
+
 	static FlowPane albumsPane;
 	static FlowPane artistsPane;
 	static VBox songsPane;
 	static VBox findView;
 	static VBox songQueue;
-	
+
 	static TextField findText = new TextField();
 	static ToggleGroup mainPanel = new ToggleGroup();
 
-	
+
 	public void start(Stage primaryStage) throws Exception {
-		
+
 		root = Root.rootPane();
 
 
 		Scene scene = new Scene(root, 650, 600);
-		
+
 
 		RightPanels.panels();
 
 		FileInputStream gioFile = new FileInputStream("files\\gio.png");
 		Image gioImage = new Image(gioFile);
+		gioFile.close();
 		primaryStage.getIcons().add(gioImage);
 
 		playerPane = PlayerBuilder.playerBuilder();
 		findBox = FindStuff.findBox();
 		playlistPane = PlaylistStuff.playlist();
-		
+
 		buttonBox = RightPanels.buttonBox;
-		
+
 		albumsPane = RightPanels.albumsPane;
 		artistsPane = RightPanels.artistsPane;
 		songsPane = RightPanels.songsPane;
-		
-		
+
+
 		//aggiungo i pane al gridpane
 		root.add(playerPane, 0, 2);
 		root.add(findBox, 0, 0);
@@ -142,19 +143,19 @@ public class MainApp extends Application{
 
 
 
-	
 
 
-	
 
+
+	//TODO change into initialize
 	public static String getMainDir() {
 		Path mainDirFile = Paths.get("files", "mainDir.txt");
 		String mainDir = "";
 		try {
 			BufferedReader br= Files.newBufferedReader(mainDirFile);
 			mainDir = br.readLine();
-			br.close();	
-		} catch (IOException e) { 
+			br.close();
+		} catch (IOException e) {
 			System.out.println("mainDir non selezionata");
 		}
 
@@ -184,7 +185,7 @@ public class MainApp extends Application{
 						e1.printStackTrace();
 					}
 
-				} else 
+				} else
 					e.printStackTrace();
 			}
 		}
@@ -195,16 +196,5 @@ public class MainApp extends Application{
 
 
 
-	
+
 }
-
-
-
-
-
-
-
-
-
-
-
