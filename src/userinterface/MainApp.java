@@ -41,6 +41,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.Track;
 import models.TrackList;
+import utils.Initialize;
 import utils.Tools;
 
 
@@ -55,9 +56,8 @@ public class MainApp extends Application{
 	//	int width = gd.getDisplayMode().getWidth();
 	//	int height = gd.getDisplayMode().getHeight();
 
-	static String mainDir = getMainDir();
-	static FileController fc = new FileController(Paths.get(mainDir));
-	static TrackList mainTracklist = fc.getFilesFromDir();
+	static List<String> mainDirList = Initialize.getMainDir();
+	static TrackList mainTracklist = FileController.getFilesFromDir(mainDirList);
 	static PlayerController pc = new PlayerController(mainTracklist);
 
 	static GridPane root;

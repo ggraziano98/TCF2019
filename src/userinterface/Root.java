@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package userinterface;
 
 import javafx.geometry.Insets;
