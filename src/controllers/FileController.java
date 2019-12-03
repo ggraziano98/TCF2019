@@ -29,7 +29,7 @@ public class FileController {
 		
 		dirList.forEach(dir->{
 			getFilesFromDir(Paths.get(dir)).forEach(t->{
-				tracklist.add(t);
+				tracklist.addTrack(t);
 			});;
 		});
 		

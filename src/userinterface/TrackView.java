@@ -1,34 +1,44 @@
 package userinterface;
 
 import controllers.PlayerController;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import models.Track;
 import models.TrackList;
-import utils.Tools;
 
 public class TrackView {
-	public static VBox tableFromTracklist(TrackList tracklist, PlayerController pc) {
-		return tableFromTracklist(tracklist, pc, false);
-	}
 
-
-	public static VBox tableFromTracklist(TrackList tracklist, PlayerController pc, boolean showOrder) {
+	public static TableView<Track> tableFromTracklist(TrackList tracklist, PlayerController pc, boolean showOrder){
 		TableView<Track> table = new TableView<>();
 
-		TableColumn<Track, StringProperty> column1 = new TableColumn<>("Titolo");
-		column1.setCellValueFactory(new PropertyValueFactory<>("title"));
+
+		TableColumn<Track, String> columnPlaying = new TableColumn<>(" ");
+		columnPlaying.setCellValueFactory(new Callback<CellDataFeatures<Track, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<Track, String> t) {
+				// t.getValue() returns the Track instance for a particular TableView row
+				SimpleStringProperty result = new SimpleStringProperty(" "); 
+				if (t.getValue().getPlaying()) result = new SimpleStringProperty("♪");
+				return result;
+			}
+		});
+
+		TableColumn<Track, String> column1 = new TableColumn<>("Titolo");
+		column1.setCellValueFactory(new Callback<CellDataFeatures<Track, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<Track, String> t) {
+				// p.getValue() returns the Person instance for a particular TableView row
+				return new SimpleStringProperty(t.getValue().getTitle());
+			}
+		});
+
 
 		TableColumn<Track, StringProperty> column2 = new TableColumn<>("Artista");
 		column2.setCellValueFactory(new PropertyValueFactory<>("artist"));
@@ -45,11 +55,14 @@ public class TrackView {
 			table.getColumns().add(column0);
 		}
 
+		table.getColumns().add(columnPlaying);
 		table.getColumns().add(column1);
 		table.getColumns().add(column2);
 		table.getColumns().add(column3);
 		table.getColumns().add(column4);
 
+		/*
+		 * no longer needed but keeping here as refrence
 		table.setRowFactory(new Callback<TableView<Track>, TableRow<Track>>() {
 			@Override
 			public TableRow<Track> call(TableView<Track> tableView) {
@@ -75,24 +88,14 @@ public class TrackView {
 				return row;
 			}
 		});
-
-
-		/*
-		 * this fucks ram up
-
-		 table.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
-		        @Override
-		        public void handle(ScrollEvent scrollEvent) {
-			           table.refresh();
-		        }
-		 });
 		 */
 
 
-		tracklist.forEach((Track t)->{
-			table.getItems().add(t);
-		});
+		table.setItems(tracklist);
 
+		pc.currentIntProperty().addListener(listener->{
+			table.refresh();
+		});
 
 		table.setOnMouseClicked((MouseEvent click) -> {
 			if (click.getClickCount() == 2) {
@@ -105,15 +108,18 @@ public class TrackView {
 					pc.setCurrentTrack(selectedTrack);
 					pc.play();
 				}
+				table.refresh();
 			}
 		});
 
 		table.setMinHeight(400);
 
-		VBox vbox = new VBox(table);
-		VBox.setVgrow(table, Priority.ALWAYS);
+		return table;
 
-		return vbox;
+	}
+
+	public static TableView<Track> tableFromTracklist(TrackList tracklist, PlayerController pc) {
+		return tableFromTracklist(tracklist, pc, false);
 	}
 
 

@@ -173,8 +173,7 @@ public class PlayerBuilder {
 			}
 			else {
 				volumeButton.setGraphic(muteView);
-			}
-
+			}			
 			muted.set(!muted.get());
 			volumeMute(muted, pc);
 

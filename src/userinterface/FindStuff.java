@@ -5,13 +5,13 @@ import java.util.stream.Collectors;
 
 import controllers.PlayerController;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import models.Track;
 import models.TrackList;
@@ -57,14 +57,14 @@ public class FindStuff {
 		}).collect(Collectors.toList());
 
 		TrackList filtered = new TrackList();
-		list.forEach(t->{
-			filtered.add(t);
-		});
+		filtered.addAll(list);
 		
 		root.getChildren().remove(MainApp.findView);
 		MainApp.findView = null;
 				
-		MainApp.findView = TrackView.tableFromTracklist(filtered, pc);
+		TableView<Track> table = TrackView.tableFromTracklist(filtered, pc);
+		MainApp.findView = new VBox(table);
+		VBox.setVgrow(table, Priority.ALWAYS);
 
 		root.add(MainApp.findView, 1, 1, 1, 2); 
 	}

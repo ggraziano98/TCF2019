@@ -2,6 +2,7 @@ package models;
 
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.stream.Stream;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -27,7 +28,8 @@ import javafx.collections.ObservableList;
  */
 
 public class TrackList extends SimpleListProperty<Track> {
-
+	
+	private int[] loadedData = {0, 0};
 	/**
 	 * Default constructor for the class
 	 */
@@ -113,6 +115,9 @@ public class TrackList extends SimpleListProperty<Track> {
 	public void shuffleTrack () {
 		Collections.shuffle(this);
 		this.refreshPositions();
+		
+		// TODO check
+		this.fireValueChangedEvent();
 	}
 
 
@@ -280,9 +285,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * sets metadata for the whole tracklist
 	 */
 	public void setMetadata() {
-		this.forEach(t->{
-			t.setMetadata();
-		});
+		this.setMetadata(0, this.getSize()-1);
 	}
 	
 	
@@ -292,9 +295,13 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param upper
 	 */
 	public void setMetadata(int lower, int upper) {
-		this.subList(lower, upper).forEach(t->{
-			t.setMetadata();
-		});
+		lower = Math.min(lower, this.getSize()-1);
+		upper = Math.min(upper, this.getSize() -1);
+		if(lower != upper) {
+			this.subList(lower, upper).parallelStream().forEach(t->{
+				t.setMetadata();
+			});
+		}
 	}
 	
 	

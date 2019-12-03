@@ -5,8 +5,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import models.Track;
 import models.TrackList;
 import utils.Tools;
 
@@ -29,9 +32,12 @@ public class PlaylistStuff {
 		//TODO reload tracklist instead of setting visible(true)??
 		savedPlaylists.forEach((String name)->{
 			TrackList tracklist = Tools.readPlaylist(name);
-			VBox table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
-			MainApp.root.add(table, 1, 1, 1, 2);
-			playlistButton(name, playlistsVbox, MainApp.mainPanel, table);
+			
+			TableView<Track> table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
+			VBox tableBox = new VBox(table);
+			VBox.setVgrow(table, Priority.ALWAYS);
+			MainApp.root.add(tableBox, 1, 1, 1, 2);
+			playlistButton(name, playlistsVbox, MainApp.mainPanel, tableBox);
 			
 		});
 		

@@ -35,6 +35,16 @@ public class PlayerController {
 	 * costruttore di default
 	 */
 	public PlayerController() {
+		this.playing = new SimpleBooleanProperty(false);
+		this.muted = new SimpleBooleanProperty(false);
+		this.volumeValue = new SimpleDoubleProperty(1);
+		this.volumeValue.addListener((obs, oldv, newv)->{
+			this.setVolume();
+		});
+		this.totalDuration = new SimpleDoubleProperty(0);
+		this.currentTime = new SimpleDoubleProperty(0);
+		this.tracklist = new TrackList();
+		this.setCurrentInt(0);
 	}
 
 
@@ -51,21 +61,6 @@ public class PlayerController {
 		this.totalDuration = new SimpleDoubleProperty(0);
 		this.currentTime = new SimpleDoubleProperty(0);
 		this.setCurrentInt(0);
-	}
-
-
-	public PlayerController(TrackList tracklist, int firstSongPosition) {
-		this.playing = new SimpleBooleanProperty(false);
-		this.setTracklist(tracklist);
-		this.setCurrentInt(firstSongPosition);
-		this.muted = new SimpleBooleanProperty(false);
-		this.volumeValue = new SimpleDoubleProperty(1);
-		this.volumeValue.addListener((obs, oldv, newv)->{
-			this.setVolume();
-		});
-		this.totalDuration = new SimpleDoubleProperty(0);
-		this.currentTime = new SimpleDoubleProperty(0);
-		this.refreshPlayer();
 	}
 
 	public void play() {
@@ -125,6 +120,7 @@ public class PlayerController {
 
 		this.currentTrack = this.getTracklist().get(this.getCurrentInt());
 		this.currentTrack.setPlaying(true);
+		if(!this.currentTrack.getHasMetadata()) this.currentTrack.setMetadata();
 		if(player != null) {
 			player.stop();
 			player = null;
@@ -172,11 +168,9 @@ public class PlayerController {
 
 
 	public final void setTracklist(TrackList tracklist) {
-		this.tracklist = tracklist;
+		this.tracklist.set(tracklist);
 
-		//TODO change
-		this.tracklist.setMetadata();
-		this.tracklist.forEach(t-> t.getImage());
+		//TODO this slows the player down too much
 	}
 
 
@@ -190,14 +184,16 @@ public class PlayerController {
 	}
 
 
-	private final void setCurrentInt(int currentInt) {
+	private final void setCurrentInt(int currentInt) {	
 		if(this.currentInt == null) this.currentInt = new SimpleIntegerProperty(0);
-		if(currentInt>= 0) {
-			this.currentInt.set(currentInt%this.getTracklist().getSize());
-		} else {
-			this.currentInt.set(this.getTracklist().getSize() -1);
+		if(this.tracklist.getSize() != 0) {
+			if(currentInt>= 0) {
+				this.currentInt.set(currentInt%this.getTracklist().getSize());
+			} else {
+				this.currentInt.set(this.getTracklist().getSize() -1);
+			}
+			this.refreshPlayer();
 		}
-		this.refreshPlayer();
 	}
 
 
