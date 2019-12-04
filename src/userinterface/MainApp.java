@@ -38,6 +38,9 @@ public class MainApp extends Application{
 	//TODO canc non funziona al momento nel contextmenu
 	//TODO fix information context menu
 	//TODO fix playlist/tracklist/songqueue context menu
+	//TOTO fix find
+	//TODO error message if dir doesnt exist in initialize
+	//TODO add songs when adding dir to mainDir
 	
 
 	//TODO questo serve per adattare la dimensione della finestra alla definizione del display del pc
