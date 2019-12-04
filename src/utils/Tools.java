@@ -432,6 +432,15 @@ public class Tools {
 		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
 	}
 
+	
+	public static int getPosition(Track trackelement, TrackList tracklist) {
+		for (int i = 0; i < tracklist.getSize(); i++) {
+			if (trackelement==tracklist.get(i)) {
+				return i;
+			}
+		}
+				return 0;
+	}
 
 	public static ObservableList<String> getNamesSavedPlaylists(){
 		List<String> namesarray = new ArrayList<String>();
