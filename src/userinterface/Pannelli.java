@@ -1,32 +1,19 @@
 package userinterface;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Optional;
-
-import javax.script.Bindings;
-
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Control;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import models.Track;
 import models.TrackList;
 import utils.Tools;
@@ -76,8 +63,6 @@ public class Pannelli{
 	
 	public static void contextMenuTrack(TableView<Track> table, TrackList tracklist) {
 
-		ObservableList<String> savedPlaylists = Tools.getNamesSavedPlaylists();
-
 		ContextMenu menu = new ContextMenu();
 
 		MenuItem item1 = new MenuItem("Delete song");
@@ -85,7 +70,7 @@ public class Pannelli{
 		SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
 		Menu parentMenu = new Menu("Add song to");
 
-		savedPlaylists.forEach((String name)->{
+		MainApp.savedPlaylists.forEach((String name)->{
 			MenuItem item = new MenuItem(name);	
 			item.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event) {

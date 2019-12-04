@@ -33,7 +33,7 @@ import javafx.scene.control.Alert.AlertType;
 
 public class TrackList extends SimpleListProperty<Track> {
 
-	private int[] loadedData = {0, 0};
+	private String playlistName;
 	/**
 	 * Default constructor for the class
 	 */
@@ -324,6 +324,16 @@ public class TrackList extends SimpleListProperty<Track> {
 		this.forEach(t->{
 			t.unload();
 		});
+	}
+
+
+	public String getPlaylistName() {
+		return playlistName;
+	}
+
+
+	public void setPlaylistName(String playlistName) {
+		this.playlistName = playlistName;
 	}
 
 }

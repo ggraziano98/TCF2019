@@ -2,17 +2,24 @@ package userinterface;
 
 import java.io.FileInputStream;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import models.Track;
+import utils.Tools;
 
 public class RightPanels {
 
@@ -35,6 +42,7 @@ public class RightPanels {
 		songsButton.getStyleClass().add("toggle-button");
 		
 		TableView<Track> table = TrackView.tableFromTracklist(MainApp.allTracksList, MainApp.pc);
+		
 		songsPane.getChildren().add(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 
