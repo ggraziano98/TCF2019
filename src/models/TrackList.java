@@ -33,7 +33,7 @@ import javafx.scene.control.Alert.AlertType;
 
 public class TrackList extends SimpleListProperty<Track> {
 
-	
+
 	private String playlistName;
 
 	/**

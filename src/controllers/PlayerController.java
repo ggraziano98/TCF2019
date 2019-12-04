@@ -120,7 +120,6 @@ public class PlayerController {
 
 		this.currentTrack = this.getTracklist().get(this.getCurrentInt());
 		this.currentTrack.setPlaying(true);
-		if(!this.currentTrack.getHasMetadata()) this.currentTrack.setMetadata();
 		if(player != null) {
 			player.stop();
 			player = null;
@@ -169,6 +168,7 @@ public class PlayerController {
 
 	public final void setTracklist(TrackList tracklist) {
 		this.tracklist.set(tracklist);
+		this.tracklist.setMetadata();
 
 		//TODO this slows the player down too much
 	}
