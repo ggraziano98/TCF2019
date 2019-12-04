@@ -14,7 +14,7 @@ import java.util.Optional;
 import javafx.scene.control.TextInputDialog;
 
 public class Initialize {
-	
+
 	public static final List<String> getMainDir() {
 		Path mainDirFile = Paths.get("files", "mainDir.txt");
 		List<String> mainDirList = new ArrayList<String>() ;
@@ -39,7 +39,7 @@ public class Initialize {
 				e.printStackTrace();
 			}
 
-			
+
 			try (BufferedWriter bw= Files.newBufferedWriter(mainDirFile)){
 				mainDirList.forEach(dir->{
 					try {
@@ -49,14 +49,61 @@ public class Initialize {
 					}
 				});
 			} catch (IOException e) {
-					e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 		return mainDirList;
 	}
-	
-//	public static final loadPlaylists() {
-//		
-//	}
 
+	//	public static final loadPlaylists() {
+	//		
+	//	}
+
+
+	public static void addDirectory() {
+
+		Path mainDirFile = Paths.get("files", "mainDir.txt");
+
+
+		TextInputDialog dialog = new TextInputDialog("example: C:\\Music");
+		dialog.setTitle("Select Directory");
+		dialog.setHeaderText("Inserire il path alla directory selezionata");
+
+		List<String> mainDirList = new ArrayList<String>() ;
+		try (BufferedReader br= Files.newBufferedReader(mainDirFile)){
+			br.lines().forEach(line->mainDirList.add(line));
+		} catch (IOException e) { 
+			System.out.println("mainDir non selezionata");
+		}
+
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent()){
+			mainDirList.add(result.get());
+		}
+		try {
+			Files.createFile(mainDirFile);
+		} catch (FileAlreadyExistsException e) {
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		try (BufferedWriter bw= Files.newBufferedWriter(mainDirFile)){
+			mainDirList.forEach(dir->{
+				try {
+					if(Files.isDirectory(Paths.get(dir)))bw.write(dir + "\n");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 }
+
+
+
+
+
+

@@ -313,7 +313,7 @@ public class TrackList extends SimpleListProperty<Track> {
 		lower = Math.min(lower, this.getSize()-1);
 		upper = Math.min(upper, this.getSize() -1);
 		if(lower != upper) {
-			this.subList(lower, upper).parallelStream().forEach(t->{
+			this.subList(lower, upper).forEach(t->{
 				t.setMetadata();
 			});
 		}
