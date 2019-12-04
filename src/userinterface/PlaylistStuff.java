@@ -1,14 +1,15 @@
 package userinterface;
 
-import java.util.List;
-
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import models.Track;
@@ -20,7 +21,7 @@ public class PlaylistStuff {
 
 	/**
 	 * Usato per definire lo scrollpane a sinistra in cui si vedono tutte le playlist salvate
-	 * 
+	 *
 	 * @return ScrollPane playlist
 	 */
 	public static ScrollPane playlist() {
@@ -56,7 +57,7 @@ public class PlaylistStuff {
 
 	/**
 	 * Funzione che crea i bottoni da aggiungere allo scrollpane delle playlist
-	 * 
+	 *
 	 * @param string
 	 * @param box
 	 * @param mainPanel
@@ -89,8 +90,10 @@ public class PlaylistStuff {
 
 		dataPane.setVisible(false);
 		playlistButton.setUserData(dataPane);
-		
+
 		Pannelli.contextMenuPlaylists(playlistButton); //Add context menu
+
+
 
 	}
 
@@ -100,11 +103,16 @@ public class PlaylistStuff {
 
 		TableView<Track> table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
 		Pannelli.contextMenuTrack(table, tracklist);
-		
+
 		VBox tableBox = new VBox(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 		MainApp.root.add(tableBox, 1, 1, 1, 2);
 		playlistButton(name, playlistsVbox, MainApp.mainPanel, tableBox);
+
+
+		TrackView.setDragDrop(table, tracklist);
 	}
 
-}
+
+
+	}
