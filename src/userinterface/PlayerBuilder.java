@@ -267,10 +267,7 @@ public class PlayerBuilder {
 	}
 
 	public static ImageView songImage(PlayerController pc) throws Exception {
-		FileInputStream nothingYetFile = new FileInputStream("files\\Player\\404.png");
-		Image songImage = new Image(nothingYetFile);
-		nothingYetFile.close();
-		ImageView songView = new ImageView(songImage);
+		ImageView songView = new ImageView(Tools.DIMAGE);
 		songView.setFitWidth(170);
 		songView.setFitHeight(170);
 
@@ -278,7 +275,7 @@ public class PlayerBuilder {
 			if (pc.getTracklist().getSize()>0) {	
 				songView.setImage(pc.getTracklist().get(pc.getCurrentInt()).getImage());
 			}
-			else songView.setImage(songImage);});
+			else songView.setImage(Tools.DIMAGE);});
 		return songView;
 	}
 

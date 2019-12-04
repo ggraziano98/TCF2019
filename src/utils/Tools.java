@@ -12,25 +12,20 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.swing.JOptionPane;
-
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.Image;
 import models.Track;
 import models.TrackList;
-import userinterface.Root;
+import userinterface.MainApp;
 
 
 public class Tools {
@@ -65,8 +60,8 @@ public class Tools {
 	public static Image DIMAGE;
 
 	static {
-		try(FileInputStream playFile = new FileInputStream("files\\Player\\play.png")) {
-			DIMAGE = new Image(playFile);
+		try(FileInputStream nothingYetFile = new FileInputStream("files\\Player\\404.png")) {
+			DIMAGE = new Image(nothingYetFile);
 		} catch (Exception e) {
 		}
 	}
@@ -157,11 +152,10 @@ public class Tools {
 
 	public static void newPlaylist() {
 
-		TextInputDialog dialog = new TextInputDialog("New Playlist");
+		TextInputDialog dialog = new TextInputDialog("example: Playlist");
 		String playlistName = new String();
-		dialog.setTitle("New playlist");
+		dialog.setTitle("Nuova playlist");
 		dialog.setHeaderText("Inserire nome playlist");
-		dialog.setContentText("example: PLaylist");
 		Optional<String> result = dialog.showAndWait();
 
 		if (result.isPresent()){
@@ -182,6 +176,8 @@ public class Tools {
 			} else
 				e.printStackTrace();
 		}
+		
+		MainApp.savedPlaylists.add(playlistName);
 
 	}
 
@@ -307,9 +303,12 @@ public class Tools {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		MainApp.savedPlaylists.remove(playlist);
 	}
 
 
+	//TODO handle tracklist errors
 	public static void DeleteTrack(Track track) {
 		Alert selection = new Alert(AlertType.CONFIRMATION);
 		selection.setTitle("Delete song");

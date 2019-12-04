@@ -8,6 +8,9 @@ import models.TrackList;
 
 public class SongQueueView {
 	
+	//TODO change so playing a song shows on other tables
+	
+	
 	public static VBox songQueueView() {
 		VBox songQueueView = new VBox();
 		

@@ -1,6 +1,8 @@
 package userinterface;
 
-import javafx.collections.ObservableList;
+import java.util.List;
+
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
@@ -14,36 +16,44 @@ import models.TrackList;
 import utils.Tools;
 
 public class PlaylistStuff {
-	
-	
+
+
 	/**
 	 * Usato per definire lo scrollpane a sinistra in cui si vedono tutte le playlist salvate
 	 * 
 	 * @return ScrollPane playlist
 	 */
 	public static ScrollPane playlist() {
-		
+
 		VBox playlistsVbox = new VBox();
 		ScrollPane scroll = new ScrollPane();
 		scroll.setContent(playlistsVbox);
-		
-		ObservableList<String> savedPlaylists = Tools.getNamesSavedPlaylists();
 
 		//TODO reload tracklist instead of setting visible(true)??
-		savedPlaylists.forEach((String name)->{
-			TrackList tracklist = Tools.readPlaylist(name);
-			
-			TableView<Track> table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
-			VBox tableBox = new VBox(table);
-			VBox.setVgrow(table, Priority.ALWAYS);
-			MainApp.root.add(tableBox, 1, 1, 1, 2);
-			playlistButton(name, playlistsVbox, MainApp.mainPanel, tableBox);
-			
+		MainApp.savedPlaylists.forEach((String name)->{
+			createPlaylistView(name, playlistsVbox);
+
 		});
-		
+
+		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c-> {
+			while(c.next()) {
+				c.getAddedSubList().forEach(s->{
+					createPlaylistView(s, playlistsVbox);
+				});
+				c.getRemoved().forEach(s->{
+					playlistsVbox.getChildren().forEach(playlist->{
+						if(((RadioButton)playlist).getText() == s) {
+							MainApp.root.getChildren().remove(playlist.getUserData());
+						}
+					});
+					playlistsVbox.getChildren().removeIf(playlist->((RadioButton)playlist).getText() == s);
+
+				});
+			}
+		});
 		return scroll;
 	}
-	
+
 	/**
 	 * Funzione che crea i bottoni da aggiungere allo scrollpane delle playlist
 	 * 
@@ -56,7 +66,7 @@ public class PlaylistStuff {
 		RadioButton playlistButton = new RadioButton(string);
 		playlistButton.getStyleClass().remove("radio-button");
 		playlistButton.getStyleClass().add("toggle-button");
-		
+
 		double width = Tools.DWIDTHS[0]*0.95;
 		playlistButton.setMinWidth(width);
 		playlistButton.setMaxWidth(width);
@@ -78,8 +88,20 @@ public class PlaylistStuff {
 		box.getChildren().add(playlistButton);
 
 		dataPane.setVisible(false);
-		playlistButton.setUserData(dataPane);;
+		playlistButton.setUserData(dataPane);
+		
+		Pannelli.contextMenuPlaylists(playlistButton); //Add context menu
 
+	}
+
+	private static void createPlaylistView(String name, VBox playlistsVbox) {
+		TrackList tracklist = Tools.readPlaylist(name);
+
+		TableView<Track> table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
+		VBox tableBox = new VBox(table);
+		VBox.setVgrow(table, Priority.ALWAYS);
+		MainApp.root.add(tableBox, 1, 1, 1, 2);
+		playlistButton(name, playlistsVbox, MainApp.mainPanel, tableBox);
 	}
 
 }

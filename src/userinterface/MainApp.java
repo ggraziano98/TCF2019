@@ -6,6 +6,7 @@ import java.util.List;
 import controllers.FileController;
 import controllers.PlayerController;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
@@ -19,39 +20,54 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.TrackList;
 import utils.Initialize;
+import utils.Tools;
 
 
 
 
 
 public class MainApp extends Application{
+	
+	//TODO fix images
+	//TODO fix playlists: expand content, fix name convention
+	//TODO shuffle, repeat
+	//TODO finish songqueue
+	//TODO initialize all songs
+	//TODO non si capisce quale playlist si punti con il contextmenu
+	//TODO contextmenu che funziona su tutto il box delle playlist
+	//TODO canc non funziona al momento nel contextmenu
+	//TODO fix information context menu
+	//TODO fix playlist/tracklist/songqueue context menu
+	//TODO fix adding songs to playlists
+	
 
-	//TODO add button to clear search
-	// TODO chiudere le risorse una volta usate
 	//TODO questo serve per adattare la dimensione della finestra alla definizione del display del pc
 	//	GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	//	int width = gd.getDisplayMode().getWidth();
 	//	int height = gd.getDisplayMode().getHeight();
 
-	static List<String> mainDirList;
-	static TrackList allTracksList;
-	static PlayerController pc;
+	public static List<String> mainDirList;
+	public static TrackList allTracksList;
+	public static PlayerController pc;
 
-	static GridPane root;
+	public static GridPane root;
 
-	static GridPane playerPane;
-	static HBox findBox;
-	static ScrollPane playlistPane;
-	static HBox buttonBox;
-
-	static FlowPane albumsPane;
-	static FlowPane artistsPane;
-	static VBox songsPane;
-	static VBox findView;
-	static VBox songQueueView;
+	public static GridPane playerPane;
+	public static HBox findBox;
 	
-	static TextField findText = new TextField();
-	static ToggleGroup mainPanel = new ToggleGroup();
+	public static ScrollPane playlistPane;
+	public static ObservableList<String> savedPlaylists;
+	
+	public static HBox buttonBox;
+
+	public static FlowPane albumsPane;
+	public static FlowPane artistsPane;
+	public static VBox songsPane;
+	public static VBox findView;
+	public static VBox songQueueView;
+	
+	public static TextField findText = new TextField();
+	public static ToggleGroup mainPanel = new ToggleGroup();
 
 
 	public void start(Stage primaryStage) throws Exception {
@@ -77,6 +93,8 @@ public class MainApp extends Application{
 		//Set various panes and buttons
 		playerPane = PlayerBuilder.playerBuilder();
 		findBox = FindStuff.findBox();
+		
+		savedPlaylists = Tools.getNamesSavedPlaylists();
 		playlistPane = PlaylistStuff.playlist();
 
 		buttonBox = RightPanels.buttonBox;
@@ -126,6 +144,13 @@ public class MainApp extends Application{
 	public static void main(String[] args) {
 		launch(args);
 	}
-
+	
+	
+	
 
 }
+
+
+
+
+

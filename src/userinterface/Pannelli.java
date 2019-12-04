@@ -45,7 +45,9 @@ public class Pannelli{
 		item1.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Tools.newPlaylist();
-				Root.refreshPlaylists();
+				
+				//TODO cancellare
+//				Root.refreshPlaylists();
 			}
 		});
 
@@ -53,7 +55,9 @@ public class Pannelli{
 		item2.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Tools.deletePlaylist(button.getText(), true);
-				Root.refreshPlaylists();
+				
+				//TODO Cancellare
+//				Root.refreshPlaylists();
 			}
 		});
 
@@ -68,7 +72,8 @@ public class Pannelli{
 	}
 
 
-
+//TODO cambiare in modo che differenzi tra songqueue, tracklist e allSongs
+	
 	public static void contextMenuTrack(TableView<Track> table, TrackList tracklist) {
 
 		ObservableList<String> savedPlaylists = Tools.getNamesSavedPlaylists();
