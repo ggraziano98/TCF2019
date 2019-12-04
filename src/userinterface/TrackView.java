@@ -1,22 +1,30 @@
 package userinterface;
 
+import com.rometools.rome.feed.atom.Person;
+
 import controllers.PlayerController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.TransferMode;
 import javafx.util.Callback;
 import models.Track;
 import models.TrackList;
+import utils.Tools;
 
 public class TrackView {
 
+	 private static final DataFormat SERIALIZED_MIME_TYPE = new DataFormat("application/x-java-serialized-object");	
+	
 	public static TableView<Track> tableFromTracklist(TrackList tracklist, PlayerController pc, boolean showOrder){
 		TableView<Track> table = new TableView<>();
 
@@ -60,35 +68,9 @@ public class TrackView {
 		table.getColumns().add(column2);
 		table.getColumns().add(column3);
 		table.getColumns().add(column4);
-
-		/*
-		 * no longer needed but keeping here as refrence
-		table.setRowFactory(new Callback<TableView<Track>, TableRow<Track>>() {
-			@Override
-			public TableRow<Track> call(TableView<Track> tableView) {
-				final TableRow<Track> row = new TableRow<Track>() {
-					@Override
-					protected void updateItem(Track track, boolean empty){
-						super.updateItem(track, empty);
-						if (track!=null) {
-							if(track.getPlaying()) setStyle("-fx-background-color: green;");
-							track.playingProperty().addListener((obs, oldv, newv)->{
-								if (newv) {
-									setStyle("-fx-background-color: green;");
-
-								}
-								else {
-									setStyle("");
-								}
-							});
-						}
-					}
-				};
-
-				return row;
-			}
-		});
-		 */
+		
+		
+		
 
 
 		table.setItems(tracklist);
@@ -123,5 +105,60 @@ public class TrackView {
 		return tableFromTracklist(tracklist, pc, false);
 	}
 
+	
+	public static void setDragDrop(TableView<Track> table, TrackList tracklist) {
+		 table.setRowFactory(tv -> {
+	            TableRow<Track> row = new TableRow<>();
+
+	            row.setOnDragDetected(event -> {
+	                if (! row.isEmpty()) {
+	                    Integer index = row.getIndex();
+	                    Dragboard db = row.startDragAndDrop(TransferMode.MOVE);
+	                    db.setDragView(row.snapshot(null, null));
+	                    ClipboardContent cc = new ClipboardContent();
+	                    cc.put(SERIALIZED_MIME_TYPE, index);
+	                    db.setContent(cc);
+	                    event.consume();
+	                }
+	            });
+
+	            row.setOnDragOver(event -> {
+	                Dragboard db = event.getDragboard();
+	                if (db.hasContent(SERIALIZED_MIME_TYPE)) {
+	                    if (row.getIndex() != ((Integer)db.getContent(SERIALIZED_MIME_TYPE)).intValue()) {
+	                        event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+	                        event.consume();
+	                    }
+	                }
+	            });
+
+	            row.setOnDragDropped(event -> {
+	                Dragboard db = event.getDragboard();
+	                if (db.hasContent(SERIALIZED_MIME_TYPE)) {
+	                    int draggedIndex = (Integer) db.getContent(SERIALIZED_MIME_TYPE);
+	                    Track draggedTrack = table.getItems().remove(draggedIndex);
+
+	                    int dropIndex ; 
+
+	                    if (row.isEmpty()) {
+	                        dropIndex = table.getItems().size() ;
+	                    } else {
+	                        dropIndex = row.getIndex();
+	                    }
+
+	                    table.getItems().add(dropIndex, draggedTrack);
+
+	                    event.setDropCompleted(true);
+	                    table.getSelectionModel().select(dropIndex);
+	                    
+	                     event.consume();
+	                }
+	                System.out.println(tracklist.getName() + 1);
+	                Tools.saveAsPlaylist(tracklist, tracklist.getPlaylistName());
+	            });
+
+	            return row ;
+	        });
+	}
 
 }
