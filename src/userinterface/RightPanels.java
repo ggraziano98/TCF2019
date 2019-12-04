@@ -44,6 +44,7 @@ public class RightPanels {
 		TableView<Track> table = TrackView.tableFromTracklist(MainApp.allTracksList, MainApp.pc);
 		
 		songsPane.getChildren().add(table);
+		Pannelli.contextMenuTrack(table, MainApp.allTracksList);
 		VBox.setVgrow(table, Priority.ALWAYS);
 
 		Label songs_artistsLabel = new Label("  ");

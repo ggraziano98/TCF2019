@@ -292,17 +292,34 @@ public class TrackList extends SimpleListProperty<Track> {
 	}
 
 
-	private void refreshPositions() {
+	public void refreshPositions() {
 		for (int i = 0; i < this.getSize(); i++) {
 			this.get(i).setPosition(i);
 		}
+	}
+	
+	/**
+	 * adds a new object to the end of the tracklist by creating a new refrence
+	 * 
+	 * @param t
+	 */
+	public void addNew(Track t) {
+		addNew(t, this.getSize()-1);
+	}
+	
+	
+	public void addNew(Track t, int index) {
+		Track track = new Track(t.getPath());
+		track.setMetadata();
+		this.add(index, track);
+		this.refreshPositions();
 	}
 
 	/**
 	 * sets metadata for the whole tracklist
 	 */
 	public void setMetadata() {
-		this.setMetadata(0, this.getSize()-1);
+		this.setMetadata(0, this.getSize());
 	}
 
 
@@ -312,10 +329,10 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param upper
 	 */
 	public void setMetadata(int lower, int upper) {
-		lower = Math.min(lower, this.getSize()-1);
-		upper = Math.min(upper, this.getSize() -1);
+		lower = Math.min(lower, this.getSize());
+		upper = Math.min(upper, this.getSize());
 		if(lower != upper) {
-			this.subList(lower, upper).parallelStream().forEach(t->{
+			this.subList(lower, upper).forEach(t->{
 				t.setMetadata();
 			});
 		}

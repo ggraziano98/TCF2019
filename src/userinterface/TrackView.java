@@ -38,11 +38,11 @@ public class TrackView {
 				return result;
 			}
 		});
-
+		
 		TableColumn<Track, String> column1 = new TableColumn<>("Titolo");
 		column1.setCellValueFactory(new Callback<CellDataFeatures<Track, String>, ObservableValue<String>>() {
 			public ObservableValue<String> call(CellDataFeatures<Track, String> t) {
-				// p.getValue() returns the Person instance for a particular TableView row
+				// t.getValue() returns the Track instance for a particular TableView row
 				return new SimpleStringProperty(t.getValue().getTitle());
 			}
 		});
@@ -56,22 +56,40 @@ public class TrackView {
 
 		TableColumn<Track, StringProperty> column4 = new TableColumn<>("Genere");
 		column4.setCellValueFactory(new PropertyValueFactory<>("genre"));
-
-		if(showOrder) {
-			TableColumn<Track, StringProperty> column0 = new TableColumn<>("#");
-			column0.setCellValueFactory(new PropertyValueFactory<>("position"));
-			table.getColumns().add(column0);
-		}
+		
+		TableColumn<Track, StringProperty> column5 = new TableColumn<>("Anno");
+		column5.setCellValueFactory(new PropertyValueFactory<>("year"));
+		
+		TableColumn<Track, String> column6 = new TableColumn<>("Durata");
+		column6.setCellValueFactory(new Callback<CellDataFeatures<Track, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<Track, String> t) {
+				return new SimpleStringProperty(PlayerBuilder.timeMinutes(t.getValue().getDuration().toSeconds()));
+			}
+		});
 
 		table.getColumns().add(columnPlaying);
 		table.getColumns().add(column1);
 		table.getColumns().add(column2);
 		table.getColumns().add(column3);
 		table.getColumns().add(column4);
+		table.getColumns().add(column5);
+		table.getColumns().add(column6);
 		
 		
-		
+		columnPlaying.setPrefWidth(20);
+		column1.prefWidthProperty().bind(table.widthProperty().multiply(0.4));
+		column2.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+		column3.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
+		column4.prefWidthProperty().bind(table.widthProperty().multiply(0.1)); 
+		column5.prefWidthProperty().bind(table.widthProperty().multiply(0.1)); 
+		column6.prefWidthProperty().bind(table.widthProperty().multiply(0.1)); 
 
+		if(showOrder) {
+			TableColumn<Track, StringProperty> column0 = new TableColumn<>("#");
+			column0.setCellValueFactory(new PropertyValueFactory<>("position"));
+			table.getColumns().add(1, column0);
+			column0.setPrefWidth(30);
+		}
 
 		table.setItems(tracklist);
 
@@ -146,13 +164,13 @@ public class TrackView {
 	                    }
 
 	                    table.getItems().add(dropIndex, draggedTrack);
-
+	                    tracklist.refreshPositions();
+	                    MainApp.pc.refreshCurrentInt();
 	                    event.setDropCompleted(true);
 	                    table.getSelectionModel().select(dropIndex);
 	                    
 	                     event.consume();
 	                }
-	                System.out.println(tracklist.getName() + 1);
 	                Tools.saveAsPlaylist(tracklist, tracklist.getPlaylistName());
 	            });
 

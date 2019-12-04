@@ -315,8 +315,12 @@ public class PlayerBuilder {
 	}
 
 
-
-	private static String timeMinutes(double time) {
+	/**
+	 * A formatted string for time
+	 * @param time in seconds
+	 * @return
+	 */
+	public static String timeMinutes(double time) {
 
 		String mS = "";
 		String m = Integer.toString((int) time/60);
