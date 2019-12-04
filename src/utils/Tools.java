@@ -146,6 +146,7 @@ public class Tools {
 			} else
 				e.printStackTrace();
 		}
+		MainApp.savedPlaylists.add(playlistName);
 
 	}
 

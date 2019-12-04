@@ -38,7 +38,6 @@ public class MainApp extends Application{
 	//TODO canc non funziona al momento nel contextmenu
 	//TODO fix information context menu
 	//TODO fix playlist/tracklist/songqueue context menu
-	//TODO fix adding songs to playlists
 	
 
 	//TODO questo serve per adattare la dimensione della finestra alla definizione del display del pc
