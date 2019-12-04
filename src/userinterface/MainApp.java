@@ -29,7 +29,7 @@ import utils.Tools;
 
 
 public class MainApp extends Application{
-	
+
 	//TODO removeDir GIO
 	//TODO editMetadata in file GIO
 	//TODO finish songqueue GIO
@@ -44,7 +44,7 @@ public class MainApp extends Application{
 	//TODO repeat graphics DAVIDE
 	//TODO per gli errori usare Tools.stackTrace
 
-	
+
 	public static List<String> mainDirList = new ArrayList<String>();
 	public static TrackList allSongs;
 	public static PlayerController pc;
@@ -53,10 +53,10 @@ public class MainApp extends Application{
 
 	public static GridPane playerPane;
 	public static HBox findBox;
-	
+
 	public static ScrollPane playlistPane;
 	public static ObservableList<String> savedPlaylists;
-	
+
 	public static HBox buttonBox;
 
 	public static FlowPane albumsPane;
@@ -64,32 +64,32 @@ public class MainApp extends Application{
 	public static VBox songsPane;
 	public static VBox findView;
 	public static VBox songQueueView;
-	
+
 	public static TextField findText = new TextField();
 	public static ToggleGroup mainPanel = new ToggleGroup();
 	public static VBox playlistsVbox = new VBox();
-	
+
 	public static List<TrackList> playlistList = new ArrayList<TrackList>();
-	
+
 	public static int repeat = 0;
 
 
 	public void start(Stage primaryStage) throws Exception {
 
 		root = Root.rootPane();
-		
+
 		Initialize.setMainDir();
 		allSongs = Initialize.getAllSongs();
 		savedPlaylists = Tools.getNamesSavedPlaylists();
-		
+
 		pc = new PlayerController();
-		
+
 		Scene scene = new Scene(root, 650, 600);
 
 
 		// Set values for songsPane, artistsPane, albumsPane, songQueueView
 		RightPanels.panels();
-		
+
 		//Set Icon
 		FileInputStream gioFile = new FileInputStream("files\\gio.png");
 		Image gioImage = new Image(gioFile);
@@ -99,7 +99,7 @@ public class MainApp extends Application{
 		//Set various panes and buttons
 		playerPane = PlayerBuilder.playerBuilder();
 		findBox = FindStuff.findBox();
-		
+
 		playlistPane = PlaylistStuff.playlist();
 
 		buttonBox = RightPanels.buttonBox;
@@ -107,8 +107,8 @@ public class MainApp extends Application{
 		albumsPane = RightPanels.albumsPane;
 		artistsPane = RightPanels.artistsPane;
 		songsPane = RightPanels.songsPane;
-		
-		
+
+
 		root.add(songQueueView, 1, 1, 1, 2);
 
 
@@ -149,13 +149,8 @@ public class MainApp extends Application{
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
-	
-	
+
+
+
 
 }
-
-
-
-
-
