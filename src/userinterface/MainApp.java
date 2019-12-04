@@ -38,7 +38,9 @@ public class MainApp extends Application{
 	//TODO canc non funziona al momento nel contextmenu
 	//TODO fix information context menu
 	//TODO fix playlist/tracklist/songqueue context menu
-	
+	//TODO fix songqueue view
+	//TODO fix songImage
+	//TODO fix contextmenu not closing
 
 	//TODO questo serve per adattare la dimensione della finestra alla definizione del display del pc
 	//	GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -75,6 +77,8 @@ public class MainApp extends Application{
 		
 		mainDirList = Initialize.getMainDir();
 		allTracksList = FileController.getFilesFromDir(mainDirList);
+		savedPlaylists = Tools.getNamesSavedPlaylists();
+
 		pc = new PlayerController();
 		
 		Scene scene = new Scene(root, 650, 600);
@@ -93,7 +97,6 @@ public class MainApp extends Application{
 		playerPane = PlayerBuilder.playerBuilder();
 		findBox = FindStuff.findBox();
 		
-		savedPlaylists = Tools.getNamesSavedPlaylists();
 		playlistPane = PlaylistStuff.playlist();
 
 		buttonBox = RightPanels.buttonBox;

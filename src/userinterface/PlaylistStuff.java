@@ -96,8 +96,11 @@ public class PlaylistStuff {
 
 	private static void createPlaylistView(String name, VBox playlistsVbox) {
 		TrackList tracklist = Tools.readPlaylist(name);
+		tracklist.setPlaylistName(name);
 
 		TableView<Track> table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
+		Pannelli.contextMenuTrack(table, tracklist);
+		
 		VBox tableBox = new VBox(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 		MainApp.root.add(tableBox, 1, 1, 1, 2);

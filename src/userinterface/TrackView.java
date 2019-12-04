@@ -113,7 +113,6 @@ public class TrackView {
 		});
 
 		table.setMinHeight(400);
-		Pannelli.contextMenuTrack(table, tracklist);
 
 		return table;
 
