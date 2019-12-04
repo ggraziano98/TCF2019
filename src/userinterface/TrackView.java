@@ -1,92 +1,127 @@
 package userinterface;
 
 import controllers.PlayerController;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.TableCell;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import models.Track;
 import models.TrackList;
 
 public class TrackView {
-	
-	public static VBox tableFromTracklist(TrackList tracklist, PlayerController pc) {
+
+	public static TableView<Track> tableFromTracklist(TrackList tracklist, PlayerController pc, boolean showOrder){
 		TableView<Track> table = new TableView<>();
 
-        TableColumn<Track, StringProperty> column1 = new TableColumn<>("Titolo");
-        column1.setCellValueFactory(new PropertyValueFactory<>("title"));
 
-        TableColumn<Track, StringProperty> column2 = new TableColumn<>("Artista");
-        column2.setCellValueFactory(new PropertyValueFactory<>("artist"));
-        
-        TableColumn<Track, StringProperty> column3 = new TableColumn<>("Album");
-        column3.setCellValueFactory(new PropertyValueFactory<>("album"));
-        
-        TableColumn<Track, StringProperty> column4 = new TableColumn<>("Genere");
-        column4.setCellValueFactory(new PropertyValueFactory<>("genre"));
+		TableColumn<Track, String> columnPlaying = new TableColumn<>(" ");
+		columnPlaying.setCellValueFactory(new Callback<CellDataFeatures<Track, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<Track, String> t) {
+				// t.getValue() returns the Track instance for a particular TableView row
+				SimpleStringProperty result = new SimpleStringProperty(" ");
+				if (t.getValue().getPlaying()) result = new SimpleStringProperty("♪");
+				return result;
+			}
+		});
 
-        table.getColumns().add(column1);
-        table.getColumns().add(column2);
-        table.getColumns().add(column3);
-        table.getColumns().add(column4);
+		TableColumn<Track, String> column1 = new TableColumn<>("Titolo");
+		column1.setCellValueFactory(new Callback<CellDataFeatures<Track, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<Track, String> t) {
+				// p.getValue() returns the Person instance for a particular TableView row
+				return new SimpleStringProperty(t.getValue().getTitle());
+			}
+		});
 
-        tracklist.forEach((Track t)->{
-        	table.getItems().add(t);
-        });
-        
-        table.setOnMouseClicked((MouseEvent click) -> {
-            if (click.getClickCount() == 2) {
-                // Use ListView's getSelected Item
-                Track selectedTrack = table.getSelectionModel().getSelectedItem();
-                if (selectedTrack != null) {
-                	if(!pc.getTracklist().equals(tracklist)) {
-                		pc.setTracklist(tracklist);
-                		System.out.println("changing tracklist");
-                	}
-                	pc.setCurrentTrack(selectedTrack);
-                    pc.play();
-                }
-            }
-        });
-		
+
+		TableColumn<Track, StringProperty> column2 = new TableColumn<>("Artista");
+		column2.setCellValueFactory(new PropertyValueFactory<>("artist"));
+
+		TableColumn<Track, StringProperty> column3 = new TableColumn<>("Album");
+		column3.setCellValueFactory(new PropertyValueFactory<>("album"));
+
+		TableColumn<Track, StringProperty> column4 = new TableColumn<>("Genere");
+		column4.setCellValueFactory(new PropertyValueFactory<>("genre"));
+
+		if(showOrder) {
+			TableColumn<Track, StringProperty> column0 = new TableColumn<>("#");
+			column0.setCellValueFactory(new PropertyValueFactory<>("position"));
+			table.getColumns().add(column0);
+		}
+
+		table.getColumns().add(columnPlaying);
+		table.getColumns().add(column1);
+		table.getColumns().add(column2);
+		table.getColumns().add(column3);
+		table.getColumns().add(column4);
+
+		/*
+		 * no longer needed but keeping here as refrence
+		table.setRowFactory(new Callback<TableView<Track>, TableRow<Track>>() {
+			@Override
+			public TableRow<Track> call(TableView<Track> tableView) {
+				final TableRow<Track> row = new TableRow<Track>() {
+					@Override
+					protected void updateItem(Track track, boolean empty){
+						super.updateItem(track, empty);
+						if (track!=null) {
+							if(track.getPlaying()) setStyle("-fx-background-color: green;");
+							track.playingProperty().addListener((obs, oldv, newv)->{
+								if (newv) {
+									setStyle("-fx-background-color: green;");
+
+								}
+								else {
+									setStyle("");
+								}
+							});
+						}
+					}
+				};
+
+				return row;
+			}
+		});
+		 */
+
+
+		table.setItems(tracklist);
+
+		pc.currentIntProperty().addListener(listener->{
+			table.refresh();
+		});
+
+		table.setOnMouseClicked((MouseEvent click) -> {
+			if (click.getClickCount() == 2) {
+				// Use ListView's getSelected Item
+				Track selectedTrack = table.getSelectionModel().getSelectedItem();
+				if (selectedTrack != null) {
+					if(!pc.getTracklist().equals(tracklist)) {
+						pc.setTracklist(tracklist);
+					}
+					pc.setCurrentTrack(selectedTrack);
+					pc.play();
+				}
+				table.refresh();
+			}
+		});
+
 		table.setMinHeight(400);
-		
-        VBox vbox = new VBox(table);
-        VBox.setVgrow(table, Priority.ALWAYS);
-        
-		return vbox;
+		Pannelli.contextMenuTrack(table, tracklist);
+
+		return table;
+
 	}
-	
-	/* continua a 
-	private static void customFactory(TableColumn<Track, StringProperty> calltypel) {
-		calltypel.setCellFactory(column -> {
-            return new TableCell<Track, StringProperty>() {
-                @Override
-                protected void updateItem(StringProperty item, boolean empty) {
-                    super.updateItem(item, empty);
 
-                    TableRow<Track> row = getTableRow();
-                    
-                    setText(null);
-                    setGraphic(null);
-
-                    if (!isEmpty()) {
-                    	setText(item.get());
-
-                        if(row.getItem().getPlaying()) 
-                            row.setStyle("-fx-background-color:lightcoral");
-                        else
-                            row.setStyle("-fx-background-color:lightgreen");
-                    }
-                }
-            };
-        });
+	public static TableView<Track> tableFromTracklist(TrackList tracklist, PlayerController pc) {
+		return tableFromTracklist(tracklist, pc, false);
 	}
-	*/
+
 
 }

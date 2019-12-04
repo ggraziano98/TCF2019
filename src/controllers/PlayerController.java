@@ -35,6 +35,16 @@ public class PlayerController {
 	 * costruttore di default
 	 */
 	public PlayerController() {
+		this.playing = new SimpleBooleanProperty(false);
+		this.muted = new SimpleBooleanProperty(false);
+		this.volumeValue = new SimpleDoubleProperty(1);
+		this.volumeValue.addListener((obs, oldv, newv)->{
+			this.setVolume();
+		});
+		this.totalDuration = new SimpleDoubleProperty(0);
+		this.currentTime = new SimpleDoubleProperty(0);
+		this.tracklist = new TrackList();
+		this.setCurrentInt(0);
 	}
 
 
@@ -51,21 +61,6 @@ public class PlayerController {
 		this.totalDuration = new SimpleDoubleProperty(0);
 		this.currentTime = new SimpleDoubleProperty(0);
 		this.setCurrentInt(0);
-	}
-
-
-	public PlayerController(TrackList tracklist, int firstSongPosition) {
-		this.playing = new SimpleBooleanProperty(false);
-		this.setTracklist(tracklist);
-		this.setCurrentInt(firstSongPosition);
-		this.muted = new SimpleBooleanProperty(false);
-		this.volumeValue = new SimpleDoubleProperty(1);
-		this.volumeValue.addListener((obs, oldv, newv)->{
-			this.setVolume();
-		});
-		this.totalDuration = new SimpleDoubleProperty(0);
-		this.currentTime = new SimpleDoubleProperty(0);
-		this.refreshPlayer();
 	}
 
 	public void play() {
@@ -108,8 +103,8 @@ public class PlayerController {
 
 
 	/**
-	 * sposta il player al time desiderato 
-	 * 
+	 * sposta il player al time desiderato
+	 *
 	 * @param time (Duration) tempo in millisecondi
 	 */
 	public void seek(Duration time) {
@@ -121,9 +116,11 @@ public class PlayerController {
 
 
 	public void refreshPlayer() {
+		if (this.getCurrentTrack() != null) this.getCurrentTrack().setPlaying(false);
+
 		this.currentTrack = this.getTracklist().get(this.getCurrentInt());
-		Track track = this.currentTrack;
-		track.setMetadata();
+		this.currentTrack.setPlaying(true);
+		if(!this.currentTrack.getHasMetadata()) this.currentTrack.setMetadata();
 		if(player != null) {
 			player.stop();
 			player = null;
@@ -134,7 +131,6 @@ public class PlayerController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		this.setTotalDuration(this.getCurrentTrack().getDuration());
 	}
 
@@ -172,36 +168,40 @@ public class PlayerController {
 
 
 	public final void setTracklist(TrackList tracklist) {
-		this.tracklist = tracklist;
+		this.tracklist.set(tracklist);
+
+		//TODO this slows the player down too much
 	}
 
 
 	public final int getCurrentInt() {
 		return currentInt.get();
 	}
-	
-	
+
+
 	public IntegerProperty currentIntProperty() {
 		return currentInt;
 	}
 
 
-	private final void setCurrentInt(int currentInt) {
+	private final void setCurrentInt(int currentInt) {	
 		if(this.currentInt == null) this.currentInt = new SimpleIntegerProperty(0);
-		if(currentInt>= 0) {
-			this.currentInt.set(currentInt%this.getTracklist().getSize());
-		} else {
-			this.currentInt.set(this.getTracklist().getSize() -1);
+		if(this.tracklist.getSize() != 0) {
+			if(currentInt>= 0) {
+				this.currentInt.set(currentInt%this.getTracklist().getSize());
+			} else {
+				this.currentInt.set(this.getTracklist().getSize() -1);
+			}
+			this.refreshPlayer();
 		}
-		this.refreshPlayer();
 	}
 
 
 	public final double getVolumeValue() {
 		return volumeValue.get();
 	}
-	
-	
+
+
 	public DoubleProperty volumeValueProperty() {
 		return volumeValue;
 	}
@@ -217,8 +217,8 @@ public class PlayerController {
 	public final boolean getMuted() {
 		return muted.get();
 	}
-	
-	
+
+
 	public BooleanProperty mutedProperty() {
 		return muted;
 	}
@@ -229,8 +229,8 @@ public class PlayerController {
 		this.muted.set(muted);
 		this.setVolume();
 	}
-	
-	
+
+
 
 	private void setVolume() {
 		this.player.setVolume(this.getVolumeValue());
@@ -239,18 +239,18 @@ public class PlayerController {
 
 
 	/**
-	 * 
+	 *
 	 * @return duration in seconds
 	 */
 	public final double getTotalDuration() {
 		return totalDuration.get();
 	}
-	
-	
+
+
 	public DoubleProperty totalDurationProperty() {
 		return totalDuration;
 	}
-	
+
 
 	private final void setTotalDuration(Duration totalDuration) {
 		if(this.totalDuration == null) this.totalDuration = new SimpleDoubleProperty(totalDuration.toSeconds());
@@ -258,14 +258,14 @@ public class PlayerController {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return time in seconds
 	 */
 	public final double getCurrentTime() {
 		return currentTime.get();
 	}
-	
-	
+
+
 	public DoubleProperty currentTimeProperty() {
 		return currentTime;
 	}
@@ -281,8 +281,8 @@ public class PlayerController {
 	public final boolean getPlaying() {
 		return playing.get();
 	}
-	
-	
+
+
 	public BooleanProperty playingProperty() {
 		return playing;
 	}
@@ -295,4 +295,3 @@ public class PlayerController {
 	}
 
 }
-
