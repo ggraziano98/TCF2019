@@ -141,13 +141,15 @@ public class Tools {
 			bw.close();
 		} catch (IOException e) {
 			if (e instanceof FileAlreadyExistsException) {
-				deletePlaylist(playlistName, false);
+				try {
+					Files.deleteIfExists(filePath);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 				saveAsPlaylist(tracklist, playlistName);
 			} else
 				e.printStackTrace();
 		}
-		MainApp.savedPlaylists.add(playlistName);
-
 	}
 
 
@@ -166,6 +168,7 @@ public class Tools {
 		Path filePath = Paths.get("playlists", playlistName + ".txt");
 		try {
 			Files.createFile(filePath);
+			MainApp.savedPlaylists.add(playlistName);
 
 		} catch (IOException e) {
 			if (e instanceof FileAlreadyExistsException) {
@@ -177,8 +180,6 @@ public class Tools {
 			} else
 				e.printStackTrace();
 		}
-		
-		MainApp.savedPlaylists.add(playlistName);
 
 	}
 
@@ -219,11 +220,13 @@ public class Tools {
 		return tracklist;
 	}
 
+	/**invece di usare questi, si puo semplicemente riscrivere la playlist togliendo o aggiungendo track e poi salvando
+	 * gli aggiornamenti in questo modo sono piu facili 
+	 * 
 	public static void addTrackToPlaylist (String playlistName, Track track) {
 		try {
 			TrackList tracklist = readPlaylist(playlistName);
 			tracklist.addTrack(track);
-			deletePlaylist(playlistName, false);
 			saveAsPlaylist(tracklist, playlistName);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -240,7 +243,6 @@ public class Tools {
 		try {
 			TrackList tracklist = readPlaylist(playlistName);
 			tracklist.RemoveTrack(track);
-			deletePlaylist(playlistName, false);
 			saveAsPlaylist(tracklist, playlistName);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -251,6 +253,7 @@ public class Tools {
 			alert.showAndWait();
 		}
 	}
+	*/
 
 	public static void deletePlaylist(String playlist) {
 		deletePlaylist(playlist, false);

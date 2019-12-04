@@ -1,6 +1,7 @@
 
 package userinterface;
 
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -33,9 +34,6 @@ public class Pannelli{
 		item1.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Tools.newPlaylist();
-				
-				//TODO cancellare
-//				Root.refreshPlaylists();
 			}
 		});
 
@@ -43,9 +41,6 @@ public class Pannelli{
 		item2.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Tools.deletePlaylist(button.getText(), true);
-				
-				//TODO Cancellare
-//				Root.refreshPlaylists();
 			}
 		});
 
@@ -66,48 +61,72 @@ public class Pannelli{
 
 		ContextMenu menu = new ContextMenu();
 
-		MenuItem item1 = new MenuItem("Delete song");
-		MenuItem item2 = new MenuItem("Remove song from playlist");
+		MenuItem delete = new MenuItem("Delete song");
+		MenuItem remove = new MenuItem("Remove song from playlist");
 		SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
-		Menu parentMenu = new Menu("Add song to");
+		Menu addToPlaylist = new Menu("Add song to");
 
 		MainApp.savedPlaylists.forEach((String name)->{
 			MenuItem item = new MenuItem(name);	
 			item.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event) {
-					Object track = table.getSelectionModel().getSelectedItem();
-					Tools.addTrackToPlaylist(name,(Track) track);
+					Track track = table.getSelectionModel().getSelectedItem();
+					MainApp.playlistList.forEach(tl->{
+						if(tl.getPlaylistName() == name) {
+							tl.addNew(track);
+							Tools.saveAsPlaylist(tl, name);
+						}
+					});
 				}	
 			});
 
-			parentMenu.getItems().add(item);
+			addToPlaylist.getItems().add(item);
 		});
+		
+		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c->{
+			addToPlaylist.getItems().removeIf(i->true);
+			c.getList().forEach(name->{
+				MenuItem item = new MenuItem(name);	
+				item.setOnAction(new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent event) {
+						Track track = table.getSelectionModel().getSelectedItem();
+						MainApp.playlistList.forEach(tl->{
+							if(tl.getPlaylistName() == name) {
+								tl.addNew(track);
+								Tools.saveAsPlaylist(tl, name);
+							}
+						});
+					}	
+				});
+				addToPlaylist.getItems().add(item);
+			});
+		});		
+		
 		SeparatorMenuItem separatorMenuItem1 = new SeparatorMenuItem();
-		MenuItem item3 = new MenuItem("Information");
+		MenuItem info = new MenuItem("Information");
 
 
-		item1.setOnAction(new EventHandler<ActionEvent>() {
+		delete.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				Object item = table.getSelectionModel().getSelectedItem();
-				Tools.DeleteTrack((Track) item);
+				Track track = table.getSelectionModel().getSelectedItem();
+				tracklist.remove(track);
+				Tools.DeleteTrack((Track) track);
 			}	
 		});
 
-		item2.setOnAction(new EventHandler<ActionEvent>() {
+		remove.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				Object item = table.getSelectionModel().getSelectedItem();
-				//TODO cercare di capire come passare il nome della playlist che sto vedendo
-				//				Tools.RemoveTrackFromPlaylist(tracklist.toString(),(Track) item);
-				Alert informationDialog = new Alert(AlertType.NONE,
-						"da sviluppare"
-						,ButtonType.OK); 
-				informationDialog.show(); 
+				Track track = table.getSelectionModel().getSelectedItem();
+				tracklist.remove(track);
+				Tools.saveAsPlaylist(tracklist, tracklist.getPlaylistName());
 			}
 		});
 
-		item3.setOnAction(new EventHandler<ActionEvent>() {
+		info.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				Object item = table.getSelectionModel().getSelectedItem();
+				Track item = table.getSelectionModel().getSelectedItem();
+				item.setHasMetadata(false);
+				item.setMetadata();
 				Alert informationDialog = new Alert(AlertType.NONE,
 						"Artist: " + ((Track) item).getArtist() + "\n" +
 								"Title: " + ((Track) item).getTitle() +"\n" +
@@ -121,7 +140,7 @@ public class Pannelli{
 
 
 
-		menu.getItems().addAll(item1, item2, separatorMenuItem, parentMenu, separatorMenuItem1, item3);
+		menu.getItems().addAll(delete, remove, separatorMenuItem, addToPlaylist, separatorMenuItem1, info);
 
 		table.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			public void handle(ContextMenuEvent event) {
@@ -130,9 +149,6 @@ public class Pannelli{
 		});
 
 	}
-
-
-
 
 }
 

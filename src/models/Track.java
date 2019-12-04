@@ -183,6 +183,7 @@ public class Track{
 
 
 	public final String getTitle() {
+		if(this.title == null) this.title = new SimpleStringProperty();
 		return title.get();
 	}
 
@@ -193,12 +194,13 @@ public class Track{
 
 
 	public final void setTitle(String title) {
-		if(this.title == null) this.title = new SimpleStringProperty();
+		if(this.title == null) this.title = new SimpleStringProperty(this.getPath().getFileName().toString().replace(".mp3", ""));
 		this.title.set(title);
 	}
 
 
 	public final String getArtist() {
+		if(this.artist == null) this.artist = new SimpleStringProperty(Tools.DARTIST);
 		return artist.get();
 	}
 
@@ -209,11 +211,13 @@ public class Track{
 
 
 	public final void setArtist(String artist) {
+		if(this.artist == null) this.artist = new SimpleStringProperty(Tools.DARTIST);
 		this.artist.set(artist);
 	}
 
 
 	public final String getAlbum() {
+		if(this.album == null) this.album = new SimpleStringProperty(Tools.DALBUM);
 		return album.get();
 	}
 
@@ -224,11 +228,13 @@ public class Track{
 
 
 	public final void setAlbum(String album) {
+		if(this.album == null) this.album = new SimpleStringProperty(Tools.DALBUM);
 		this.album.set(album);;
 	}
 
 
 	public final String getGenre() {
+		if(this.genre == null) this.genre = new SimpleStringProperty(Tools.DGENRE);
 		return genre.get();
 	}
 
@@ -238,11 +244,13 @@ public class Track{
 
 
 	public final void setGenre(String genre) {
+		if(this.genre == null) this.genre = new SimpleStringProperty(Tools.DGENRE);
 		this.genre.set(genre);
 	}
 
 
 	public final String getYear() {
+		if(this.year == null) this.year = new SimpleStringProperty(Tools.DYEAR);
 		return year.get();
 	}
 
@@ -252,6 +260,7 @@ public class Track{
 
 
 	public final void setYear(String year) {
+		if(this.year == null) this.year = new SimpleStringProperty(Tools.DYEAR);
 		this.year.set(year);
 	}
 
@@ -336,6 +345,10 @@ public class Track{
 	
 	public boolean getHasMetadata() {
 		return this.hasMetadata;
+	}
+	
+	public void setHasMetadata(boolean b) {
+		this.hasMetadata = b;
 	}
 
 }

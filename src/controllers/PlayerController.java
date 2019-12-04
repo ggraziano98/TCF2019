@@ -293,5 +293,9 @@ public class PlayerController {
 		this.playing.set(playing);
 
 	}
+	
+	public void refreshCurrentInt() {
+		this.currentInt.set(this.currentTrack.getPosition());
+	}
 
 }

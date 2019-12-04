@@ -1,11 +1,13 @@
 package userinterface;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import controllers.FileController;
 import controllers.PlayerController;
 import javafx.application.Application;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -28,20 +30,17 @@ import utils.Tools;
 
 public class MainApp extends Application{
 	
-	//TODO fix images
 	//TODO fix playlists: expand content, fix name convention
 	//TODO shuffle, repeat
 	//TODO finish songqueue
 	//TODO initialize all songs
-	//TODO non si capisce quale playlist si punti con il contextmenu
 	//TODO contextmenu che funziona su tutto il box delle playlist
 	//TODO canc non funziona al momento nel contextmenu
 	//TODO fix information context menu
 	//TODO fix playlist/tracklist/songqueue context menu
-	//TODO fix songqueue view
 	//TODO fix songImage
 	//TODO fix contextmenu not closing
-
+		
 	//TODO questo serve per adattare la dimensione della finestra alla definizione del display del pc
 	//	GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	//	int width = gd.getDisplayMode().getWidth();
@@ -69,6 +68,9 @@ public class MainApp extends Application{
 	
 	public static TextField findText = new TextField();
 	public static ToggleGroup mainPanel = new ToggleGroup();
+	public static VBox playlistsVbox = new VBox();
+	
+	public static List<TrackList> playlistList = new ArrayList<TrackList>();
 
 
 	public void start(Stage primaryStage) throws Exception {
@@ -78,7 +80,7 @@ public class MainApp extends Application{
 		mainDirList = Initialize.getMainDir();
 		allTracksList = FileController.getFilesFromDir(mainDirList);
 		savedPlaylists = Tools.getNamesSavedPlaylists();
-
+		
 		pc = new PlayerController();
 		
 		Scene scene = new Scene(root, 650, 600);
