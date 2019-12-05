@@ -3,7 +3,6 @@ package models;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -11,8 +10,8 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 
 
@@ -33,9 +32,7 @@ import javafx.scene.control.Alert.AlertType;
 
 public class TrackList extends SimpleListProperty<Track> {
 
-
 	private String playlistName;
-
 	/**
 	 * Default constructor for the class
 	 */
@@ -50,7 +47,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param songList		lista dei path delle canzoni
 	 */
 	public TrackList(ObservableList<Track> songList) {
-		super(songList);
+		super(FXCollections.observableArrayList(songList));
 		this.refreshPositions();
 	}
 
@@ -65,7 +62,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param track
 	 */
 	public void addTrack(Track track) {
-		this.addTrackToPosition(this.size(), track);
+		this.addTrack(this.size(), track);
 	}
 
 
@@ -76,7 +73,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param position
 	 * @param track
 	 */
-	public void addTrackToPosition(int position, Track track) {
+	public void addTrack(int position, Track track) {
 		try {
 			this.add(position, track);
 			this.refreshPositions();
@@ -92,7 +89,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * remove a track to the end of the TrackList
 	 */
 	public void removeTrack() {
-		this.removeTrackToPosition(this.size() - 1);		//ci va il meno uno, altrimenti non mi cancella l'ultimo
+		this.removeTrack(this.size() - 1);		//ci va il meno uno, altrimenti non mi cancella l'ultimo
 	}
 
 
@@ -103,7 +100,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param position
 	 *
 	 */
-	public void removeTrackToPosition(int position) {
+	public void removeTrack(int position) {
 		try {
 			this.remove(position);
 			this.refreshPositions();
@@ -116,26 +113,18 @@ public class TrackList extends SimpleListProperty<Track> {
 
 
 	/**
-	 * Ordina a caso le canzoni della tracklist
+	 * Ordina a caso le canzoni della tracklist, la track che sta suonando viene messa per prima
 	 */
-	public void shuffleTrack () {
+	public void shuffle (Track track) {
+		this.refreshPositions();
+		this.remove(track.getPosition());
 		Collections.shuffle(this);
+		this.add(0, track);
 		this.refreshPositions();
 
 		// TODO check
 		this.fireValueChangedEvent();
 	}
-
-
-
-	/**
-	 * crea una tracklist vuota
-	 * @return tracklist
-	 */
-	public static TrackList emptyTrackList() {
-		return new TrackList();
-	}
-
 
 
 	/**
@@ -145,8 +134,8 @@ public class TrackList extends SimpleListProperty<Track> {
 	 */
 	public void changeOrder(int position1, int position2) {
 		Track track = this.get(position1);
-		removeTrackToPosition(position1);
-		addTrackToPosition(position2, track);
+		removeTrack(position1);
+		addTrack(position2, track);
 		this.refreshPositions();
 	}
 
@@ -171,10 +160,7 @@ public class TrackList extends SimpleListProperty<Track> {
 
 
 
-	//overload dei metodi
-
-
-	// iniziano gli overload
+	//overload dei metodi nel caso servissero
 
 
 
@@ -185,7 +171,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param track
 	 */
 	public void addTrack(Path path) {
-		this.addTrackToPosition(this.size(), path);
+		this.addTrack(this.size(), path);
 	}
 
 
@@ -195,9 +181,9 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param position
 	 * @param track
 	 */
-	public void addTrackToPosition(int position, Path path) {
+	public void addTrack(int position, Path path) {
 		try {
-			this.addTrackToPosition(position, new Track(path));
+			this.addTrack(position, new Track(path));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -212,7 +198,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param path
 	 *
 	 */
-	public void RemoveTrack(Path path) {
+	public void removeTrack(Path path) {
 		try {
 			this.remove(new Track(path));
 			this.refreshPositions();
@@ -231,7 +217,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param track
 	 *
 	 */
-	public void RemoveTrack(Track track) {
+	public void removeTrack(Track track) {
 		Alert selection = new Alert(AlertType.CONFIRMATION);
 		selection.setTitle("Delete song");
 		selection.setHeaderText("Warning");
@@ -267,8 +253,8 @@ public class TrackList extends SimpleListProperty<Track> {
 			i++;
 		}
 		position1 = i - 1;
-		removeTrackToPosition(position1);
-		addTrackToPosition(position2, path1);
+		removeTrack(position1);
+		addTrack(position2, path1);
 	}
 
 
@@ -287,8 +273,8 @@ public class TrackList extends SimpleListProperty<Track> {
 			i++;
 		}
 		position1 = i - 1;
-		removeTrackToPosition(position1);
-		addTrackToPosition(position2, track1);
+		removeTrack(position1);
+		addTrack(position2, track1);
 	}
 
 
@@ -338,14 +324,6 @@ public class TrackList extends SimpleListProperty<Track> {
 		}
 	}
 
-
-	public void unload() {
-		this.forEach(t->{
-			t.unload();
-		});
-	}
-
-
 	public String getPlaylistName() {
 		return playlistName;
 	}
@@ -354,5 +332,4 @@ public class TrackList extends SimpleListProperty<Track> {
 	public void setPlaylistName(String playlistName) {
 		this.playlistName = playlistName;
 	}
-
 }

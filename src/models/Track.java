@@ -28,6 +28,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.MapChangeListener;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.util.Duration;
 import utils.Tools;
@@ -36,7 +37,6 @@ import utils.Tools;
 /**
  * Class model for a Track 
  * 
- * TODO fix playercontroller
  * 
  * @param title
  * @param artist
@@ -44,7 +44,6 @@ import utils.Tools;
  * @param genre
  * @param year
  * @param duration
- * @param image
  *
  * @see <a href="https://docs.oracle.com/javafx/2/binding/jfxpub-binding.htm">Properties</a>
  */
@@ -56,7 +55,6 @@ public class Track{
 	private StringProperty genre;
 	private StringProperty year;
 	private DoubleProperty duration;
-	private Image image;
 	private BooleanProperty playing;
 	private IntegerProperty position;
 	private boolean hasMetadata;
@@ -293,34 +291,6 @@ public class Track{
 		this.duration.set(duration.toSeconds());
 	}
 
-
-	public final Image getImage() {
-		if (image == null) {
-			setImage();
-		}
-		return image;
-	}
-
-
-	public final void setImage() {
-		Path path = this.getPath();
-		String cleanPathS = Tools.cleanURL(path.toString());
-		Media media = new Media(cleanPathS);	
-		setImage(Tools.DIMAGE);
-		media.getMetadata().addListener((MapChangeListener<String, Object>) change ->{
-			if (change.getKey() == "image") {
-				setImage((Image) change.getValueAdded());
-			}
-		});
-
-	}
-
-
-	public final void setImage(Image image) {
-		this.image = image;
-	}
-
-
 	public final boolean getPlaying() {
 		return playing.get();
 	}
@@ -351,11 +321,6 @@ public class Track{
 	}
 
 
-	public void unload() {
-		this.image = null;
-		this.duration = null;
-	}
-
 	public boolean getHasMetadata() {
 		return this.hasMetadata;
 	}
@@ -371,6 +336,19 @@ public class Track{
 		return this.getTitle()+"&tcf&"+this.getArtist()+"&tcf&"+this.getAlbum()+"&tcf&"
 				+this.getGenre()+"&tcf&"+this.getYear()+"&tcf&"+this.getDuration()+"&tcf&"+
 				this.getPath().toString();
+	}
+	
+	
+	public void setImageView(ImageView view) {
+		view.setImage(Tools.DIMAGE);
+		Path path = this.getPath();
+		String cleanPathS = Tools.cleanURL(path.toString());
+		Media media = new Media(cleanPathS);	
+		media.getMetadata().addListener((MapChangeListener<String, Object>) change ->{
+			if (change.getKey() == "image") {
+				view.setImage((Image) change.getValueAdded());
+			}
+		});
 	}
 
 }
