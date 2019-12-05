@@ -46,9 +46,8 @@ public class FindStuff {
 	public static void find(String keyWord) {	
 
 		GridPane root = MainApp.root;
-		PlayerController pc = MainApp.pc;
 		// TODO espandere 
-		List<Track> list = pc.getTracklist().stream().filter(t->{
+		List<Track> list = MainApp.allSongs.stream().filter(t->{
 			return (
 					t.getAlbum().toLowerCase().contains(keyWord.toLowerCase()) ||
 					t.getArtist().toLowerCase().contains(keyWord.toLowerCase()) ||
@@ -62,7 +61,7 @@ public class FindStuff {
 		root.getChildren().remove(MainApp.findView);
 		MainApp.findView = null;
 				
-		TableView<Track> table = TrackView.tableFromTracklist(filtered, pc);
+		TableView<Track> table = TrackView.tableFromTracklist(filtered, MainApp.pc);
 		MainApp.findView = new VBox(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 

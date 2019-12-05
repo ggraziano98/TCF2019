@@ -63,7 +63,7 @@ public class FileController {
 		}
 		catch (NullPointerException e) {
 			System.out.println("Nullpointer exception handled: " + e.getMessage());
-			return TrackList.emptyTrackList();
+			return new TrackList();
 		}
 		/* uso una lambda expression e il metodo forEach per iterare sulla pathList */
 		return tracklist;

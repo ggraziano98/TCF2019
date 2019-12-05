@@ -134,6 +134,15 @@ public class PlayerBuilder {
 		Button nextButton = new Button("",nextView);
 		Button shuffleButton = new Button("",shuffleView);
 		Button repeatButton = new Button("",repeatView);
+		
+		shuffleButton.setOnAction(ev->{
+			MainApp.pc.getTracklist().shuffle(pc.getCurrentTrack());
+			MainApp.pc.refreshCurrentInt();
+		});
+		
+		repeatButton.setOnAction(ev->{
+			MainApp.repeat = (MainApp.repeat+1)%3;
+		});
 
 
 		AtomicBoolean play = new AtomicBoolean(false);
@@ -253,13 +262,13 @@ public class PlayerBuilder {
 		songName.setPadding(new Insets(0, 3, 0, 3));
 		StringProperty text = new SimpleStringProperty("");
 		if (pc.getTracklist().getSize()>0) {
-			text.set(pc.getTracklist().get(pc.getCurrentInt()).getTitle());		
+			text.set(pc.getCurrentTrack().getTitle());		
 		}
 		else text.set("Seleziona una canzone");
 		songName.textProperty().bind(text);
 		pc.currentIntProperty().addListener((obs, oldv, newv)->{
 			if (pc.getTracklist().getSize()>0) {
-				text.set(pc.getTracklist().get(newv.intValue()).getTitle());	
+				text.set(pc.getCurrentTrack().getTitle());	
 			}
 			else text.set("Seleziona una canzone");
 		});
@@ -273,7 +282,12 @@ public class PlayerBuilder {
 
 		pc.currentIntProperty().addListener((obs, oldv, newv)->{
 			if (pc.getTracklist().getSize()>0) {	
-				songView.setImage(pc.getTracklist().get(pc.getCurrentInt()).getImage());
+				try {
+					pc.getCurrentTrack().setImageView(songView);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else songView.setImage(Tools.DIMAGE);});
 		return songView;
@@ -315,8 +329,12 @@ public class PlayerBuilder {
 	}
 
 
-
-	private static String timeMinutes(double time) {
+	/**
+	 * A formatted string for time
+	 * @param time in seconds
+	 * @return
+	 */
+	public static String timeMinutes(double time) {
 
 		String mS = "";
 		String m = Integer.toString((int) time/60);
