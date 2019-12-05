@@ -30,9 +30,6 @@ import utils.Tools;
 
 public class MainApp extends Application{
 	
-	//TODO fix player currentInt and stuff
-	//TODO fix songImage GIO
-	//TODO shuffle, repeat GIO
 	//TODO finish songqueue GIO
 	//TODO fix playlists special characters FO
 	//TODO contextmenu che funziona su tutto il box delle playlist FO
@@ -41,6 +38,7 @@ public class MainApp extends Application{
 	//TODO player redesign DAVIDE
 	//TODO loading screen DAVIDE
 	//TODO canc non funziona al momento nel contextmenu DAVIDE
+	//TODO repeat graphics DAVIDE
 	//TODO per gli errori usare Tools.stackTrace
 
 	
@@ -69,6 +67,8 @@ public class MainApp extends Application{
 	public static VBox playlistsVbox = new VBox();
 	
 	public static List<TrackList> playlistList = new ArrayList<TrackList>();
+	
+	public static int repeat = 0;
 
 
 	public void start(Stage primaryStage) throws Exception {

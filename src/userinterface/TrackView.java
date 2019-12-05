@@ -1,5 +1,7 @@
 package userinterface;
 
+import java.util.Comparator;
+
 import com.rometools.rome.feed.atom.Person;
 
 import controllers.PlayerController;
@@ -73,8 +75,7 @@ public class TrackView {
 		table.getColumns().add(column3);
 		table.getColumns().add(column4);
 		table.getColumns().add(column5);
-		table.getColumns().add(column6);
-		
+		table.getColumns().add(column6);		
 		
 		columnPlaying.setPrefWidth(20);
 		column1.prefWidthProperty().bind(table.widthProperty().multiply(0.4));
