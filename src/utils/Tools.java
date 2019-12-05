@@ -5,6 +5,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,8 +23,12 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import models.Track;
 import models.TrackList;
 import userinterface.MainApp;
@@ -65,6 +71,11 @@ public class Tools {
 		} catch (Exception e) {
 		}
 	}
+	
+	
+	public static Path DIRFILEPATH = Paths.get("files", "mainDir.txt");
+
+	public static Path ALLSONGSFILEPATH = Paths.get("files", "allSongs.txt");
 
 
 
@@ -131,14 +142,9 @@ public class Tools {
 	 */
 	public static void saveAsPlaylist(TrackList tracklist, String playlistName) {
 		Path filePath = Paths.get("playlists", playlistName + ".txt");
+		
 		try {
 			Files.createFile(filePath);
-			BufferedWriter bw= Files.newBufferedWriter(filePath);
-			for (Track track : tracklist) {
-				bw.write(track.getPath().toString());
-				bw.write("\n");
-			}
-			bw.close();
 		} catch (IOException e) {
 			if (e instanceof FileAlreadyExistsException) {
 				try {
@@ -150,6 +156,21 @@ public class Tools {
 			} else
 				e.printStackTrace();
 		}
+		try (BufferedWriter bw= Files.newBufferedWriter(filePath)){
+			tracklist.forEach(t->{
+				try {
+					bw.newLine();
+					bw.append(t.getString());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
+			
 	}
 
 
@@ -198,24 +219,24 @@ public class Tools {
 		try {
 
 			BufferedReader br= Files.newBufferedReader(filePath);
-			String line = "";
+			String line;
 			while ((line = br.readLine()) != null) {
-				Path path = Paths.get(line);
-				if(Files.exists(path)){
-					tracklist.addTrack(path);;
+				String[] arr = line.split("&tcf&");
+				if (arr.length == 7) {
+					Path path = Paths.get(arr[6]);
+					if(Files.isRegularFile(path)){
+						tracklist.addTrack(new Track(arr));;
+					}
+					else System.out.println(path.toString() + "\tNon è un file corretto");
 				}
-				else System.out.println(path.toString() + "\tNon Ã¨ un file corretto");
 			}
 
 			br.close();
 
 		} catch (IOException e) {
+			//TODO errore
 			System.out.println("La playlist da leggere non esiste");
 		}
-
-		/**
-		 * TODO implementere il codice nel caso tracklist fosse vuota
-		 */
 
 		return tracklist;
 	}
@@ -392,7 +413,39 @@ public class Tools {
 		}
 
 		return nameplaylists;
+	}
+	
+	
+	public static void stackTrace(Exception e) {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText("An error occurred");
 
+		// Create expandable Exception.
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		String exceptionText = sw.toString();
 
+		Label label = new Label("The exception stacktrace was:");
+
+		TextArea textArea = new TextArea(exceptionText);
+		textArea.setEditable(false);
+		textArea.setWrapText(true);
+
+		textArea.setMaxWidth(Double.MAX_VALUE);
+		textArea.setMaxHeight(Double.MAX_VALUE);
+		GridPane.setVgrow(textArea, Priority.ALWAYS);
+		GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+		GridPane expContent = new GridPane();
+		expContent.setMaxWidth(Double.MAX_VALUE);
+		expContent.add(label, 0, 0);
+		expContent.add(textArea, 0, 1);
+
+		// Set expandable Exception into the dialog pane.
+		alert.getDialogPane().setExpandableContent(expContent);
+
+		alert.showAndWait();
 	}
 }

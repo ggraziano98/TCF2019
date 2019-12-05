@@ -30,24 +30,22 @@ import utils.Tools;
 
 public class MainApp extends Application{
 	
-	//TODO fix playlists: expand content, fix name convention
-	//TODO shuffle, repeat
-	//TODO finish songqueue
-	//TODO initialize all songs
-	//TODO contextmenu che funziona su tutto il box delle playlist
-	//TODO canc non funziona al momento nel contextmenu
-	//TODO fix information context menu
-	//TODO fix playlist/tracklist/songqueue context menu
-	//TODO fix songImage
-	//TODO fix contextmenu not closing
-		
-	//TODO questo serve per adattare la dimensione della finestra alla definizione del display del pc
-	//	GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-	//	int width = gd.getDisplayMode().getWidth();
-	//	int height = gd.getDisplayMode().getHeight();
+	//TODO fix player currentInt and stuff
+	//TODO fix songImage GIO
+	//TODO shuffle, repeat GIO
+	//TODO finish songqueue GIO
+	//TODO fix playlists special characters FO
+	//TODO contextmenu che funziona su tutto il box delle playlist FO
+	//TODO fix playlist/tracklist/songqueue context menu FO
+	//TODO fix contextmenu not closing FO
+	//TODO player redesign DAVIDE
+	//TODO loading screen DAVIDE
+	//TODO canc non funziona al momento nel contextmenu DAVIDE
+	//TODO per gli errori usare Tools.stackTrace
 
-	public static List<String> mainDirList;
-	public static TrackList allTracksList;
+	
+	public static List<String> mainDirList = new ArrayList<String>();
+	public static TrackList allSongs;
 	public static PlayerController pc;
 
 	public static GridPane root;
@@ -77,8 +75,8 @@ public class MainApp extends Application{
 
 		root = Root.rootPane();
 		
-		mainDirList = Initialize.getMainDir();
-		allTracksList = FileController.getFilesFromDir(mainDirList);
+		Initialize.setMainDir();
+		allSongs = Initialize.getAllSongs();
 		savedPlaylists = Tools.getNamesSavedPlaylists();
 		
 		pc = new PlayerController();
