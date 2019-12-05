@@ -7,6 +7,7 @@ import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -27,6 +28,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.MapChangeListener;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.util.Duration;
 import utils.Tools;
@@ -35,7 +37,6 @@ import utils.Tools;
 /**
  * Class model for a Track 
  * 
- * TODO fix playercontroller
  * 
  * @param title
  * @param artist
@@ -43,7 +44,6 @@ import utils.Tools;
  * @param genre
  * @param year
  * @param duration
- * @param image
  *
  * @see <a href="https://docs.oracle.com/javafx/2/binding/jfxpub-binding.htm">Properties</a>
  */
@@ -55,11 +55,10 @@ public class Track{
 	private StringProperty genre;
 	private StringProperty year;
 	private DoubleProperty duration;
-	private Image image;
 	private BooleanProperty playing;
 	private IntegerProperty position;
 	private boolean hasMetadata;
-	
+
 	private static final ContentHandler handler = new DefaultHandler();
 	private static final Metadata metadata = new Metadata();
 	private static final Parser parser = new Mp3Parser();
@@ -87,6 +86,18 @@ public class Track{
 	}
 
 
+	public Track(String[] l) {
+		this.setPath(Paths.get(l[6]));
+		this.setTitle(l[0]);
+		this.setArtist(l[1]);
+		this.setAlbum(l[2]);
+		this.setGenre(l[3]);
+		this.setYear(l[4]);
+		this.setDuration(Duration.millis(Double.valueOf(l[5].replace(" ms", ""))));
+		this.playing = new SimpleBooleanProperty(false);
+		this.hasMetadata = true;
+	}
+
 
 	private void resetProperties() {
 		this.album = new SimpleStringProperty(Tools.DALBUM);
@@ -100,59 +111,59 @@ public class Track{
 	 * sets Track metadata. Does not set image to avoid memory usage 
 	 */
 	public void setMetadata() {
-
-		resetProperties();
-		
-		String fileLocation = this.getPath().toString();
-
-		try {
-
-			InputStream input = new FileInputStream(new File(fileLocation));
-			parser.parse(input, handler, metadata, parseCtx);
-			input.close();
-
-			// List all metadata
-			String[] metadataNames = metadata.names();
+		if(!this.getHasMetadata()) {
+			resetProperties();
+			String fileLocation = this.getPath().toString();
 			
-			for(String name : metadataNames){
-				handleMetadata(name, metadata.get(name));
-			}
+			try {
 
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (TikaException e) {
-			e.printStackTrace();
+				InputStream input = new FileInputStream(new File(fileLocation));
+				parser.parse(input, handler, metadata, parseCtx);
+				input.close();
+
+				// List all metadata
+				String[] metadataNames = metadata.names();
+
+				for(String name : metadataNames){
+					handleMetadata(name, metadata.get(name));
+				}
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (SAXException e) {
+				e.printStackTrace();
+			} catch (TikaException e) {
+				e.printStackTrace();
+			}
+			this.hasMetadata = true;
 		}
-		this.hasMetadata = true;
 	}
 
 
 	public void handleMetadata(String key, Object value) {
 		if (key.equals("xmpDM:album") ) {
-			if(value.toString() == "" || value == null) {
+			if(value.toString() == "" || value == null || value.toString().replace("\\s+","").isEmpty()) {
 				this.setAlbum(Tools.DALBUM);
 			}
 			else {
 				this.setAlbum(value.toString());
 			}
 		} else if (key.equals("xmpDM:artist") || key.equals("dc:creator") || key.equals("contributing artists")) {
-			if(value.toString() == "" && this.getArtist() == "") this.setArtist(Tools.DARTIST);
+			if((value.toString() == "" || value.toString().replace("\\s+","").isEmpty())&& this.getArtist() == "") this.setArtist(Tools.DARTIST);
 			else this.setArtist(value.toString());
 
 		} if (key.equals("title")) {
-			if(value.toString() == "") this.setTitle(getPath().getFileName().toString());
+			if(value.toString() == "" || value.toString().replace("\\s+","").isEmpty()) this.setTitle(getPath().getFileName().toString());
 			else this.setTitle(value.toString());
 
 		} if (key.equals("year")) {
-			if(value.toString() == "") this.setYear(Tools.DYEAR);
+			if(value.toString() == ""|| value.toString().replace("\\s+","").isEmpty()) this.setYear(Tools.DYEAR);
 			else this.setYear(value.toString());
 
 		} if (key.equals("xmpDM:genre")) {
-			if(value.toString() == "") this.setGenre(Tools.DGENRE);
+			if(value.toString() == ""|| value.toString().replace("\\s+","").isEmpty()) this.setGenre(Tools.DGENRE);
 			else this.setGenre(value.toString());
 		} if (key.equals("xmpDM:duration")){
 			this.setDuration(Duration.millis(Double.valueOf((String) value)));
@@ -183,6 +194,7 @@ public class Track{
 
 
 	public final String getTitle() {
+		if(this.title == null) this.title = new SimpleStringProperty();
 		return title.get();
 	}
 
@@ -193,12 +205,13 @@ public class Track{
 
 
 	public final void setTitle(String title) {
-		if(this.title == null) this.title = new SimpleStringProperty();
+		if(this.title == null) this.title = new SimpleStringProperty(this.getPath().getFileName().toString().replace(".mp3", ""));
 		this.title.set(title);
 	}
 
 
 	public final String getArtist() {
+		if(this.artist == null) this.artist = new SimpleStringProperty(Tools.DARTIST);
 		return artist.get();
 	}
 
@@ -209,11 +222,13 @@ public class Track{
 
 
 	public final void setArtist(String artist) {
+		if(this.artist == null) this.artist = new SimpleStringProperty(Tools.DARTIST);
 		this.artist.set(artist);
 	}
 
 
 	public final String getAlbum() {
+		if(this.album == null) this.album = new SimpleStringProperty(Tools.DALBUM);
 		return album.get();
 	}
 
@@ -224,11 +239,13 @@ public class Track{
 
 
 	public final void setAlbum(String album) {
+		if(this.album == null) this.album = new SimpleStringProperty(Tools.DALBUM);
 		this.album.set(album);;
 	}
 
 
 	public final String getGenre() {
+		if(this.genre == null) this.genre = new SimpleStringProperty(Tools.DGENRE);
 		return genre.get();
 	}
 
@@ -238,11 +255,13 @@ public class Track{
 
 
 	public final void setGenre(String genre) {
+		if(this.genre == null) this.genre = new SimpleStringProperty(Tools.DGENRE);
 		this.genre.set(genre);
 	}
 
 
 	public final String getYear() {
+		if(this.year == null) this.year = new SimpleStringProperty(Tools.DYEAR);
 		return year.get();
 	}
 
@@ -252,6 +271,7 @@ public class Track{
 
 
 	public final void setYear(String year) {
+		if(this.year == null) this.year = new SimpleStringProperty(Tools.DYEAR);
 		this.year.set(year);
 	}
 
@@ -270,34 +290,6 @@ public class Track{
 		if (this.duration == null) this.duration = new SimpleDoubleProperty(0);
 		this.duration.set(duration.toSeconds());
 	}
-
-
-	public final Image getImage() {
-		if (image == null) {
-			setImage();
-		}
-		return image;
-	}
-
-
-	public final void setImage() {
-		Path path = this.getPath();
-		String cleanPathS = Tools.cleanURL(path.toString());
-		Media media = new Media(cleanPathS);	
-		setImage(Tools.DIMAGE);
-		media.getMetadata().addListener((MapChangeListener<String, Object>) change ->{
-			if (change.getKey() == "image") {
-				setImage((Image) change.getValueAdded());
-			}
-		});
-
-	}
-
-
-	public final void setImage(Image image) {
-		this.image = image;
-	}
-
 
 	public final boolean getPlaying() {
 		return playing.get();
@@ -327,15 +319,36 @@ public class Track{
 	public IntegerProperty positionProperty() {
 		return position;
 	}
-	
-	
-	public void unload() {
-		this.image = null;
-		this.duration = null;
-	}
-	
+
+
 	public boolean getHasMetadata() {
 		return this.hasMetadata;
+	}
+
+	public void setHasMetadata(boolean b) {
+		this.hasMetadata = b;
+	}
+
+	/**
+	 * @return a string formatted to be written in playlists
+	 */
+	public String getString() {
+		return this.getTitle()+"&tcf&"+this.getArtist()+"&tcf&"+this.getAlbum()+"&tcf&"
+				+this.getGenre()+"&tcf&"+this.getYear()+"&tcf&"+this.getDuration()+"&tcf&"+
+				this.getPath().toString();
+	}
+	
+	
+	public void setImageView(ImageView view) {
+		view.setImage(Tools.DIMAGE);
+		Path path = this.getPath();
+		String cleanPathS = Tools.cleanURL(path.toString());
+		Media media = new Media(cleanPathS);	
+		media.getMetadata().addListener((MapChangeListener<String, Object>) change ->{
+			if (change.getKey() == "image") {
+				view.setImage((Image) change.getValueAdded());
+			}
+		});
 	}
 
 }

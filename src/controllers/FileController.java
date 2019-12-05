@@ -14,6 +14,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import models.Track;
 import models.TrackList;
+import utils.Initialize;
 import utils.Tools;
 
 /**
@@ -63,7 +64,7 @@ public class FileController {
 		}
 		catch (NullPointerException e) {
 			System.out.println("Nullpointer exception handled: " + e.getMessage());
-			return TrackList.emptyTrackList();
+			return new TrackList();
 		}
 		/* uso una lambda expression e il metodo forEach per iterare sulla pathList */
 		return tracklist;
@@ -86,6 +87,8 @@ public class FileController {
 	public static void deleteTrack(Path path) {
 		File file = path.toFile();
 		String fileName = path.getFileName().toString();
+		Track track = new Track(path);
+		track.setMetadata();
 
 		//TODO controllare che funzioni
 
@@ -105,6 +108,7 @@ public class FileController {
 						alert.setTitle("Success!");
 						alert.setContentText("Canzone eliminata correttamente");
 						alert.showAndWait();
+						Initialize.removeTrackFromDirFile(track);
 					}
 					else {
 						Alert alert = new Alert(AlertType.ERROR);

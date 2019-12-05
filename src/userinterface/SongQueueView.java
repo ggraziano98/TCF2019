@@ -14,7 +14,7 @@ public class SongQueueView {
 	public static VBox songQueueView() {
 		VBox songQueueView = new VBox();
 		
-		TableView<Track> table = TrackView.tableFromTracklist(MainApp.pc.getTracklist(), MainApp.pc);
+		TableView<Track> table = TrackView.tableFromTracklist(MainApp.pc.getTracklist(), MainApp.pc, true);
 		
 		songQueueView.getChildren().add(table);
 		VBox.setVgrow(table, Priority.ALWAYS);

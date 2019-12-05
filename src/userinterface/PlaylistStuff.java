@@ -3,13 +3,10 @@ package userinterface;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import models.Track;
@@ -21,16 +18,15 @@ public class PlaylistStuff {
 
 	/**
 	 * Usato per definire lo scrollpane a sinistra in cui si vedono tutte le playlist salvate
-	 * 
+	 *
 	 * @return ScrollPane playlist
 	 */
 	public static ScrollPane playlist() {
 
-		VBox playlistsVbox = new VBox();
+		VBox playlistsVbox = MainApp.playlistsVbox;
 		ScrollPane scroll = new ScrollPane();
 		scroll.setContent(playlistsVbox);
 
-		//TODO reload tracklist instead of setting visible(true)??
 		MainApp.savedPlaylists.forEach((String name)->{
 			createPlaylistView(name, playlistsVbox);
 
@@ -48,16 +44,17 @@ public class PlaylistStuff {
 						}
 					});
 					playlistsVbox.getChildren().removeIf(playlist->((RadioButton)playlist).getText() == s);
-
+					MainApp.playlistList.removeIf(tl-> tl.getPlaylistName()==s);
 				});
 			}
 		});
 		return scroll;
 	}
 
+
 	/**
 	 * Funzione che crea i bottoni da aggiungere allo scrollpane delle playlist
-	 * 
+	 *
 	 * @param string
 	 * @param box
 	 * @param mainPanel
@@ -90,32 +87,31 @@ public class PlaylistStuff {
 
 		dataPane.setVisible(false);
 		playlistButton.setUserData(dataPane);
-		
+
 		Pannelli.contextMenuPlaylists(playlistButton); //Add context menu
-		
-		
+
+
 
 	}
 
 	private static void createPlaylistView(String name, VBox playlistsVbox) {
 		TrackList tracklist = Tools.readPlaylist(name);
-		
 		tracklist.setPlaylistName(name);
 
 		TableView<Track> table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
-		
-		
+		Pannelli.contextMenuTrack(table, tracklist);
 
-		
 		VBox tableBox = new VBox(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 		MainApp.root.add(tableBox, 1, 1, 1, 2);
 		playlistButton(name, playlistsVbox, MainApp.mainPanel, tableBox);
 		
-		
+		MainApp.playlistList.add(tracklist);
+
+
 		TrackView.setDragDrop(table, tracklist);
 	}
-	
-	
-	
+
+
+
 	}

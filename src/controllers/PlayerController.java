@@ -12,6 +12,7 @@ import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 import models.Track;
 import models.TrackList;
+import userinterface.MainApp;
 import utils.Tools;
 
 public class PlayerController {
@@ -70,6 +71,7 @@ public class PlayerController {
 		});
 		this.setTotalDuration(this.getPlayer().getMedia().getDuration());
 		this.getPlayer().play();
+		this.getCurrentTrack().setPlaying(true);
 
 
 		this.getPlayer().setOnEndOfMedia(()->this.next());
@@ -87,7 +89,19 @@ public class PlayerController {
 
 
 	public void next() {
-		this.setCurrentInt(this.getCurrentInt() + 1);
+		int newPos = this.getCurrentInt() + 1;
+		if (MainApp.repeat == 2) newPos = this.getCurrentInt(); //repeat current
+
+		
+		if(this.getCurrentInt() == this.getTracklist().getSize() - 1) {
+			if(MainApp.repeat == 1) newPos = 0; //repeat all		
+			else {
+				this.setPlaying(false);
+				newPos = 0;
+			}
+		}
+		
+		this.setCurrentTrack(this.getTracklist().get(newPos));
 		if(this.getPlaying()) {
 			this.play();
 		}
@@ -95,7 +109,7 @@ public class PlayerController {
 
 
 	public void prev() {
-		this.setCurrentInt(this.getCurrentInt() - 1);
+		this.setCurrentTrack(this.getTracklist().get(Math.max(this.getCurrentInt() - 1, 0)));
 		if(this.getPlaying()) {
 			this.play();
 		}
@@ -118,9 +132,9 @@ public class PlayerController {
 	public void refreshPlayer() {
 		if (this.getCurrentTrack() != null) this.getCurrentTrack().setPlaying(false);
 
-		this.currentTrack = this.getTracklist().get(this.getCurrentInt());
-		this.currentTrack.setPlaying(true);
-		if(!this.currentTrack.getHasMetadata()) this.currentTrack.setMetadata();
+		this.getCurrentTrack().setPlaying(true);
+
+		this.setCurrentInt(this.getCurrentTrack().getPosition());
 		if(player != null) {
 			player.stop();
 			player = null;
@@ -144,7 +158,11 @@ public class PlayerController {
 
 	//TODO controllare se giusto
 	public final void setCurrentTrack(Track currentTrack) {
-		this.setCurrentInt(currentTrack.getPosition());
+		if(this.currentTrack != null) {
+			this.currentTrack.setPlaying(false);
+		}
+		this.currentTrack = currentTrack;
+		this.refreshPlayer();
 	}
 
 
@@ -168,9 +186,8 @@ public class PlayerController {
 
 
 	public final void setTracklist(TrackList tracklist) {
-		this.tracklist.set(tracklist);
-
-		//TODO this slows the player down too much
+		this.tracklist.set(new TrackList(tracklist));
+		this.tracklist.setMetadata();
 	}
 
 
@@ -186,14 +203,7 @@ public class PlayerController {
 
 	private final void setCurrentInt(int currentInt) {	
 		if(this.currentInt == null) this.currentInt = new SimpleIntegerProperty(0);
-		if(this.tracklist.getSize() != 0) {
-			if(currentInt>= 0) {
-				this.currentInt.set(currentInt%this.getTracklist().getSize());
-			} else {
-				this.currentInt.set(this.getTracklist().getSize() -1);
-			}
-			this.refreshPlayer();
-		}
+		this.currentInt.set(currentInt);
 	}
 
 
@@ -292,6 +302,10 @@ public class PlayerController {
 		if(this.playing == null) this.playing = new SimpleBooleanProperty(false);
 		this.playing.set(playing);
 
+	}
+
+	public void refreshCurrentInt() {
+		this.currentInt.set(this.currentTrack.getPosition());
 	}
 
 }

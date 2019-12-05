@@ -1,10 +1,18 @@
 package userinterface;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
+import utils.Initialize;
 import utils.Tools;
 
 public class Root {
@@ -40,7 +48,37 @@ public class Root {
 		RowConstraints row3 = new RowConstraints();
 		row3.setMinHeight(heights[2]);
 		row3.setMaxHeight(heights[2]);
-		root.getRowConstraints().addAll(row1, row2, row3);
+
+
+		//TODO togliere e metter il menu decentemente
+		RowConstraints row4 = new RowConstraints();
+		row4.setMinHeight(heights[0]);
+		row4.setMaxHeight(heights[0]);
+
+
+		root.getRowConstraints().addAll(row1, row2, row3,row4);
+
+
+
+		MenuBar menuBar = new MenuBar();
+	     Menu menuFile = new Menu("File directory");
+	     Menu menuEdit = new Menu("Edit");
+	     Menu menuInformation = new Menu("Information");
+
+	     MenuItem item1 = new MenuItem("Set file directory");
+	     item1.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent event) {
+					Initialize.addDirectory();
+					}
+			});
+
+
+	     menuFile.getItems().add(item1);
+
+
+	     menuBar.getMenus().addAll(menuFile, menuEdit, menuInformation);
+
+	     root.add(menuBar, 0, 3, 1, 2);
 
 		return root;
 	}

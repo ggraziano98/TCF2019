@@ -30,14 +30,14 @@ import utils.Tools;
 public class PlayerBuilder {
 
 	/**
-	 * Used to define the player UI. 
-	 * 
+	 * Used to define the player UI.
+	 *
 	 * Defines all the buttons, images and sliders inside the player, and the corresponding logic
 	 *
 	 *@return GridPane player che contiene tutta la UI
 	 */
 	public static GridPane playerBuilder() throws Exception {
-		
+
 		PlayerController pc = MainApp.pc;
 		TextField findText = MainApp.findText;
 
@@ -56,13 +56,13 @@ public class PlayerBuilder {
 		RowConstraints row50 = new RowConstraints(50, 50, 50);
 		row50.setValignment(VPos.CENTER);
 		playerV.getRowConstraints().addAll(row60, row120, row60, row50);
-		
+
 		double col = Tools.DWIDTHS[0];
-		
+
 		ColumnConstraints colConstraint = new ColumnConstraints(col, col, col);
 		colConstraint.setHalignment(HPos.CENTER);
 		playerV.getColumnConstraints().add(colConstraint);
-		
+
 		// TODO togliere
 		playerV.setGridLinesVisible(true);
 
@@ -89,7 +89,7 @@ public class PlayerBuilder {
 
 		FileInputStream playFile = new FileInputStream("files\\Player\\play.png");
 		Image playImage = new Image(playFile);
-		playFile.close();		
+		playFile.close();
 		ImageView playView = new ImageView(playImage);
 		playView.setFitHeight(25);
 		playView.setFitWidth(25);
@@ -149,9 +149,18 @@ public class PlayerBuilder {
 		shuffleButton.setStyle("-fx-background-color: transparent");
 		Button repeatButton = new Button("",repeatView);
 		repeatButton.setStyle("-fx-background-color: transparent");
-		
-		
-	
+
+
+
+
+		shuffleButton.setOnAction(ev->{
+			MainApp.pc.getTracklist().shuffle(pc.getCurrentTrack());
+			MainApp.pc.refreshCurrentInt();
+		});
+
+		repeatButton.setOnAction(ev->{
+			MainApp.repeat = (MainApp.repeat+1)%3;
+		});
 
 
 		AtomicBoolean play = new AtomicBoolean(false);
@@ -191,7 +200,7 @@ public class PlayerBuilder {
 			}
 			else {
 				volumeButton.setGraphic(muteView);
-			}			
+			}
 			muted.set(!muted.get());
 			volumeMute(muted, pc);
 
@@ -271,13 +280,13 @@ public class PlayerBuilder {
 		songName.setPadding(new Insets(0, 3, 0, 3));
 		StringProperty text = new SimpleStringProperty("");
 		if (pc.getTracklist().getSize()>0) {
-			text.set(pc.getTracklist().get(pc.getCurrentInt()).getTitle());		
+			text.set(pc.getCurrentTrack().getTitle());
 		}
 		else text.set("Seleziona una canzone");
 		songName.textProperty().bind(text);
 		pc.currentIntProperty().addListener((obs, oldv, newv)->{
 			if (pc.getTracklist().getSize()>0) {
-				text.set(pc.getTracklist().get(newv.intValue()).getTitle());	
+				text.set(pc.getCurrentTrack().getTitle());
 			}
 			else text.set("Seleziona una canzone");
 		});
@@ -290,8 +299,13 @@ public class PlayerBuilder {
 		songView.setFitHeight(170);
 
 		pc.currentIntProperty().addListener((obs, oldv, newv)->{
-			if (pc.getTracklist().getSize()>0) {	
-				songView.setImage(pc.getTracklist().get(pc.getCurrentInt()).getImage());
+			if (pc.getTracklist().getSize()>0) {
+				try {
+					pc.getCurrentTrack().setImageView(songView);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else songView.setImage(Tools.DIMAGE);});
 		return songView;
@@ -333,8 +347,12 @@ public class PlayerBuilder {
 	}
 
 
-
-	private static String timeMinutes(double time) {
+	/**
+	 * A formatted string for time
+	 * @param time in seconds
+	 * @return
+	 */
+	public static String timeMinutes(double time) {
 
 		String mS = "";
 		String m = Integer.toString((int) time/60);
