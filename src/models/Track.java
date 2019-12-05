@@ -144,14 +144,14 @@ public class Track{
 
 	public void handleMetadata(String key, Object value) {
 		if (key.equals("xmpDM:album") ) {
-			if(value.toString() == "" || value == null) {
+			if(value.toString() == "" || value == null || value.toString().replace("\\s+","").isEmpty()) {
 				this.setAlbum(Tools.DALBUM);
 			}
 			else {
 				this.setAlbum(value.toString());
 			}
 		} else if (key.equals("xmpDM:artist") || key.equals("dc:creator") || key.equals("contributing artists")) {
-			if(value.toString() == "" && this.getArtist() == "") this.setArtist(Tools.DARTIST);
+			if((value.toString() == "" || value.toString().replace("\\s+","").isEmpty())&& this.getArtist() == "") this.setArtist(Tools.DARTIST);
 			else this.setArtist(value.toString());
 
 		} if (key.equals("title")) {
@@ -159,11 +159,11 @@ public class Track{
 			else this.setTitle(value.toString());
 
 		} if (key.equals("year")) {
-			if(value.toString() == "") this.setYear(Tools.DYEAR);
+			if(value.toString() == ""|| value.toString().replace("\\s+","").isEmpty()) this.setYear(Tools.DYEAR);
 			else this.setYear(value.toString());
 
 		} if (key.equals("xmpDM:genre")) {
-			if(value.toString() == "") this.setGenre(Tools.DGENRE);
+			if(value.toString() == ""|| value.toString().replace("\\s+","").isEmpty()) this.setGenre(Tools.DGENRE);
 			else this.setGenre(value.toString());
 		} if (key.equals("xmpDM:duration")){
 			this.setDuration(Duration.millis(Double.valueOf((String) value)));

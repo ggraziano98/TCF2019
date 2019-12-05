@@ -3,9 +3,11 @@ package utils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -126,7 +128,7 @@ public class Initialize {
 
 		public static TrackList getAllSongs() {
 			TrackList tracklist = new TrackList();
-			try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(Tools.ALLSONGSFILEPATH.toString()),"utf-8"))){
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(Tools.ALLSONGSFILEPATH.toString()), "utf-8"))){
 
 				String line;
 				while ((line = br.readLine()) != null) {
@@ -155,7 +157,7 @@ public class Initialize {
 			TrackList tl = FileController.getFilesFromDir(dirPath);
 			tl.setMetadata();
 
-			try (BufferedWriter bw = new BufferedWriter(new FileWriter(Tools.ALLSONGSFILEPATH.toString(), true))){
+			try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Tools.ALLSONGSFILEPATH.toString(), true), "UTF-8"))){
 				bw.newLine();
 				bw.newLine();
 				bw.write(dir);

@@ -31,8 +31,9 @@ import utils.Tools;
 public class MainApp extends Application{
 	
 	//TODO removeDir GIO
-	//TODO accented characters in playlists
+	//TODO editMetadata in file GIO
 	//TODO finish songqueue GIO
+	//TODO Handle non existing song GIO
 	//TODO fix playlists special characters FO
 	//TODO contextmenu che funziona su tutto il box delle playlist FO
 	//TODO fix playlist/tracklist/songqueue context menu FO
