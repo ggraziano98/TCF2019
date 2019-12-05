@@ -155,7 +155,7 @@ public class Track{
 			else this.setArtist(value.toString());
 
 		} if (key.equals("title")) {
-			if(value.toString() == "") this.setTitle(getPath().getFileName().toString());
+			if(value.toString() == "" || value.toString().replace("\\s+","").isEmpty()) this.setTitle(getPath().getFileName().toString());
 			else this.setTitle(value.toString());
 
 		} if (key.equals("year")) {
