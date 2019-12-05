@@ -2,7 +2,10 @@ package utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,10 +13,8 @@ import java.util.Optional;
 
 import controllers.FileController;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 import models.Track;
@@ -62,135 +63,119 @@ public class Initialize {
 		if (result.isPresent() && result.get() != null){
 			setAttempt = true;
 			if(Files.isDirectory(Paths.get(result.get())) && !result.get().isEmpty()){
-				MainApp.mainDirList.add(result.get());
-				setDirSongs(result.get());
-				try (BufferedWriter bw= Files.newBufferedWriter(Tools.DIRFILEPATH)){
-					MainApp.mainDirList.forEach(dir->{
-						try {
-							bw.write(dir);
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					});
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			else {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("Errore");
-				alert.setHeaderText("Il path indicato non � una directory");
-				alert.showAndWait();
-				return addDirectory();
-			}
-		}
-		return setAttempt;
+				boolean isContained = false;
+				boolean contains = false;
+				String savedDir = "";
 
-
-
-	}
-
-
-	public static TrackList getAllSongs() {
-		TrackList tracklist = new TrackList();
-		try {
-
-			BufferedReader br= Files.newBufferedReader(Tools.ALLSONGSFILEPATH);
-			String line;
-			while ((line = br.readLine()) != null) {
-				String[] arr = line.split("&tcf&");
-				if (arr.length == 7) {
-					Path path = Paths.get(arr[6]);
-					if(Files.isRegularFile(path)){
-						tracklist.addTrack(new Track(arr));;
+				for(String s:MainApp.mainDirList){
+					isContained = Tools.getDirsInDir(Paths.get(s)).contains(Paths.get(result.get()));
+					contains = Tools.getDirsInDir(Paths.get(result.get())).contains(Paths.get(s));
+					if(isContained || contains) {
+						savedDir = s;
+						System.out.println("contains " + contains + " is contained "+ isContained);
+						break;
 					}
-					else System.out.println(path.toString() + "\tNon � un file corretto");
+				};
+
+
+				if(!isContained && !contains) {
+					MainApp.mainDirList.add(result.get());
+					setDirSongs(result.get());
+					try (BufferedWriter bw= Files.newBufferedWriter(Tools.DIRFILEPATH)){
+						MainApp.mainDirList.forEach(dir->{
+							try {
+								bw.write(dir);
+								bw.newLine();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						});
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				else if(isContained){
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Errore");
+					alert.setHeaderText("La directory indicata � gia inclusa in una delle directory salvate: " + savedDir);
+					alert.showAndWait();
+					return addDirectory();
+				} else {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Errore");
+					alert.setHeaderText("La directory indicata include una directory gi� salvata: " + savedDir);
+					alert.showAndWait();
+					return addDirectory();
 				}
 			}
-
-			br.close();
-
-		} catch (IOException e) {
-			//TODO errore
-			System.out.println("Non � stato possibile caricare le canzoni");
-		}
-
-		return tracklist;
-	}
-
-
-	public static void setDirSongs(String dir) {
-		Path dirPath = Paths.get(dir);
-
-		TrackList tl = FileController.getFilesFromDir(dirPath);
-		tl.setMetadata();
-
-		try (BufferedWriter bw= Files.newBufferedWriter(Tools.ALLSONGSFILEPATH)){
-			bw.newLine();
-			bw.append(dir);
-			tl.forEach(t->{
-				try {
-					bw.newLine();
-					bw.append(t.getString());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				else {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Errore");
+					alert.setHeaderText("Il path indicato non � una directory");
+					alert.showAndWait();
+					return addDirectory();
 				}
-			});
-		} catch (IOException e) {
-			e.printStackTrace();
+			}
+			return setAttempt;
+
+
+
 		}
 
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Completato");
-		alert.setHeaderText("Canzoni impostate correttamente");
-		alert.showAndWait();
-	}
 
-	//	public static final loadPlaylists() {
-	//
-	//	}
+		public static TrackList getAllSongs() {
+			TrackList tracklist = new TrackList();
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(Tools.ALLSONGSFILEPATH.toString()),"utf-8"))){
 
-
-	public static void addDirectory() {
-
-		Path mainDirFile = Paths.get("files", "mainDir.txt");
-
-
-		TextInputDialog dialog = new TextInputDialog("example: C:\\Music");
-		dialog.setTitle("Select Directory");
-		dialog.setHeaderText("Inserire il path alla directory selezionata");
-
-		List<String> mainDirList = new ArrayList<String>() ;
-		try (BufferedReader br= Files.newBufferedReader(mainDirFile)){
-			br.lines().forEach(line->mainDirList.add(line));
-		} catch (IOException e) {
-			System.out.println("mainDir non selezionata");
-		}
-
-		Optional<String> result = dialog.showAndWait();
-		if (result.isPresent()){
-			mainDirList.add(result.get());
-		}
-		try {
-			Files.createFile(mainDirFile);
-		} catch (FileAlreadyExistsException e) {
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		try (BufferedWriter bw= Files.newBufferedWriter(mainDirFile)){
-			mainDirList.forEach(dir->{
-				try {
-					if(Files.isDirectory(Paths.get(dir)))bw.write(dir + "\n");
-				} catch (IOException e) {
-					e.printStackTrace();
+				String line;
+				while ((line = br.readLine()) != null) {
+					String[] arr = line.split("&tcf&");
+					if (arr.length == 7) {
+						Path path = Paths.get(arr[6]);
+						if(Files.isRegularFile(path)){
+							tracklist.addTrack(new Track(arr));;
+						}
+						else System.out.println(path.toString() + "\tNon � un file corretto");
+					}
 				}
-			});
-		} catch (IOException e) {
-			e.printStackTrace();
+			} catch (IOException e) {
+				//TODO errore
+				System.out.println("Non � stato possibile caricare le canzoni");
+				e.printStackTrace();
+			}
+
+			return tracklist;
+		}
+
+
+		public static void setDirSongs(String dir) {
+			Path dirPath = Paths.get(dir);
+
+			TrackList tl = FileController.getFilesFromDir(dirPath);
+			tl.setMetadata();
+
+			try (BufferedWriter bw = new BufferedWriter(new FileWriter(Tools.ALLSONGSFILEPATH.toString(), true))){
+				bw.newLine();
+				bw.newLine();
+				bw.write(dir);
+				tl.forEach(t->{
+					try {
+						bw.newLine();
+						bw.write(t.getString());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Completato");
+			alert.setHeaderText("Canzoni impostate correttamente");
+			alert.showAndWait();
 		}
 
 	}
-}
