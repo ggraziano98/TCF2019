@@ -107,6 +107,10 @@ public class PlayerBuilder {
 		ImageView prevView = new ImageView(prevImage);
 		prevView.setFitHeight(25);
 		prevView.setFitWidth(25);
+		ImageView prevViewTrasp = new ImageView(prevImage);
+		prevViewTrasp.setStyle("-fx-opacity: 0.7");
+		prevViewTrasp.setFitHeight(22);
+		prevViewTrasp.setFitWidth(22);
 
 		FileInputStream nextFile = new FileInputStream("files\\Player\\ns.png");
 		Image nextImage = new Image(nextFile);
@@ -114,6 +118,10 @@ public class PlayerBuilder {
 		ImageView nextView = new ImageView(nextImage);
 		nextView.setFitHeight(25);
 		nextView.setFitWidth(25);
+		ImageView nextViewTrasp = new ImageView(nextImage);
+		nextViewTrasp.setStyle("-fx-opacity: 0.7");
+		nextViewTrasp.setFitHeight(22);
+		nextViewTrasp.setFitWidth(22);
 
 		FileInputStream shuffleFile = new FileInputStream("files\\Player\\shuffle.png");
 		Image shuffleImage = new Image(shuffleFile);
@@ -130,10 +138,20 @@ public class PlayerBuilder {
 		repeatView.setFitWidth(25);
 
 		Button playButton = new Button("",playView);
-		Button prevButton = new Button("",prevView);
-		Button nextButton = new Button("",nextView);
+		playButton.setStyle("-fx-background-color: transparent");
+		Button prevButton = new Button("",prevViewTrasp);
+		prevButton.setStyle("-fx-background-color: transparent");
+		buttonMouse(prevButton, prevView, prevViewTrasp);
+		Button nextButton = new Button("",nextViewTrasp);
+		nextButton.setStyle("-fx-background-color: transparent");
+		buttonMouse(nextButton, nextView, nextViewTrasp);
 		Button shuffleButton = new Button("",shuffleView);
+		shuffleButton.setStyle("-fx-background-color: transparent");
 		Button repeatButton = new Button("",repeatView);
+		repeatButton.setStyle("-fx-background-color: transparent");
+		
+		
+	
 
 
 		AtomicBoolean play = new AtomicBoolean(false);
@@ -333,6 +351,14 @@ public class PlayerBuilder {
 
 
 
+	public static void buttonMouse (Button b, ImageView v, ImageView t) {
+		b.setOnMouseEntered((e) -> {
+			b.setGraphic(v);
+		});
+		b.setOnMouseExited((e) -> {
+			b.setGraphic(t);
+		});
+	}
 
 
 }

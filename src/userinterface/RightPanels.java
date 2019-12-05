@@ -52,6 +52,8 @@ public class RightPanels {
 		albumsButton.getStyleClass().add("toggle-button");
 		albumsButton.setStyle("-fx-base: lightblue");
 		
+		Label albums_queueLabel = new Label("  ");
+		
 		RadioButton queueButton = new RadioButton("Song Queue");
 		queueButton.getStyleClass().remove("radio-button");
 		queueButton.getStyleClass().add("toggle-button");
@@ -62,6 +64,7 @@ public class RightPanels {
 		buttonBox.getChildren().add(artistsButton);
 		buttonBox.getChildren().add(artists_albumsLabel);
 		buttonBox.getChildren().add(albumsButton);
+		buttonBox.getChildren().add(albums_queueLabel);
 		buttonBox.getChildren().add(queueButton);
 		
 		MainApp.songQueueView = SongQueueView.songQueueView();
