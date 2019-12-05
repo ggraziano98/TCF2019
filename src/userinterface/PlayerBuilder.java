@@ -134,6 +134,11 @@ public class PlayerBuilder {
 		Button nextButton = new Button("",nextView);
 		Button shuffleButton = new Button("",shuffleView);
 		Button repeatButton = new Button("",repeatView);
+		
+		shuffleButton.setOnAction(ev->{
+			MainApp.pc.getTracklist().shuffleTrack();
+			MainApp.pc.refreshCurrentInt();
+		});
 
 
 		AtomicBoolean play = new AtomicBoolean(false);

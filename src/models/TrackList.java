@@ -302,7 +302,7 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param t
 	 */
 	public void addNew(Track t) {
-		addNew(t, this.getSize()-1);
+		addNew(t, this.getSize());
 	}
 	
 	

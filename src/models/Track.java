@@ -7,6 +7,7 @@ import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -59,7 +60,7 @@ public class Track{
 	private BooleanProperty playing;
 	private IntegerProperty position;
 	private boolean hasMetadata;
-	
+
 	private static final ContentHandler handler = new DefaultHandler();
 	private static final Metadata metadata = new Metadata();
 	private static final Parser parser = new Mp3Parser();
@@ -87,6 +88,18 @@ public class Track{
 	}
 
 
+	public Track(String[] l) {
+		this.setPath(Paths.get(l[6]));
+		this.setTitle(l[0]);
+		this.setArtist(l[1]);
+		this.setAlbum(l[2]);
+		this.setGenre(l[3]);
+		this.setYear(l[4]);
+		this.setDuration(Duration.millis(Double.valueOf(l[5].replace(" ms", ""))));
+		this.playing = new SimpleBooleanProperty(false);
+		this.hasMetadata = true;
+	}
+
 
 	private void resetProperties() {
 		this.album = new SimpleStringProperty(Tools.DALBUM);
@@ -100,34 +113,34 @@ public class Track{
 	 * sets Track metadata. Does not set image to avoid memory usage 
 	 */
 	public void setMetadata() {
-
-		resetProperties();
-		
-		String fileLocation = this.getPath().toString();
-
-		try {
-
-			InputStream input = new FileInputStream(new File(fileLocation));
-			parser.parse(input, handler, metadata, parseCtx);
-			input.close();
-
-			// List all metadata
-			String[] metadataNames = metadata.names();
+		if(!this.getHasMetadata()) {
+			resetProperties();
+			String fileLocation = this.getPath().toString();
 			
-			for(String name : metadataNames){
-				handleMetadata(name, metadata.get(name));
-			}
+			try {
 
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (TikaException e) {
-			e.printStackTrace();
+				InputStream input = new FileInputStream(new File(fileLocation));
+				parser.parse(input, handler, metadata, parseCtx);
+				input.close();
+
+				// List all metadata
+				String[] metadataNames = metadata.names();
+
+				for(String name : metadataNames){
+					handleMetadata(name, metadata.get(name));
+				}
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (SAXException e) {
+				e.printStackTrace();
+			} catch (TikaException e) {
+				e.printStackTrace();
+			}
+			this.hasMetadata = true;
 		}
-		this.hasMetadata = true;
 	}
 
 
@@ -336,19 +349,28 @@ public class Track{
 	public IntegerProperty positionProperty() {
 		return position;
 	}
-	
-	
+
+
 	public void unload() {
 		this.image = null;
 		this.duration = null;
 	}
-	
+
 	public boolean getHasMetadata() {
 		return this.hasMetadata;
 	}
-	
+
 	public void setHasMetadata(boolean b) {
 		this.hasMetadata = b;
+	}
+
+	/**
+	 * @return a string formatted to be written in playlists
+	 */
+	public String getString() {
+		return this.getTitle()+"&tcf&"+this.getArtist()+"&tcf&"+this.getAlbum()+"&tcf&"
+				+this.getGenre()+"&tcf&"+this.getYear()+"&tcf&"+this.getDuration()+"&tcf&"+
+				this.getPath().toString();
 	}
 
 }
