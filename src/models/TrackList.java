@@ -283,17 +283,17 @@ public class TrackList extends SimpleListProperty<Track> {
 			this.get(i).setPosition(i);
 		}
 	}
-	
+
 	/**
 	 * adds a new object to the end of the tracklist by creating a new refrence
-	 * 
+	 *
 	 * @param t
 	 */
 	public void addNew(Track t) {
 		addNew(t, this.getSize());
 	}
-	
-	
+
+
 	public void addNew(Track t, int index) {
 		Track track = new Track(t.getPath());
 		track.setMetadata();
