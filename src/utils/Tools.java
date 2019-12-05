@@ -14,16 +14,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.swing.JOptionPane;
-
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -188,58 +182,28 @@ public class Tools {
 		dialog.setHeaderText("Inserire nome playlist");
 		Optional<String> result = dialog.showAndWait();
 
-		if (result.isPresent()){
+		if (result.isPresent() && !result.get().isEmpty()){
 			playlistName = result.get();
-		}
+			Path filePath = Paths.get("playlists", playlistName + ".txt");
+			try {
+				Files.createFile(filePath);
+				MainApp.savedPlaylists.add(playlistName);
 
-		Path filePath = Paths.get("playlists", playlistName + ".txt");
-		try {
-			Files.createFile(filePath);
-			MainApp.savedPlaylists.add(playlistName);
-
-		} catch (IOException e) {
-			if (e instanceof FileAlreadyExistsException) {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("error1");
-				alert.setHeaderText("nome playlist gi� usato");
-				alert.setContentText("Usare un altro nome");
-				alert.showAndWait();
-			} else
-				e.printStackTrace();
-		}
+			} catch (IOException e) {
+				if (e instanceof FileAlreadyExistsException) {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("error1");
+					alert.setHeaderText("nome playlist gi� usato");
+					alert.setContentText("Usare un altro nome");
+					alert.showAndWait();
+				} else
+					e.printStackTrace();
+			}
+		} 
 
 	}
 
 
-	public static void newPlaylist() {
-
-		TextInputDialog dialog = new TextInputDialog("New Playlist");
-		String playlistName = new String();
-		dialog.setTitle("New playlist");
-		dialog.setHeaderText("Inserire nome playlist");
-		dialog.setContentText("example: PLaylist");
-		Optional<String> result = dialog.showAndWait();
-
-		if (result.isPresent()){
-			playlistName = result.get();
-		}
-
-		Path filePath = Paths.get("playlists", playlistName + ".txt");
-		try {
-			Files.createFile(filePath);
-
-		} catch (IOException e) {
-			if (e instanceof FileAlreadyExistsException) {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("error1");
-				alert.setHeaderText("nome playlist gi� usato");
-				alert.setContentText("Usare un altro nome");
-				alert.showAndWait();
-			} else
-				e.printStackTrace();
-		}
-
-	}
 
 
 

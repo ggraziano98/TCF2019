@@ -4,10 +4,8 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import controllers.FileController;
 import controllers.PlayerController;
 import javafx.application.Application;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -30,11 +28,11 @@ import utils.Tools;
 
 public class MainApp extends Application{
 
-	//TODO removeDir GIO
+	//TODO refreshDirFiles confrontare file salvati e file nella cartella per togliere quelli vecchi e aggiungere quelli nuovi GIO
 	//TODO editMetadata in file GIO
 	//TODO finish songqueue GIO
-	//TODO Handle non existing song GIO
-	//TODO fix playlists special characters FO
+	//TODO Handle non existing song GIO might be done
+	//TODO fix playlists special characters FO might be done
 	//TODO contextmenu che funziona su tutto il box delle playlist FO
 	//TODO fix playlist/tracklist/songqueue context menu FO
 	//TODO fix contextmenu not closing FO
