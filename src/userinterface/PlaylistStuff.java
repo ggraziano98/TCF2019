@@ -1,5 +1,7 @@
 package userinterface;
 
+import java.util.List;
+
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -24,8 +26,23 @@ public class PlaylistStuff {
 	public static ScrollPane playlist() {
 
 		VBox playlistsVbox = MainApp.playlistsVbox;
+		playlistsVbox.setStyle("-fx-background-color: green");
+		VBox emptyBox = new VBox();
+		emptyBox.setStyle("-fx-background-color: red");
+		
+		playlistsVbox.getChildren().add(emptyBox);
+		
+//		BorderPane container = new BorderPane();
+//		container.setCenter(playlistsVbox);
+//		container.setBottom(emptyBox);
+//		
 		ScrollPane scroll = new ScrollPane();
 		scroll.setContent(playlistsVbox);
+		
+		VBox.setVgrow(emptyBox, Priority.ALWAYS);
+		
+		scroll.setFitToHeight(true);;
+		
 
 		MainApp.savedPlaylists.forEach((String name)->{
 			createPlaylistView(name, playlistsVbox);
@@ -38,16 +55,22 @@ public class PlaylistStuff {
 					createPlaylistView(s, playlistsVbox);
 				});
 				c.getRemoved().forEach(s->{
-					playlistsVbox.getChildren().forEach(playlist->{
-						if(((RadioButton)playlist).getText() == s) {
+					
+					RadioButton tbremoved = new RadioButton();
+					
+					for(int i=0; i<playlistsVbox.getChildren().size()-1; i++) {
+					RadioButton playlist = (RadioButton) playlistsVbox.getChildren().get(i);
+						if((playlist).getText() == s) {
 							MainApp.root.getChildren().remove(playlist.getUserData());
+							tbremoved = playlist;
 						}
-					});
-					playlistsVbox.getChildren().removeIf(playlist->((RadioButton)playlist).getText() == s);
+					}
+					playlistsVbox.getChildren().remove(tbremoved);
 					MainApp.playlistList.removeIf(tl-> tl.getPlaylistName()==s);
 				});
 			}
 		});
+		
 		return scroll;
 	}
 
@@ -83,7 +106,7 @@ public class PlaylistStuff {
 			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
 			else playlistButton.setStyle(Tools.TRANSBUTT);
 		});
-		box.getChildren().add(playlistButton);
+		box.getChildren().add(box.getChildren().size()-1, playlistButton);
 
 		dataPane.setVisible(false);
 		playlistButton.setUserData(dataPane);

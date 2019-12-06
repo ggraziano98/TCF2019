@@ -41,6 +41,7 @@ public class MainApp extends Application{
 	//TODO canc non funziona al momento nel contextmenu DAVIDE
 	//TODO repeat graphics DAVIDE
 	//TODO per gli errori usare Tools.stackTrace
+	//TODO handle contextmenu on emptys (playlist scrollpane, trackviews, album and artist panes
 
 
 	public static List<String> mainDirList = new ArrayList<String>();
