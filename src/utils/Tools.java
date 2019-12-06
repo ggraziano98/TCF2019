@@ -284,6 +284,7 @@ public class Tools {
 						yes.setTitle("Eliminazione Playlist");
 						yes.setContentText("Playlist eliminata correttament");
 						yes.showAndWait();
+						MainApp.savedPlaylists.remove(playlist);
 					}
 					else {
 						Alert alert = new Alert(AlertType.ERROR);
@@ -296,6 +297,8 @@ public class Tools {
 
 			} else {
 				if(Files.deleteIfExists(filePath)) {
+					//TODO non so se qua ci vada
+					MainApp.savedPlaylists.remove(playlist);
 				}
 				else System.out.println("Non esiste la playlist selezionata");
 			}
@@ -305,7 +308,7 @@ public class Tools {
 			e.printStackTrace();
 		}
 		
-		MainApp.savedPlaylists.remove(playlist);
+		
 	}
 
 
@@ -373,6 +376,29 @@ public class Tools {
 
 
 	public static ObservableList<String> getNamesSavedPlaylists(){
+		List<String> namesarray = new ArrayList<String>();
+		ObservableList<String> nameplaylists = FXCollections.observableList(namesarray);
+		File directoryPath = new File("playlists");
+
+		//list all txt files
+
+		for (File file : directoryPath.listFiles()) {
+			if (file.getName().endsWith(".txt")) {
+				nameplaylists.add(file.getName().replace(".txt", ""));
+			} else {
+				System.out.println(file.getName() + " is not a readable playlist");
+			}
+
+		}
+
+		return nameplaylists;
+
+
+	}
+	
+	
+	//TODO da aggiustare
+	public static ObservableList<String> getNamesSavedPlaylistsOrderedName(){
 		List<String> namesarray = new ArrayList<String>();
 		ObservableList<String> nameplaylists = FXCollections.observableList(namesarray);
 		File directoryPath = new File("playlists");

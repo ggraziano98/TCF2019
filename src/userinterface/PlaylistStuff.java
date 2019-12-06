@@ -26,15 +26,20 @@ public class PlaylistStuff {
 	public static ScrollPane playlist() {
 
 		VBox playlistsVbox = new VBox();
+
 		ScrollPane scroll = new ScrollPane();
 		scroll.setContent(playlistsVbox);
+		Pannelli.contextMenuPlaylists(scroll);
 
+		
+		
 		//TODO reload tracklist instead of setting visible(true)??
 		MainApp.savedPlaylists.forEach((String name)->{
 			createPlaylistView(name, playlistsVbox);
 
 		});
 
+		
 		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c-> {
 			while(c.next()) {
 				c.getAddedSubList().forEach(s->{
@@ -51,6 +56,8 @@ public class PlaylistStuff {
 				});
 			}
 		});
+
+
 		return scroll;
 	}
 
@@ -92,12 +99,14 @@ public class PlaylistStuff {
 		
 		Pannelli.contextMenuPlaylists(playlistButton); //Add context menu
 
+
 	}
 
 	private static void createPlaylistView(String name, VBox playlistsVbox) {
 		TrackList tracklist = Tools.readPlaylist(name);
 
 		TableView<Track> table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
+		Pannelli.contextMenuPlaylist(table, tracklist);
 		VBox tableBox = new VBox(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 		MainApp.root.add(tableBox, 1, 1, 1, 2);

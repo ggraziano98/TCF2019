@@ -19,7 +19,7 @@ public class SongQueueView {
 		songQueueView.getChildren().add(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 		songQueueView.setStyle("-fx-background-color: red");
-		
+		Pannelli.contextMenuPlaylist(table,MainApp.pc.getTracklist());
 		return songQueueView;
 	}
 
