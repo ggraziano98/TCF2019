@@ -32,7 +32,7 @@ import javafx.scene.control.Alert.AlertType;
  */
 
 public class TrackList extends SimpleListProperty<Track> {
-
+	private String playlistName;
 	private int[] loadedData = {0, 0};
 	/**
 	 * Default constructor for the class
@@ -225,6 +225,7 @@ public class TrackList extends SimpleListProperty<Track> {
 
 	/**
 	 * overload di RemoveTrackToPosition
+	 * TODO vedere se funziona
 	 *
 	 * @param track
 	 *
@@ -237,7 +238,10 @@ public class TrackList extends SimpleListProperty<Track> {
 		Optional<ButtonType> result = selection.showAndWait();
 		if (result.get() == ButtonType.OK){
 			try {
+				System.out.println("sto cercando di rimuovere");
+				
 				this.remove(track);
+				
 				this.refreshPositions();
 			}
 			catch (Exception e) {
@@ -324,6 +328,33 @@ public class TrackList extends SimpleListProperty<Track> {
 		this.forEach(t->{
 			t.unload();
 		});
+	}
+
+
+	public String getPlaylistName() {
+		return playlistName;
+	}
+	public void setPlaylistName(String playlistName) {
+		this.playlistName = playlistName;
+	}
+	
+	
+	
+	/**
+	 * adds a new object to the end of the tracklist by creating a new refrence
+	 *
+	 * @param t
+	 */
+	public void addNew(Track t) {
+		addNew(t, this.getSize());
+	}
+
+
+	public void addNew(Track t, int index) {
+		Track track = new Track(t.getPath());
+		track.setMetadata();
+		this.add(index, track);
+		this.refreshPositions();
 	}
 
 }

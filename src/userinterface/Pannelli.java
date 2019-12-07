@@ -1,6 +1,9 @@
 
 package userinterface;
 
+import java.nio.file.Path;
+
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -26,12 +29,14 @@ public class Pannelli{
 
 
 
-	public static void contextMenuPlaylists(ScrollPane scrollpane) {
-
+	public static void contextMenuPlaylists(VBox emptyBox) {
+				
 		ContextMenu menu = new ContextMenu();
 
-		MenuItem item1 = new MenuItem("Add playlist");
+		MenuItem item1 = new MenuItem("New playlist");
 		MenuItem item2 = new MenuItem("Delete playlist");
+		
+		
 		Menu parentmenu = new Menu("Sort by");
 
 		MenuItem itemchild1 = new MenuItem("Duration");
@@ -78,9 +83,9 @@ public class Pannelli{
 
 		menu.getItems().addAll(item1, item2, parentmenu);
 
-		scrollpane.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
+		emptyBox.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			public void handle(ContextMenuEvent event) {
-				menu.show(scrollpane, event.getScreenX(), event.getScreenY());
+				menu.show(emptyBox, event.getScreenX(), event.getScreenY());
 			}
 		});
 
@@ -89,12 +94,40 @@ public class Pannelli{
 
 
 	public static void contextMenuPlaylists(RadioButton button ) {
-
+		
+		ObservableList<String> savedPlaylists = Tools.getNamesSavedPlaylists();
+		
 		ContextMenu menu = new ContextMenu();
 
-		MenuItem item1 = new MenuItem("Add playlist");
+		MenuItem item1 = new MenuItem("New playlist");
 		MenuItem item2 = new MenuItem("Delete playlist");
+		Menu parentmenu1 = new Menu("Add all the songs of this playlist to");
+		savedPlaylists.forEach((String name)->{
+			MenuItem item = new MenuItem(name);	
+			item.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent event) {
+					TrackList tracklisttoadd = Tools.readPlaylist(button.getText());
+					for (Track track : tracklisttoadd) {
+						Tools.addTrackToPlaylist(name, track);
+					}					
+					
+				}	
+			});
 
+			parentmenu1.getItems().add(item);
+		});
+		
+		MenuItem item3 = new MenuItem("Song queue");
+		item3.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				TrackList tracklisttoadd = Tools.readPlaylist(button.getText());
+				for (Track track : tracklisttoadd) {
+					MainApp.pc.getTracklist().addTrack((Track) track);
+				}			
+			}
+		});
+		parentmenu1.getItems().add(item3);
+		
 		item1.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Tools.newPlaylist();
@@ -109,7 +142,7 @@ public class Pannelli{
 			}
 		});
 
-		menu.getItems().addAll(item1, item2);
+		menu.getItems().addAll(item1, item2,parentmenu1);
 
 		button.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			public void handle(ContextMenuEvent event) {
@@ -146,19 +179,51 @@ public class Pannelli{
 
 		Menu parentMenu = new Menu("Add song to");
 
-		savedPlaylists.forEach((String name)->{
+		MainApp.savedPlaylists.forEach((String name)->{
 			MenuItem item = new MenuItem(name);	
 			item.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event) {
 					Object track = table.getSelectionModel().getSelectedItem();
-					Tools.addTrackToPlaylist(name,(Track) track);
+					MainApp.playlistList.forEach(tl->{
+						if(tl.getPlaylistName() == name) {
+							tl.addNew((Track) track);
+							Tools.saveAsPlaylist(tl, name);
+						}
+					});
 				}	
 			});
 
 			parentMenu.getItems().add(item);
 		});
-
-		MenuItem item2 = new MenuItem("song queue");
+		MenuItem item2 = new MenuItem("Song queue");
+		item2.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				Object item = table.getSelectionModel().getSelectedItem();
+				MainApp.pc.getTracklist().addTrack((Track) item);	
+			}
+		});
+		
+		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c->{
+			parentMenu.getItems().removeIf(i->true);
+			c.getList().forEach(name->{
+				MenuItem item = new MenuItem(name);
+				item.setOnAction(new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent event) {
+						Track track = table.getSelectionModel().getSelectedItem();
+						MainApp.playlistList.forEach(tl->{
+							if(tl.getPlaylistName() == name) {
+								tl.addNew(track);
+								Tools.saveAsPlaylist(tl, name);
+							}
+						});
+					}
+				});
+				parentMenu.getItems().add(item);
+			});
+			parentMenu.getItems().addAll(separatorMenuItem,item2);
+		});
+		
+		
 
 		SeparatorMenuItem separatorMenuItem1 = new SeparatorMenuItem();
 
@@ -172,14 +237,64 @@ public class Pannelli{
 			}	
 		});
 
+		
+
+		item3.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				Object item = table.getSelectionModel().getSelectedItem();
+				Alert informationDialog = new Alert(AlertType.NONE,
+						"Artist: " + ((Track) item).getArtist() + "\n" +
+								"Title: " + ((Track) item).getTitle() +"\n" +
+								"Album: " + ((Track) item).getAlbum() +"\n" +
+								"Year: " + ((Track) item).getYear() +"\n" +
+								"Duration " + ((Track) item).getDuration()
+								,ButtonType.OK); 
+				informationDialog.show(); 
+			}
+		});
+
+		parentMenu.getItems().addAll(separatorMenuItem,item2);
+
+		menu.getItems().addAll(parentMenu, item3, separatorMenuItem1, item1);
+
+		table.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
+			public void handle(ContextMenuEvent event) {
+				menu.show(table, event.getScreenX(), event.getScreenY());
+			}
+		});
+
+	}
+
+
+
+	
+	
+	
+	
+	
+	/**
+	 * contextmenu per queue
+	 * @param table
+	 * @param tracklist
+	 */
+	public static void contextMenuSongQueue(TableView<Track> table) {
+
+		ContextMenu menu = new ContextMenu();
+		MenuItem item1 = new MenuItem("Add to song queue");
+		MenuItem item2 = new MenuItem("Remove from song queue");
+		MenuItem item3 = new MenuItem("Information");
+
+		item1.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				Object track = table.getSelectionModel().getSelectedItem();
+				MainApp.pc.getTracklist().addTrack((Track) track);
+			}
+		});
+
 		item2.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Object item = table.getSelectionModel().getSelectedItem();
-				//TODO rimando alla songqueue
-				Alert informationDialog = new Alert(AlertType.NONE,
-						"da sviluppare"
-						,ButtonType.OK); 
-				informationDialog.show(); 
+				MainApp.pc.getTracklist().RemoveTrack((Track) item);
 			}
 		});
 
@@ -197,9 +312,7 @@ public class Pannelli{
 			}
 		});
 
-		parentMenu.getItems().add(item2);
-
-		menu.getItems().addAll(item1, separatorMenuItem, parentMenu, separatorMenuItem1, item3);
+		menu.getItems().addAll(item1, item2, item3);
 
 		table.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			public void handle(ContextMenuEvent event) {
@@ -209,56 +322,70 @@ public class Pannelli{
 
 	}
 
-
-
-	/**
-	 * contextmenu per queue e playlist
-	 * @param table
-	 * @param tracklist
-	 */
+	
+	
+	
+	
 	public static void contextMenuPlaylist(TableView<Track> table, TrackList tracklist) {
 
-		ObservableList<String> savedPlaylists = Tools.getNamesSavedPlaylists();
-
 		ContextMenu menu = new ContextMenu();
-		MenuItem item1 = new MenuItem("Add to song queue");
-		MenuItem item2 = new MenuItem("Remove song");
+		MenuItem item1 = new MenuItem("Song queue");
+		MenuItem item2 = new MenuItem("Remove song from playlist");
 		SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
 		Menu parentMenu = new Menu("Add song to");
 
-		savedPlaylists.forEach((String name)->{
+		MainApp.savedPlaylists.forEach((String name)->{
 			MenuItem item = new MenuItem(name);	
 			item.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event) {
 					Object track = table.getSelectionModel().getSelectedItem();
-					Tools.addTrackToPlaylist(name,(Track) track);
+					MainApp.playlistList.forEach(tl->{
+						if(tl.getPlaylistName() == name) {
+							tl.addNew((Track) track);
+							Tools.saveAsPlaylist(tl, name);
+						}
+					});
 				}	
 			});
 
 			parentMenu.getItems().add(item);
 		});
+		item1.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				Object item = table.getSelectionModel().getSelectedItem();
+				MainApp.pc.getTracklist().addTrack((Track) item);	
+			}
+		});
+		
+		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c->{
+			parentMenu.getItems().removeIf(i->true);
+			c.getList().forEach(name->{
+				MenuItem item = new MenuItem(name);
+				item.setOnAction(new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent event) {
+						Track track = table.getSelectionModel().getSelectedItem();
+						MainApp.playlistList.forEach(tl->{
+							if(tl.getPlaylistName() == name) {
+								tl.addNew(track);
+								Tools.saveAsPlaylist(tl, name);
+							}
+						});
+					}
+				});
+				parentMenu.getItems().add(item);
+			});
+			parentMenu.getItems().addAll(separatorMenuItem,item1);
+		});
+		
 
-		SeparatorMenuItem separatorMenuItem1 = new SeparatorMenuItem();
 
 		MenuItem item3 = new MenuItem("Information");
 
-		item1.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				Object track = table.getSelectionModel().getSelectedItem();
-				//TODO fixare
-				Tools.addTrackToPlaylist(tracklist.getName(),(Track) track); 
-			}
-		});
 
 		item2.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Object item = table.getSelectionModel().getSelectedItem();
-				//TODO cercare di capire come passare il nome della playlist che sto vedendo
-				//				Tools.RemoveTrackFromPlaylist(tracklist.toString(),(Track) item);
-				Alert informationDialog = new Alert(AlertType.NONE,
-						"da sviluppare"
-						,ButtonType.OK); 
-				informationDialog.show(); 
+				Tools.RemoveTrackFromPlaylist(tracklist.getPlaylistName(), (Track) item);
 			}
 		});
 
@@ -278,7 +405,7 @@ public class Pannelli{
 		
 		parentMenu.getItems().add(item1);
 
-		menu.getItems().addAll(item2, separatorMenuItem, parentMenu, separatorMenuItem1, item3);
+		menu.getItems().addAll(item2, separatorMenuItem, parentMenu, item3);
 
 		table.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			public void handle(ContextMenuEvent event) {
@@ -287,7 +414,6 @@ public class Pannelli{
 		});
 
 	}
-
 
 }
 

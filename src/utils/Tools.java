@@ -238,8 +238,9 @@ public class Tools {
 	
 	public static void RemoveTrackFromPlaylist (String playlistName, Track track) {
 		try {
+			
 			TrackList tracklist = readPlaylist(playlistName);
-			tracklist.RemoveTrack(track);
+			tracklist.remove(track.getPosition());
 			deletePlaylist(playlistName, false);
 			saveAsPlaylist(tracklist, playlistName);
 		} catch (Exception e) {
@@ -379,7 +380,7 @@ public class Tools {
 		List<String> namesarray = new ArrayList<String>();
 		ObservableList<String> nameplaylists = FXCollections.observableList(namesarray);
 		File directoryPath = new File("playlists");
-
+		
 		//list all txt files
 
 		for (File file : directoryPath.listFiles()) {

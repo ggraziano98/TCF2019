@@ -25,13 +25,19 @@ public class PlaylistStuff {
 	 */
 	public static ScrollPane playlist() {
 
-		VBox playlistsVbox = new VBox();
-
+		VBox playlistsVbox = MainApp.playlistsVbox;;
+		VBox emptyBox = new VBox();
+		playlistsVbox.getChildren().add(emptyBox);
+		
 		ScrollPane scroll = new ScrollPane();
 		scroll.setContent(playlistsVbox);
-		Pannelli.contextMenuPlaylists(scroll);
-
 		
+		
+		VBox.setVgrow(emptyBox, Priority.ALWAYS);
+
+		scroll.setFitToHeight(true);;
+
+		Pannelli.contextMenuPlaylists(emptyBox);
 		
 		//TODO reload tracklist instead of setting visible(true)??
 		MainApp.savedPlaylists.forEach((String name)->{
@@ -46,12 +52,18 @@ public class PlaylistStuff {
 					createPlaylistView(s, playlistsVbox);
 				});
 				c.getRemoved().forEach(s->{
-					playlistsVbox.getChildren().forEach(playlist->{
-						if(((RadioButton)playlist).getText() == s) {
+					RadioButton tbremoved = new RadioButton();
+
+					for(int i=0; i<playlistsVbox.getChildren().size()-1; i++) {
+					RadioButton playlist = (RadioButton) playlistsVbox.getChildren().get(i);
+						if((playlist).getText() == s) {
 							MainApp.root.getChildren().remove(playlist.getUserData());
+							tbremoved = playlist;
 						}
-					});
-					playlistsVbox.getChildren().removeIf(playlist->((RadioButton)playlist).getText() == s);
+					}
+				
+				playlistsVbox.getChildren().remove(tbremoved);
+				MainApp.playlistList.removeIf(tl-> tl.getPlaylistName()==s);
 
 				});
 			}
@@ -92,8 +104,7 @@ public class PlaylistStuff {
 			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
 			else playlistButton.setStyle(Tools.TRANSBUTT);
 		});
-		box.getChildren().add(playlistButton);
-
+		box.getChildren().add(box.getChildren().size()-1, playlistButton);
 		dataPane.setVisible(false);
 		playlistButton.setUserData(dataPane);
 		
@@ -104,7 +115,7 @@ public class PlaylistStuff {
 
 	private static void createPlaylistView(String name, VBox playlistsVbox) {
 		TrackList tracklist = Tools.readPlaylist(name);
-
+		tracklist.setPlaylistName(name);
 		TableView<Track> table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
 		Pannelli.contextMenuPlaylist(table, tracklist);
 		VBox tableBox = new VBox(table);

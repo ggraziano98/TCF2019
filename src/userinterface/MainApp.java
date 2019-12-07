@@ -1,6 +1,7 @@
 package userinterface;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import controllers.FileController;
@@ -48,7 +49,7 @@ public class MainApp extends Application{
 	//	int width = gd.getDisplayMode().getWidth();
 	//	int height = gd.getDisplayMode().getHeight();
 
-	public static List<String> mainDirList;
+	public static List<String> mainDirList = new ArrayList<String>();
 	public static TrackList allTracksList;
 	public static PlayerController pc;
 
@@ -70,8 +71,13 @@ public class MainApp extends Application{
 	
 	public static TextField findText = new TextField();
 	public static ToggleGroup mainPanel = new ToggleGroup();
+	public static VBox playlistsVbox = new VBox();
 
+	public static List<TrackList> playlistList = new ArrayList<TrackList>();
 
+	public static int repeat = 0;
+	
+	
 	public void start(Stage primaryStage) throws Exception {
 
 		root = Root.rootPane();
@@ -79,7 +85,8 @@ public class MainApp extends Application{
 		mainDirList = Initialize.getMainDir();
 		allTracksList = FileController.getFilesFromDir(mainDirList);
 		pc = new PlayerController();
-		
+		savedPlaylists = Tools.getNamesSavedPlaylists();
+
 		Scene scene = new Scene(root, 650, 600);
 
 
@@ -96,7 +103,6 @@ public class MainApp extends Application{
 		playerPane = PlayerBuilder.playerBuilder();
 		findBox = FindStuff.findBox();
 		
-		savedPlaylists = Tools.getNamesSavedPlaylists();
 		playlistPane = PlaylistStuff.playlist();
 
 		buttonBox = RightPanels.buttonBox;
