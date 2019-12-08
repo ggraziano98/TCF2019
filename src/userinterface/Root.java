@@ -1,31 +1,50 @@
 package userinterface;
 
+import java.io.FileInputStream;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
+import javafx.geometry.Pos;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
 import utils.Initialize;
 import utils.Tools;
 
 public class Root {
 
-	public static final GridPane rootPane() {
+	public static final GridPane rootPane() throws Exception {
 
 		GridPane root = new GridPane();
 		//GRIDPANE è il pane di livello piu alto, contiene tutti gli altri
+		FileInputStream bgFile = new FileInputStream("files\\bg.png");
+		Image bgImage = new Image(bgFile, Tools.screenWidth, Tools.screenHeight, true, true);
+		
+		 root.setBackground(new Background(new BackgroundImage(bgImage, BackgroundRepeat.REPEAT,
+                 BackgroundRepeat.REPEAT,
+                 BackgroundPosition.DEFAULT,
+                 BackgroundSize.DEFAULT)));
+		 
 
 		root.setVgap(10);
-		root.setHgap(20);
-		root.setPadding(new Insets(5, 10, 5, 10));
-		root.setGridLinesVisible(true);
+		root.setHgap(10);
+		root.setPadding(new Insets(5, 5, 5, 5));
+		root.setGridLinesVisible(false);
+		root.setStyle("-fx-backgound-color: blue");
 
 		double[] widths = Tools.DWIDTHS;
 		double[] heights = Tools.DHEIGHTS;
@@ -40,20 +59,19 @@ public class Root {
 		root.getColumnConstraints().addAll(column1, column2);
 
 		RowConstraints row1 = new RowConstraints();
-		row1.setMinHeight(heights[0]);
-		row1.setMaxHeight(heights[0]);
+		row1.setMinHeight(heights[3]);
+		row1.setMaxHeight(heights[3]);
 		RowConstraints row2 = new RowConstraints();
-		row2.setMinHeight(heights[1]);
-		row2.setVgrow(Priority.ALWAYS);
+		row2.setMinHeight(heights[0]);
+		row2.setMaxHeight(heights[0]);
 		RowConstraints row3 = new RowConstraints();
-		row3.setMinHeight(heights[2]);
-		row3.setMaxHeight(heights[2]);
-
-
-		//TODO togliere e metter il menu decentemente
+		row3.setMinHeight(heights[1]);
+		row3.setMaxHeight(heights[1]);
 		RowConstraints row4 = new RowConstraints();
-		row4.setMinHeight(heights[0]);
-		row4.setMaxHeight(heights[0]);
+		row4.setMinHeight(heights[2]);
+		row4.setVgrow(Priority.ALWAYS);
+
+
 
 
 		root.getRowConstraints().addAll(row1, row2, row3,row4);
@@ -77,8 +95,12 @@ public class Root {
 
 
 	     menuBar.getMenus().addAll(menuFile, menuEdit, menuInformation);
+	     menuBar.setMaxWidth(0.9*widths[0]);
+	     HBox menuBox = new HBox();
+	     menuBox.getChildren().add(menuBar);
+	     menuBox.setAlignment(Pos.CENTER);
 
-	     root.add(menuBar, 0, 3, 1, 2);
+	     root.add(menuBox, 0, 0);
 
 		return root;
 	}

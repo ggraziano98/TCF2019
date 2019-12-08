@@ -29,6 +29,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.stage.Screen;
 import models.Track;
 import models.TrackList;
 import userinterface.MainApp;
@@ -56,11 +57,14 @@ public class Tools {
 			"    -fx-background-radius: 0;\n" +
 			"    -fx-background-color: #bebdbf;\n" +
 			"    -fx-font-weight: bold;\n}";
+	
+	public static double screenHeight = Screen.getPrimary().getBounds().getHeight();
+	public static double screenWidth = Screen.getPrimary().getBounds().getWidth();
 
 
-	public static final double[] DWIDTHS= {300, 600};
+	public static final double[] DWIDTHS= {screenWidth*0.2, screenWidth*0.4};
 
-	public static final double[] DHEIGHTS = {45, 100, 300};
+	public static final double[] DHEIGHTS = {screenHeight*0.05, screenHeight*0.045, screenHeight*0.4, screenHeight*0.045, screenHeight*0.1};
 
 
 	public static Image DIMAGE;

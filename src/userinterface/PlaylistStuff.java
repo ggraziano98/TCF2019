@@ -1,14 +1,26 @@
 package userinterface;
 
+import java.io.FileInputStream;
+
 import javafx.collections.ListChangeListener;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import models.Track;
 import models.TrackList;
 import utils.Tools;
@@ -21,11 +33,40 @@ public class PlaylistStuff {
 	 *
 	 * @return ScrollPane playlist
 	 */
-	public static ScrollPane playlist() {
+	public static VBox playlist() throws Exception{
+		
+		VBox playlistMain = new VBox();
+		
+		
+		HBox addBox = new HBox();
+		addBox.setMinWidth(0.9*Tools.DWIDTHS[0]);
+		addBox.setMaxWidth(0.9*Tools.DWIDTHS[0]);
+		Text leTuePlaylists = new Text("  Le tue playlists");
+		leTuePlaylists.setTextAlignment(TextAlignment.LEFT);
+		leTuePlaylists.setFont(Font.font("Cavolini", FontPosture.ITALIC, 15));
+		
+		
+		FileInputStream addFile = new FileInputStream("files\\player\\add.png");
+		Image addImage = new Image(addFile);
+		ImageView addView = new ImageView(addImage);
+		addView.setFitHeight(20);
+		addView.setFitWidth(20);
+		Button addButton = new Button("",addView);
+		addBox.getChildren().addAll(leTuePlaylists, addButton);
+		addButton.setTranslateX(Tools.DWIDTHS[0]/2-10);
+		addButton.setOnMouseClicked((e) -> {
+				Tools.newPlaylist();
+			});
+
+		
+		
+		
+		
 
 		VBox playlistsVbox = MainApp.playlistsVbox;
 		ScrollPane scroll = new ScrollPane();
 		scroll.setContent(playlistsVbox);
+		scroll.setStyle("-fx-background-color: trasparent");
 
 		MainApp.savedPlaylists.forEach((String name)->{
 			createPlaylistView(name, playlistsVbox);
@@ -48,7 +89,9 @@ public class PlaylistStuff {
 				});
 			}
 		});
-		return scroll;
+		
+		playlistMain.getChildren().addAll(addBox, scroll);
+		return playlistMain;
 	}
 
 
@@ -103,7 +146,7 @@ public class PlaylistStuff {
 
 		VBox tableBox = new VBox(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
-		MainApp.root.add(tableBox, 1, 1, 1, 2);
+		MainApp.root.add(tableBox, 1, 2, 1, 2);
 		playlistButton(name, playlistsVbox, MainApp.mainPanel, tableBox);
 		
 		MainApp.playlistList.add(tracklist);

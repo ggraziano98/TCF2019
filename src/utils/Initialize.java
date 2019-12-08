@@ -55,6 +55,7 @@ public class Initialize {
 		dialog.setTitle("Select Directory");
 		dialog.setHeaderText("Inserire il path alla directory selezionata");
 		dialog.setContentText("L'operazione porebbe richiedere del tempo");
+		
 
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == ButtonType.OK) {
@@ -96,6 +97,7 @@ public class Initialize {
 								e.printStackTrace();
 							}
 						});
+						
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -164,6 +166,7 @@ public class Initialize {
 
 		TrackList tl = FileController.getFilesFromDir(dirPath);
 		tl.setMetadata();
+		
 
 		try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Tools.ALLSONGSFILEPATH.toString(), true), "UTF-8"))){
 			bw.newLine();
@@ -178,6 +181,7 @@ public class Initialize {
 					e.printStackTrace();
 				}
 			});
+		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

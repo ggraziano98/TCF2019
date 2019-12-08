@@ -6,17 +6,24 @@ import java.util.List;
 
 import controllers.PlayerController;
 import javafx.application.Application;
+import javafx.application.Preloader;
+import javafx.application.Preloader.ProgressNotification;
+import javafx.application.Preloader.StateChangeNotification;
 import javafx.collections.ObservableList;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import models.TrackList;
 import utils.Initialize;
@@ -52,7 +59,7 @@ public class MainApp extends Application{
 	public static GridPane playerPane;
 	public static HBox findBox;
 
-	public static ScrollPane playlistPane;
+	public static VBox playlistPane;
 	public static ObservableList<String> savedPlaylists;
 
 	public static HBox buttonBox;
@@ -72,7 +79,15 @@ public class MainApp extends Application{
 	public static int repeat = 0;
 
 
+	
+	
+	
+	
+	
 	public void start(Stage primaryStage) throws Exception {
+		
+		
+	
 
 		root = Root.rootPane();
 
@@ -107,18 +122,18 @@ public class MainApp extends Application{
 		songsPane = RightPanels.songsPane;
 
 
-		root.add(songQueueView, 1, 1, 1, 2);
+		root.add(songQueueView, 1, 2, 1, 2);
 
 
 		//aggiungo i pane al gridpane
-		root.add(playerPane, 0, 2);
-		root.add(findBox, 0, 0);
-		root.add(buttonBox, 1, 0);
-		root.add(playlistPane, 0, 1);
+		root.add(playerPane, 0, 4, 2, 1);
+		root.add(findBox, 0, 1);
+		root.add(buttonBox, 1, 1);
+		root.add(playlistPane, 0, 3);
 
-		root.add(albumsPane, 1, 1, 1, 2);
-		root.add(artistsPane, 1, 1, 1, 2);
-		root.add(songsPane, 1, 1, 1, 2);
+		root.add(albumsPane, 1, 2, 1, 2);
+		root.add(artistsPane, 1, 2, 1, 2);
+		root.add(songsPane, 1, 2, 1, 2);
 
 		//Set buttons to switch between songs, album and artist panes
 		mainPanel.selectedToggleProperty().addListener((obs, oldv, newv) ->{

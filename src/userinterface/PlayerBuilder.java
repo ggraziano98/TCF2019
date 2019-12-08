@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -23,6 +24,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 import utils.Tools;
 
@@ -38,6 +42,7 @@ public class PlayerBuilder {
 	 */
 	public static GridPane playerBuilder() throws Exception {
 
+	
 		PlayerController pc = MainApp.pc;
 		TextField findText = MainApp.findText;
 
@@ -45,38 +50,43 @@ public class PlayerBuilder {
 		GridPane playerV = new GridPane();
 
 
-		double columnOneWidth = Tools.DWIDTHS[0];
 
+		ColumnConstraints colA = new ColumnConstraints();
+		colA.setPercentWidth(30);
+		ColumnConstraints colB = new ColumnConstraints();
+		colB.setPercentWidth(50);
+		ColumnConstraints colC = new ColumnConstraints();
+		colC.setPercentWidth(20);
 
+		playerV.getColumnConstraints().addAll(colA, colB, colC);
 
-		RowConstraints row60 = new RowConstraints(35, 35, 35);
-		row60.setValignment(VPos.CENTER);
-		RowConstraints row120 = new RowConstraints(180, 180, 180);
-		row60.setValignment(VPos.CENTER);
-		RowConstraints row50 = new RowConstraints(50, 50, 50);
-		row50.setValignment(VPos.CENTER);
-		playerV.getRowConstraints().addAll(row60, row120, row60, row50);
+		double col = Tools.DHEIGHTS[4];
 
-		double col = Tools.DWIDTHS[0];
-
-		ColumnConstraints colConstraint = new ColumnConstraints(col, col, col);
-		colConstraint.setHalignment(HPos.CENTER);
-		playerV.getColumnConstraints().add(colConstraint);
+		RowConstraints rowConstraint = new RowConstraints(col, col, col);
+		rowConstraint.setValignment(VPos.CENTER);
+		playerV.getRowConstraints().add(rowConstraint);
 
 		// TODO togliere
 		playerV.setGridLinesVisible(true);
 
 		HBox playerButtons = controlStuff(pc, playerV, findText);
-		HBox sliderBox = songTime(pc, columnOneWidth);
-		ImageView songView = songImage(pc);
-		Label songName = songTitle(pc);
+		HBox sliderBox = songTime(pc);
+		sliderBox.setAlignment(Pos.CENTER);
+		HBox songInfo = songInfo(pc);
+		VBox centralBox = new VBox();
+		centralBox.getChildren().addAll(playerButtons, sliderBox);
+		HBox volumeBox = volumeBox(pc, findText);
 
-		GridPane.setHalignment(songName, HPos.LEFT);
+		
 		playerButtons.setAlignment(Pos.CENTER);
-		playerV.add(songName, 0, 0);
-		playerV.add(songView, 0, 1);
-		playerV.add(sliderBox, 0, 2);
-		playerV.add(playerButtons, 0, 3);
+		//playerV.add(songName, 0, 0);
+		playerV.add(songInfo, 0, 0);
+		playerV.add(centralBox, 1, 0);
+		playerV.add(volumeBox, 2, 0);
+		
+		playerV.setGridLinesVisible(false);
+		playerV.setStyle("-fx-background-color: #F4D03F");
+
 
 		return playerV;
 
@@ -85,57 +95,57 @@ public class PlayerBuilder {
 
 
 	public static HBox controlStuff(PlayerController pc, GridPane playerV, TextField findText) throws Exception{
-		HBox playerButtons = new HBox();
+		HBox playerButtons = new HBox(5);
 
 		FileInputStream playFile = new FileInputStream("files\\Player\\play.png");
 		Image playImage = new Image(playFile);
 		playFile.close();
 		ImageView playView = new ImageView(playImage);
-		playView.setFitHeight(25);
-		playView.setFitWidth(25);
+		playView.setFitHeight(30);
+		playView.setFitWidth(30);
 
 		FileInputStream pauseFile = new FileInputStream("files\\Player\\pause.png");
 		Image pauseImage = new Image(pauseFile);
 		pauseFile.close();
 		ImageView pauseView = new ImageView(pauseImage);
-		pauseView.setFitHeight(25);
-		pauseView.setFitWidth(25);
+		pauseView.setFitHeight(30);
+		pauseView.setFitWidth(30);
 
 		FileInputStream prevFile = new FileInputStream("files\\Player\\ps.png");
 		Image prevImage = new Image(prevFile);
 		prevFile.close();
 		ImageView prevView = new ImageView(prevImage);
-		prevView.setFitHeight(25);
-		prevView.setFitWidth(25);
+		prevView.setFitHeight(18);
+		prevView.setFitWidth(18);
 		ImageView prevViewTrasp = new ImageView(prevImage);
 		prevViewTrasp.setStyle("-fx-opacity: 0.7");
-		prevViewTrasp.setFitHeight(22);
-		prevViewTrasp.setFitWidth(22);
+		prevViewTrasp.setFitHeight(18);
+		prevViewTrasp.setFitWidth(18);
 
 		FileInputStream nextFile = new FileInputStream("files\\Player\\ns.png");
 		Image nextImage = new Image(nextFile);
 		nextFile.close();
 		ImageView nextView = new ImageView(nextImage);
-		nextView.setFitHeight(25);
-		nextView.setFitWidth(25);
+		nextView.setFitHeight(18);
+		nextView.setFitWidth(18);
 		ImageView nextViewTrasp = new ImageView(nextImage);
 		nextViewTrasp.setStyle("-fx-opacity: 0.7");
-		nextViewTrasp.setFitHeight(22);
-		nextViewTrasp.setFitWidth(22);
+		nextViewTrasp.setFitHeight(18);
+		nextViewTrasp.setFitWidth(18);
 
 		FileInputStream shuffleFile = new FileInputStream("files\\Player\\shuffle.png");
 		Image shuffleImage = new Image(shuffleFile);
 		shuffleFile.close();
 		ImageView shuffleView = new ImageView(shuffleImage);
-		shuffleView.setFitHeight(25);
-		shuffleView.setFitWidth(25);
+		shuffleView.setFitHeight(18);
+		shuffleView.setFitWidth(18);
 
 		FileInputStream repeatFile = new FileInputStream("files\\Player\\repeat.png");
 		Image repeatImage = new Image(repeatFile);
 		repeatFile.close();
 		ImageView repeatView = new ImageView(repeatImage);
-		repeatView.setFitHeight(25);
-		repeatView.setFitWidth(25);
+		repeatView.setFitHeight(18);
+		repeatView.setFitWidth(18);
 
 		Button playButton = new Button("",playView);
 		playButton.setStyle("-fx-background-color: transparent");
@@ -177,48 +187,9 @@ public class PlayerBuilder {
 		nextButton.setOnMouseClicked((e) -> nextSong(pc));
 
 
-		//PLAYER: volume, slider, titolo
-		FileInputStream volumeFile = new FileInputStream("files\\Player\\volume.png");
-		Image volumeImage = new Image(volumeFile);
-		volumeFile.close();
-		ImageView volumeView = new ImageView(volumeImage);
-		volumeView.setFitHeight(25);
-		volumeView.setFitWidth(25);
+		
 
-		FileInputStream muteFile = new FileInputStream("files\\Player\\mute.png");
-		Image muteImage = new Image(muteFile);
-		muteFile.close();
-		ImageView muteView = new ImageView(muteImage);
-		muteView.setFitHeight(25);
-		muteView.setFitWidth(25);
-
-		AtomicBoolean muted = new AtomicBoolean(false);
-		Button volumeButton = new Button("",volumeView);
-		volumeButton.setOnMouseClicked((e) -> {
-			if(muted.get()) {
-				volumeButton.setGraphic(volumeView);
-			}
-			else {
-				volumeButton.setGraphic(muteView);
-			}
-			muted.set(!muted.get());
-			volumeMute(muted, pc);
-
-		});
-
-		Slider volumeSlider = new Slider();
-		volumeSlider.setMax(1);
-		volumeSlider.setMin(0);
-		volumeSlider.setValue(1);
-		volumeSlider.setMaxWidth(80);
-		volumeSlider.valueProperty().bindBidirectional(pc.volumeValueProperty());
-
-		playerV.setOnScroll((ev)->{
-			double volumeAmount = ev.getDeltaY();
-			pc.setVolumeValue(pc.getVolumeValue() + volumeAmount/300);
-		});
-
-		playerButtons.getChildren().addAll(prevButton, playButton, nextButton, volumeButton, volumeSlider, shuffleButton, repeatButton );
+		playerButtons.getChildren().addAll(shuffleButton, prevButton, playButton, nextButton, repeatButton );
 
 		// gestisco i keypresses
 		GridPane root = MainApp.root;
@@ -232,12 +203,7 @@ public class PlayerBuilder {
 					playPause(play, pc);
 					setPlayingImage(playButton, play, playView, pauseView);
 				}
-				if ( k.getCode() == KeyCode.M) {
-					if(muted.get()) volumeButton.setGraphic(volumeView);
-					else volumeButton.setGraphic(muteView);
-					muted.set(!muted.get());
-					volumeMute(muted, pc);
-				}
+				
 				if ( k.getCode() == KeyCode.L) nextSong(pc);
 				if ( k.getCode() == KeyCode.J) previousSong(pc);
 				if ( k.getCode() == KeyCode.O) pc.seek(Duration.seconds(pc.getCurrentTime() + 10));
@@ -248,6 +214,97 @@ public class PlayerBuilder {
 
 		return playerButtons;
 
+	}
+	
+	
+	public static HBox volumeBox(PlayerController pc, TextField findText) throws Exception{
+		
+		HBox volBox = new HBox();
+		
+				FileInputStream volumeHighFile = new FileInputStream("files\\Player\\volumeHigh.png");
+				Image volumeHighImage = new Image(volumeHighFile);
+				volumeHighFile.close();
+				ImageView volumeHighView = new ImageView(volumeHighImage);
+				volumeHighView.setFitHeight(20);
+				volumeHighView.setFitWidth(20);
+				
+				FileInputStream volumeLowFile = new FileInputStream("files\\Player\\volumeLow.png");
+				Image volumeLowImage = new Image(volumeLowFile);
+				volumeLowFile.close();
+				ImageView volumeLowView = new ImageView(volumeLowImage);
+				volumeLowView.setFitHeight(20);
+				volumeLowView.setFitWidth(20);
+
+				FileInputStream muteFile = new FileInputStream("files\\Player\\mute.png");
+				Image muteImage = new Image(muteFile);
+				muteFile.close();
+				ImageView muteView = new ImageView(muteImage);
+				muteView.setFitHeight(20);
+				muteView.setFitWidth(20);
+				
+
+				
+
+				Slider volumeSlider = new Slider();
+				volumeSlider.setMax(1);
+				volumeSlider.setMin(0);
+				volumeSlider.setValue(0.6);
+				volumeSlider.setMaxWidth(80);
+				volumeSlider.valueProperty().bindBidirectional(pc.volumeValueProperty());
+
+				volBox.setOnScroll((ev)->{
+					double volumeAmount = ev.getDeltaY();
+					pc.setVolumeValue(pc.getVolumeValue() + volumeAmount/300);
+				});
+				
+				
+				AtomicBoolean muted = new AtomicBoolean(false);
+				Button volumeButton = new Button("",volumeHighView);
+				volumeButton.setStyle("-fx-background-color: transparent");
+				volumeButton.setOnMouseClicked((e) -> {
+					if(muted.get()) {
+						if(volumeSlider.getValue()>0.5) volumeButton.setGraphic(volumeHighView);
+						else if(0<volumeSlider.getValue() || volumeSlider.getValue()<0.5) volumeButton.setGraphic(volumeLowView);
+					}
+					else {
+						volumeButton.setGraphic(muteView);
+					}
+					muted.set(!muted.get());
+					volumeMute(muted, pc);
+
+				});
+				
+				//keypress per il muto
+				GridPane root = MainApp.root;
+				root.addEventFilter(KeyEvent.KEY_RELEASED, k -> {
+					if(k.getTarget() != findText) {
+						if ( k.getCode() == KeyCode.M) {
+							if(muted.get()) {
+								if(volumeSlider.getValue()>0.5) volumeButton.setGraphic(volumeHighView);
+								else if(0<volumeSlider.getValue() || volumeSlider.getValue()<0.5) volumeButton.setGraphic(volumeLowView);
+							}
+							else {
+								volumeButton.setGraphic(muteView);
+							}
+							muted.set(!muted.get());
+							volumeMute(muted, pc);
+						}
+				}
+					});
+				
+				
+				volumeSlider.valueProperty().addListener((obs, oldv, newv)->{
+					if(volumeSlider.getValue()>0.5) volumeButton.setGraphic(volumeHighView);
+					else if(0<volumeSlider.getValue() || volumeSlider.getValue()<0.5) volumeButton.setGraphic(volumeLowView);
+					else if(volumeSlider.getValue() == 0) volumeButton.setGraphic(muteView);
+				}
+			);
+				
+				
+				volBox.getChildren().addAll(volumeButton, volumeSlider);
+				volBox.setAlignment(Pos.CENTER);
+				
+				return volBox;
 	}
 
 	public static void playPause(AtomicBoolean play, PlayerController pc) {
@@ -274,29 +331,51 @@ public class PlayerBuilder {
 		else playButton.setGraphic(pauseView);
 	}
 
-	public static Label songTitle (PlayerController pc) {
+	public static HBox songInfo (PlayerController pc) throws Exception {
+		
+		HBox songInfo = new HBox(10);
+		
 		//TODO songtext che gira (o almeno che ci sta dentro
 		Label songName = new Label();
 		songName.setPadding(new Insets(0, 3, 0, 3));
-		StringProperty text = new SimpleStringProperty("");
+		StringProperty songText = new SimpleStringProperty("");
 		if (pc.getTracklist().getSize()>0) {
-			text.set(pc.getCurrentTrack().getTitle());
+			songText.set(pc.getCurrentTrack().getTitle());
 		}
-		else text.set("Seleziona una canzone");
-		songName.textProperty().bind(text);
+		else songText.set("Seleziona una canzone");
+		songName.textProperty().bind(songText);
 		pc.currentIntProperty().addListener((obs, oldv, newv)->{
 			if (pc.getTracklist().getSize()>0) {
-				text.set(pc.getCurrentTrack().getTitle());
+				songText.set(pc.getCurrentTrack().getTitle());
 			}
-			else text.set("Seleziona una canzone");
+			else songText.set("Seleziona una canzone");
 		});
-		return songName;
-	}
-
-	public static ImageView songImage(PlayerController pc) throws Exception {
+		songName.setFont(Font.font("", FontWeight.BOLD, 12));
+		songName.setAlignment(Pos.CENTER_LEFT);
+		
+		
+		Label songArtist= new Label();
+		songArtist.setPadding(new Insets(0, 3, 0, 3));
+		StringProperty artistText = new SimpleStringProperty("");
+		if (pc.getTracklist().getSize()>0) {
+			artistText.set(pc.getCurrentTrack().getArtist());
+		}
+		else artistText.set("");
+		songArtist.textProperty().bind(artistText);
+		pc.currentIntProperty().addListener((obs, oldv, newv)->{
+			if (pc.getTracklist().getSize()>0) {
+				artistText.set(pc.getCurrentTrack().getArtist());
+			}
+			else artistText.set("Seleziona una canzone");
+		});
+		songArtist.setAlignment(Pos.CENTER_LEFT);
+		songArtist.setFont(Font.font(12));
+		
+		
+		//richiamo l'immagine della canzone
 		ImageView songView = new ImageView(Tools.DIMAGE);
-		songView.setFitWidth(170);
-		songView.setFitHeight(170);
+		songView.setFitWidth(0.9*Tools.DHEIGHTS[4]);
+		songView.setFitHeight(0.9*Tools.DHEIGHTS[4]);
 
 		pc.currentIntProperty().addListener((obs, oldv, newv)->{
 			if (pc.getTracklist().getSize()>0) {
@@ -308,10 +387,22 @@ public class PlayerBuilder {
 				}
 			}
 			else songView.setImage(Tools.DIMAGE);});
-		return songView;
+		
+		VBox songStrings = new VBox();
+		songStrings.setAlignment(Pos.CENTER);
+		songStrings.getChildren().addAll(songName, songArtist);
+		
+		Label space = new Label(" ");
+		songInfo.getChildren().addAll(space, songView, songStrings);
+		songInfo.setAlignment(Pos.CENTER_LEFT);
+		
+		return songInfo;
 	}
 
-	public static HBox songTime(PlayerController pc, Double columnOneWidht) {
+	
+
+
+	public static HBox songTime(PlayerController pc) {
 		HBox sliderBox = new HBox();
 		Slider timeSlider = new Slider();
 		timeSlider.setMax(100);
@@ -338,7 +429,9 @@ public class PlayerBuilder {
 
 
 		sliderBox.getChildren().addAll(timeSlider, timeLabel);
-		sliderBox.setMaxWidth(0.9*columnOneWidht);
+		sliderBox.setMinWidth(Tools.DWIDTHS[0]);
+		//sliderBox.setMaxWidth(Tools.DWIDTHS[0]);
+		sliderBox.setPrefWidth(0.3*MainApp.root.getWidth());
 		HBox.setHgrow(timeSlider, Priority.ALWAYS);
 		HBox.setHgrow(timeLabel, Priority.ALWAYS);
 		sliderBox.setAlignment(Pos.CENTER);
