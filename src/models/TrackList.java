@@ -159,7 +159,7 @@ public class TrackList extends SimpleListProperty<Track> {
 		DoubleProperty totalduration = new SimpleDoubleProperty(0);
 		for (Track track : this) {
 			track.durationProperty().addListener((obs, oldv, newv) ->{
-				totalduration.set(totalduration.get() + track.getDuration().toSeconds());
+				totalduration.set(totalduration.get() + track.getDuration().toMinutes());
 			});
 			track.setMetadata();
 		}

@@ -88,7 +88,7 @@ public class RightPanels {
 		artistsPane.setVisible(false);
 		MainApp.songQueueView.setVisible(false);
 		
-		Pannelli.contextMenuSongs(table);
+		ContextMenus.contextMenuSongs(table);
 	}
 
 

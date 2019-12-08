@@ -37,7 +37,7 @@ public class PlaylistStuff {
 
 		scroll.setFitToHeight(true);;
 
-		Pannelli.contextMenuPlaylists(emptyBox);
+		ContextMenus.contextMenuPlaylists(emptyBox);
 		
 		//TODO reload tracklist instead of setting visible(true)??
 		MainApp.savedPlaylists.forEach((String name)->{
@@ -108,7 +108,7 @@ public class PlaylistStuff {
 		dataPane.setVisible(false);
 		playlistButton.setUserData(dataPane);
 		
-		Pannelli.contextMenuPlaylists(playlistButton); //Add context menu
+		ContextMenus.contextMenuPlaylists(playlistButton); //Add context menu
 
 
 	}
@@ -117,7 +117,7 @@ public class PlaylistStuff {
 		TrackList tracklist = Tools.readPlaylist(name);
 		tracklist.setPlaylistName(name);
 		TableView<Track> table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
-		Pannelli.contextMenuPlaylist(table, tracklist);
+		ContextMenus.contextMenuTrackPlaylist(table, tracklist);
 		VBox tableBox = new VBox(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 		MainApp.root.add(tableBox, 1, 1, 1, 2);
