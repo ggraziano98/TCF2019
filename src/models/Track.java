@@ -149,14 +149,15 @@ public class Track{
 			}
 			else {
 				this.setAlbum(value.toString());
+				System.out.println(value.toString());
 			}
 		} else if (key.equals("xmpDM:artist") || key.equals("dc:creator") || key.equals("contributing artists")) {
 			if((value.toString() == "" || value.toString().replace("\\s+","").isEmpty())&& this.getArtist() == "") this.setArtist(Tools.DARTIST);
-			else this.setArtist(value.toString());
+			else {this.setArtist(value.toString()); System.out.println(value.toString());}
 
 		} if (key.equals("title")) {
 			if(value.toString() == "" || value.toString().replace("\\s+","").isEmpty()) this.setTitle(getPath().getFileName().toString());
-			else this.setTitle(value.toString());
+			else {this.setTitle(value.toString());System.out.println(value.toString());}
 
 		} if (key.equals("year")) {
 			if(value.toString() == ""|| value.toString().replace("\\s+","").isEmpty()) this.setYear(Tools.DYEAR);

@@ -39,17 +39,19 @@ public class MainApp extends Application{
 	//TODO loading screen DAVIDE
 	//TODO canc non funziona al momento nel contextmenu DAVIDE
 	//TODO repeat graphics DAVIDE
-	
+
 	//TODO nullpointerexceptions nel player quando non ci sono canzoni selezionate
 	//TODO rimuovere e aggiungere decentemente le canzoni alla playlist
-	//TODO contextmenu trackview quando non si seleziona una canzone 
+	//TODO contextmenu trackview quando non si seleziona una canzone
 	//TODO per gli errori usare Tools.stackTrace
 	//TODO duration playlist
 	//TODO adding playlist to playlist doesnt uodate trackview
-	//TODO contextmenu non si chiudono né in playlistpane né in trackview
+	//TODO contextmenu non si chiudono nï¿½ in playlistpane nï¿½ in trackview
 	//TODO aggiungere canzoni a songqueue decentemente
-	//TODO fix repeat
+	//TODO repeat Image
+	//TODO sort playlists
 
+	//TODO handle contextmenu on emptys (playlist scrollpane, trackviews, album and artist panes
 
 
 	public static List<String> mainDirList = new ArrayList<String>();
@@ -78,9 +80,11 @@ public class MainApp extends Application{
 
 	public static List<TrackList> playlistList = new ArrayList<TrackList>();
 
-	public static int repeat = 0;	
+	public static int repeat = 0;
 
 	public void start(Stage primaryStage) throws Exception {
+
+		Initialize.checkMainFiles();
 
 
 

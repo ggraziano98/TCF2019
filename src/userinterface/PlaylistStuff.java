@@ -1,6 +1,7 @@
 package userinterface;
 
 import java.io.FileInputStream;
+import java.util.List;
 
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
@@ -69,6 +70,11 @@ public class PlaylistStuff {
 		ScrollPane scroll = new ScrollPane();
 		scroll.setContent(playlistsVbox);
 
+		VBox.setVgrow(emptyBox, Priority.ALWAYS);
+
+		scroll.setFitToHeight(true);;
+
+
 		scroll.setFitToHeight(true);
 
 
@@ -100,9 +106,10 @@ public class PlaylistStuff {
 				});
 			}
 		});
-		
+
 		playlistMain.getChildren().addAll(addBox, scroll);
-		
+
+		//TODO al momento funziona male, quando davide mette a posto la grafica è da fixare
 		ContextMenus.contextMenuPlaylists(playlistMain);
 
 		return playlistMain;
