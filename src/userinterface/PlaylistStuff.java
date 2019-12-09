@@ -14,6 +14,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -64,20 +65,13 @@ public class PlaylistStuff {
 
 
 		VBox playlistsVbox = MainApp.playlistsVbox;;
-		VBox emptyBox = new VBox();
-		playlistsVbox.getChildren().add(emptyBox);
 
 		ScrollPane scroll = new ScrollPane();
 		scroll.setContent(playlistsVbox);
 
-
-		VBox.setVgrow(emptyBox, Priority.ALWAYS);
-
 		scroll.setFitToHeight(true);
 
-		ContextMenus.contextMenuPlaylists(emptyBox);
 
-		//TODO reload tracklist instead of setting visible(true)??
 		MainApp.savedPlaylists.forEach((String name)->{
 			createPlaylistView(name, playlistsVbox);
 
@@ -92,7 +86,7 @@ public class PlaylistStuff {
 				c.getRemoved().forEach(s->{
 					RadioButton tbremoved = new RadioButton();
 
-					for(int i=0; i<playlistsVbox.getChildren().size()-1; i++) {
+					for(int i=0; i<playlistsVbox.getChildren().size(); i++) {
 					RadioButton playlist = (RadioButton) playlistsVbox.getChildren().get(i);
 						if((playlist).getText() == s) {
 							MainApp.root.getChildren().remove(playlist.getUserData());
@@ -106,9 +100,12 @@ public class PlaylistStuff {
 				});
 			}
 		});
+		
+		playlistMain.getChildren().addAll(addBox, scroll);
+		
+		ContextMenus.contextMenuPlaylists(playlistMain);
 
-
-		return scroll;
+		return playlistMain;
 	}
 
 
@@ -143,7 +140,7 @@ public class PlaylistStuff {
 			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
 			else playlistButton.setStyle(Tools.TRANSBUTT);
 		});
-		box.getChildren().add(box.getChildren().size()-1, playlistButton);
+		box.getChildren().add(playlistButton);
 		dataPane.setVisible(false);
 		playlistButton.setUserData(dataPane);
 

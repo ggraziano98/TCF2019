@@ -10,9 +10,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
@@ -54,7 +52,7 @@ public class Root {
 		column1.setMinWidth(widths[0]);
 		column1.setMaxWidth(widths[0]);
 		ColumnConstraints column2 = new ColumnConstraints();
-		column2.setMinWidth(600);
+		column2.setMinWidth(widths[1]);
 		column2.setHgrow(Priority.ALWAYS);
 		root.getColumnConstraints().addAll(column1, column2);
 

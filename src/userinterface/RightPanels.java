@@ -35,9 +35,9 @@ public class RightPanels {
 		songsButton.getStyleClass().add("toggle-button");
 		
 		TableView<Track> table = TrackView.tableFromTracklist(MainApp.allSongs, MainApp.pc);
-		
+				
 		songsPane.getChildren().add(table);
-		Pannelli.contextMenuTrack(table, MainApp.allSongs);
+		ContextMenus.contextMenuTrackPlaylist(table, MainApp.allSongs);
 		VBox.setVgrow(table, Priority.ALWAYS);
 
 		Label songs_artistsLabel = new Label("  ");

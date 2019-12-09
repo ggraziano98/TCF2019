@@ -115,8 +115,8 @@ public class ContextMenus{
 			public void handle(ActionEvent event) {
 				TrackList playlist = Tools.readPlaylist(button.getText());
 				Alert informationDialog = new Alert(AlertType.NONE,
-						"Duration of the playlist: " + playlist.totalDuration()
-						,ButtonType.OK); 
+						"Duration of the playlist: " + playlist.totalDuration(),
+						ButtonType.OK); 
 				informationDialog.show(); 
 			}
 		});
@@ -137,26 +137,29 @@ public class ContextMenus{
 			playlist.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event) {
 					TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
-					for (Track track : tracklistToAdd) {
-						Tools.addTrackToPlaylist(playlistName, track);
-					}
+					TrackList addTo = Tools.readPlaylist(playlistName);
+					
+					addTo.addAll(tracklistToAdd);
+					Tools.saveAsPlaylist(addTo, playlistName);
 				}	
 			});
 			addSongTo.getItems().add(playlist);
 		});
-
+		
+		
 		//controllo che non siano state create nuove playlist, se sono state create le aggiungo al menu
 		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c->{
 			addSongTo.getItems().removeIf(i->true);
 			c.getList().forEach(playlistName->{
-				MenuItem playlist = new MenuItem(playlistName);
+				MenuItem playlist = new MenuItem(playlistName);	
 				playlist.setOnAction(new EventHandler<ActionEvent>() {
 					public void handle(ActionEvent event) {
 						TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
-						for (Track track : tracklistToAdd) {
-							Tools.addTrackToPlaylist(playlistName, track);
-						}					
-					}
+						TrackList addTo = Tools.readPlaylist(playlistName);
+						
+						addTo.addAll(tracklistToAdd);
+						Tools.saveAsPlaylist(addTo, playlistName);
+					}	
 				});
 				addSongTo.getItems().add(playlist);
 			});
@@ -306,7 +309,7 @@ public class ContextMenus{
 		remove.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Object item = table.getSelectionModel().getSelectedItem();
-				MainApp.pc.getTracklist().RemoveTrack((Track) item);
+				MainApp.pc.getTracklist().removeTrack((Track) item);
 			}
 		});
 
@@ -361,7 +364,8 @@ public class ContextMenus{
 		remove.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Track track = table.getSelectionModel().getSelectedItem();
-				Tools.RemoveTrackFromPlaylist(tracklist.getPlaylistName(), track);
+				tracklist.removeTrack(track);
+				Tools.saveAsPlaylist(tracklist, tracklist.getPlaylistName());
 			}
 		});
 

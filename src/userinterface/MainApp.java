@@ -6,24 +6,16 @@ import java.util.List;
 
 import controllers.PlayerController;
 import javafx.application.Application;
-import javafx.application.Preloader;
-import javafx.application.Preloader.ProgressNotification;
-import javafx.application.Preloader.StateChangeNotification;
 import javafx.collections.ObservableList;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import models.TrackList;
 import utils.Initialize;
@@ -47,7 +39,17 @@ public class MainApp extends Application{
 	//TODO loading screen DAVIDE
 	//TODO canc non funziona al momento nel contextmenu DAVIDE
 	//TODO repeat graphics DAVIDE
+	
+	//TODO nullpointerexceptions nel player quando non ci sono canzoni selezionate
+	//TODO rimuovere e aggiungere decentemente le canzoni alla playlist
+	//TODO contextmenu trackview quando non si seleziona una canzone 
 	//TODO per gli errori usare Tools.stackTrace
+	//TODO duration playlist
+	//TODO adding playlist to playlist doesnt uodate trackview
+	//TODO contextmenu non si chiudono né in playlistpane né in trackview
+	//TODO aggiungere canzoni a songqueue decentemente
+	//TODO fix repeat
+
 
 
 	public static List<String> mainDirList = new ArrayList<String>();
@@ -76,10 +78,7 @@ public class MainApp extends Application{
 
 	public static List<TrackList> playlistList = new ArrayList<TrackList>();
 
-	public static int repeat = 0;
-
-	public static List<TrackList> playlistList = new ArrayList<TrackList>();
-	
+	public static int repeat = 0;	
 
 	public void start(Stage primaryStage) throws Exception {
 
@@ -149,10 +148,6 @@ public class MainApp extends Application{
 		primaryStage.setMinWidth(950);
 		primaryStage.setMinHeight(650);
 		primaryStage.show();
-
-
-
-
 
 	}
 

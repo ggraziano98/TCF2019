@@ -3,7 +3,6 @@ package userinterface;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import controllers.PlayerController;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
@@ -65,7 +64,7 @@ public class FindStuff {
 		MainApp.findView = new VBox(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 
-		root.add(MainApp.findView, 1, 1, 1, 2); 
+		root.add(MainApp.findView, 1, 2, 1, 2); 
 	}
 
 

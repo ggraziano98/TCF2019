@@ -92,7 +92,7 @@ public class PlayerController {
 		int newPos = this.getCurrentInt() + 1;
 		if (MainApp.repeat == 2) newPos = this.getCurrentInt(); //repeat current
 
-		
+
 		if(this.getCurrentInt() == this.getTracklist().getSize() - 1) {
 			if(MainApp.repeat == 1) newPos = 0; //repeat all		
 			else {
@@ -100,7 +100,7 @@ public class PlayerController {
 				newPos = 0;
 			}
 		}
-		
+
 		this.setCurrentTrack(this.getTracklist().get(newPos));
 		if(this.getPlaying()) {
 			this.play();
@@ -243,8 +243,10 @@ public class PlayerController {
 
 
 	private void setVolume() {
-		this.player.setVolume(this.getVolumeValue());
-		this.player.setMute(this.getMuted());
+		if(this.player != null) {
+			this.player.setVolume(this.getVolumeValue());
+			this.player.setMute(this.getMuted());
+		}
 	}
 
 
