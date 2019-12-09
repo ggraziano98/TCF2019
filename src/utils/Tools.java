@@ -57,7 +57,7 @@ public class Tools {
 			"    -fx-background-radius: 0;\n" +
 			"    -fx-background-color: #bebdbf;\n" +
 			"    -fx-font-weight: bold;\n}";
-	
+
 	public static double screenHeight = Screen.getPrimary().getBounds().getHeight();
 	public static double screenWidth = Screen.getPrimary().getBounds().getWidth();
 
@@ -203,7 +203,7 @@ public class Tools {
 				} else
 					e.printStackTrace();
 			}
-		} 
+		}
 
 	}
 
@@ -267,8 +267,10 @@ public class Tools {
 
 	public static void RemoveTrackFromPlaylist (String playlistName, Track track) {
 		try {
+
 			TrackList tracklist = readPlaylist(playlistName);
-			tracklist.RemoveTrack(track);
+			tracklist.remove(track.getPosition());
+			deletePlaylist(playlistName, false);
 			saveAsPlaylist(tracklist, playlistName);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -313,6 +315,7 @@ public class Tools {
 						yes.setTitle("Eliminazione Playlist");
 						yes.setContentText("Playlist eliminata correttament");
 						yes.showAndWait();
+						MainApp.savedPlaylists.remove(playlist);
 					}
 					else {
 						Alert alert = new Alert(AlertType.ERROR);
@@ -325,6 +328,8 @@ public class Tools {
 
 			} else {
 				if(Files.deleteIfExists(filePath)) {
+					//TODO non so se qua ci vada
+					MainApp.savedPlaylists.remove(playlist);
 				}
 				else System.out.println("Non esiste la playlist selezionata");
 			}
@@ -400,7 +405,7 @@ public class Tools {
 		}	// uso un loop for anziché foreach per avere l'indice delle canzoni
 	}
 
-	
+
 	public static int getPosition(Track trackelement, TrackList tracklist) {
 		for (int i = 0; i < tracklist.getSize(); i++) {
 			if (trackelement==tracklist.get(i)) {
@@ -411,6 +416,29 @@ public class Tools {
 	}
 
 	public static ObservableList<String> getNamesSavedPlaylists(){
+		List<String> namesarray = new ArrayList<String>();
+		ObservableList<String> nameplaylists = FXCollections.observableList(namesarray);
+		File directoryPath = new File("playlists");
+
+		//list all txt files
+
+		for (File file : directoryPath.listFiles()) {
+			if (file.getName().endsWith(".txt")) {
+				nameplaylists.add(file.getName().replace(".txt", ""));
+			} else {
+				System.out.println(file.getName() + " is not a readable playlist");
+			}
+
+		}
+
+		return nameplaylists;
+
+
+	}
+
+
+	//TODO da aggiustare
+	public static ObservableList<String> getNamesSavedPlaylistsOrderedName(){
 		List<String> namesarray = new ArrayList<String>();
 		ObservableList<String> nameplaylists = FXCollections.observableList(namesarray);
 		File directoryPath = new File("playlists");

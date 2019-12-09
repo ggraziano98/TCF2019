@@ -34,18 +34,18 @@ public class PlaylistStuff {
 	 * @return ScrollPane playlist
 	 */
 	public static VBox playlist() throws Exception{
-		
+
 		VBox playlistMain = new VBox();
-		
-		
+
+
 		HBox addBox = new HBox();
 		addBox.setMinWidth(0.9*Tools.DWIDTHS[0]);
 		addBox.setMaxWidth(0.9*Tools.DWIDTHS[0]);
 		Text leTuePlaylists = new Text("  Le tue playlists");
 		leTuePlaylists.setTextAlignment(TextAlignment.LEFT);
 		leTuePlaylists.setFont(Font.font("Cavolini", FontPosture.ITALIC, 15));
-		
-		
+
+
 		FileInputStream addFile = new FileInputStream("files\\player\\add.png");
 		Image addImage = new Image(addFile);
 		ImageView addView = new ImageView(addImage);
@@ -58,20 +58,31 @@ public class PlaylistStuff {
 				Tools.newPlaylist();
 			});
 
-		
-		
-		
-		
 
-		VBox playlistsVbox = MainApp.playlistsVbox;
+
+
+
+
+		VBox playlistsVbox = MainApp.playlistsVbox;;
+		VBox emptyBox = new VBox();
+		playlistsVbox.getChildren().add(emptyBox);
+
 		ScrollPane scroll = new ScrollPane();
 		scroll.setContent(playlistsVbox);
-		scroll.setStyle("-fx-background-color: trasparent");
 
+
+		VBox.setVgrow(emptyBox, Priority.ALWAYS);
+
+		scroll.setFitToHeight(true);
+
+		ContextMenus.contextMenuPlaylists(emptyBox);
+
+		//TODO reload tracklist instead of setting visible(true)??
 		MainApp.savedPlaylists.forEach((String name)->{
 			createPlaylistView(name, playlistsVbox);
 
 		});
+
 
 		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c-> {
 			while(c.next()) {
@@ -79,19 +90,25 @@ public class PlaylistStuff {
 					createPlaylistView(s, playlistsVbox);
 				});
 				c.getRemoved().forEach(s->{
-					playlistsVbox.getChildren().forEach(playlist->{
-						if(((RadioButton)playlist).getText() == s) {
+					RadioButton tbremoved = new RadioButton();
+
+					for(int i=0; i<playlistsVbox.getChildren().size()-1; i++) {
+					RadioButton playlist = (RadioButton) playlistsVbox.getChildren().get(i);
+						if((playlist).getText() == s) {
 							MainApp.root.getChildren().remove(playlist.getUserData());
+							tbremoved = playlist;
 						}
-					});
-					playlistsVbox.getChildren().removeIf(playlist->((RadioButton)playlist).getText() == s);
-					MainApp.playlistList.removeIf(tl-> tl.getPlaylistName()==s);
+					}
+
+				playlistsVbox.getChildren().remove(tbremoved);
+				MainApp.playlistList.removeIf(tl-> tl.getPlaylistName()==s);
+
 				});
 			}
 		});
-		
-		playlistMain.getChildren().addAll(addBox, scroll);
-		return playlistMain;
+
+
+		return scroll;
 	}
 
 
@@ -126,12 +143,12 @@ public class PlaylistStuff {
 			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
 			else playlistButton.setStyle(Tools.TRANSBUTT);
 		});
-		box.getChildren().add(playlistButton);
-
+		box.getChildren().add(box.getChildren().size()-1, playlistButton);
 		dataPane.setVisible(false);
 		playlistButton.setUserData(dataPane);
 
-		Pannelli.contextMenuPlaylists(playlistButton); //Add context menu
+		ContextMenus.contextMenuPlaylists(playlistButton); //Add context menu
+
 
 
 
@@ -140,15 +157,13 @@ public class PlaylistStuff {
 	private static void createPlaylistView(String name, VBox playlistsVbox) {
 		TrackList tracklist = Tools.readPlaylist(name);
 		tracklist.setPlaylistName(name);
-
 		TableView<Track> table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
-		Pannelli.contextMenuTrack(table, tracklist);
-
+		ContextMenus.contextMenuTrackPlaylist(table, tracklist);
 		VBox tableBox = new VBox(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 		MainApp.root.add(tableBox, 1, 2, 1, 2);
 		playlistButton(name, playlistsVbox, MainApp.mainPanel, tableBox);
-		
+
 		MainApp.playlistList.add(tracklist);
 
 

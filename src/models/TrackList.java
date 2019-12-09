@@ -150,7 +150,7 @@ public class TrackList extends SimpleListProperty<Track> {
 		DoubleProperty totalduration = new SimpleDoubleProperty(0);
 		for (Track track : this) {
 			track.durationProperty().addListener((obs, oldv, newv) ->{
-				totalduration.set(totalduration.get() + track.getDuration().toSeconds());
+				totalduration.set(totalduration.get() + track.getDuration().toMinutes());
 			});
 			track.setMetadata();
 		}
@@ -213,6 +213,7 @@ public class TrackList extends SimpleListProperty<Track> {
 
 	/**
 	 * overload di RemoveTrackToPosition
+	 * TODO vedere se funziona
 	 *
 	 * @param track
 	 *
@@ -225,7 +226,10 @@ public class TrackList extends SimpleListProperty<Track> {
 		Optional<ButtonType> result = selection.showAndWait();
 		if (result.get() == ButtonType.OK){
 			try {
+				System.out.println("sto cercando di rimuovere");
+
 				this.remove(track);
+
 				this.refreshPositions();
 			}
 			catch (Exception e) {
@@ -332,4 +336,5 @@ public class TrackList extends SimpleListProperty<Track> {
 	public void setPlaylistName(String playlistName) {
 		this.playlistName = playlistName;
 	}
+
 }

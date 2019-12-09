@@ -33,12 +33,12 @@ public class Root {
 		//GRIDPANE è il pane di livello piu alto, contiene tutti gli altri
 		FileInputStream bgFile = new FileInputStream("files\\bg.png");
 		Image bgImage = new Image(bgFile, Tools.screenWidth, Tools.screenHeight, true, true);
-		
+
 		 root.setBackground(new Background(new BackgroundImage(bgImage, BackgroundRepeat.REPEAT,
                  BackgroundRepeat.REPEAT,
                  BackgroundPosition.DEFAULT,
                  BackgroundSize.DEFAULT)));
-		 
+
 
 		root.setVgap(10);
 		root.setHgap(10);

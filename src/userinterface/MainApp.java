@@ -78,16 +78,13 @@ public class MainApp extends Application{
 
 	public static int repeat = 0;
 
+	public static List<TrackList> playlistList = new ArrayList<TrackList>();
+	
 
-	
-	
-	
-	
-	
 	public void start(Stage primaryStage) throws Exception {
-		
-		
-	
+
+
+
 
 		root = Root.rootPane();
 
