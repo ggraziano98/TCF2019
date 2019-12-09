@@ -74,6 +74,8 @@ public class MainApp extends Application{
 
 
 	public void start(Stage primaryStage) throws Exception {
+		
+		Initialize.checkMainFiles();
 
 		root = Root.rootPane();
 

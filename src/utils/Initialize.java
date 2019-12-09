@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -122,6 +123,9 @@ public class Initialize {
 				return addDirectory();
 			}
 		}
+
+		MainApp.allSongs = Initialize.getAllSongs();
+
 		return setAttempt;
 
 
@@ -153,7 +157,7 @@ public class Initialize {
 			System.out.println("Non è stato possibile caricare le canzoni");
 			e.printStackTrace();
 		}
-		
+
 		if(toBeRemoved.size() > 0) removeTrackFromDirFile(toBeRemoved);
 		return tracklist;
 	}
@@ -210,7 +214,7 @@ public class Initialize {
 			Tools.stackTrace(e);
 		}
 		MainApp.mainDirList.remove(dir);
-		
+
 		try(BufferedWriter bw = Files.newBufferedWriter(Tools.DIRFILEPATH)){
 			MainApp.mainDirList.forEach(s->{
 				try {
@@ -222,6 +226,8 @@ public class Initialize {
 		} catch (Exception e) {
 			Tools.stackTrace(e);
 		}
+		MainApp.allSongs = Initialize.getAllSongs();
+
 	}
 
 	public static void removeTrackFromDirFile(List<String> trackString) {
@@ -248,10 +254,69 @@ public class Initialize {
 			Tools.stackTrace(e);
 		}
 	}
-	
+
 	public static void removeTrackFromDirFile(Track track) {
 		List<String> l = new ArrayList<String>();
 		l.add(track.getString());
 		removeTrackFromDirFile(l);
 	}
+
+
+	public static void refreshDirFies() {
+		
+		//check if dir still exists. if it doesn't, remove it from the DirFile
+		try (BufferedWriter bw = Files.newBufferedWriter(Tools.DIRFILEPATH)){
+			MainApp.mainDirList.forEach(s->{
+				if(Files.isDirectory(Paths.get(s))) {
+					try {
+						bw.newLine();
+						bw.write(s);
+					} catch(Exception e){
+						Tools.stackTrace(e);
+					}
+				}
+			});
+		} catch (Exception e) {
+			Tools.stackTrace(e);
+		}
+
+	}
+	
+	public static void checkMainFiles() {
+		try {
+			Files.createDirectories(Paths.get("playlists"));
+		} catch (IOException e) {
+			Tools.stackTrace(e);
+		}
+		try {
+			Files.createDirectories(Paths.get("files"));
+		} catch (IOException e) {
+			Tools.stackTrace(e);
+		}
+		try {
+			Files.createFile(Tools.ALLSONGSFILEPATH);
+			System.out.println("created allSongs.txt");
+		} catch (FileAlreadyExistsException e1) {
+			System.out.println("allSongs.txt checked");
+		}catch (IOException e2) {
+			Tools.stackTrace(e2);
+		}
+		try {
+			Files.createFile(Tools.DIRFILEPATH);
+			System.out.println("created mainDir.txt");
+		} catch (FileAlreadyExistsException e1) {
+			System.out.println("mainDir.txt checked");
+		}catch (IOException e2) {
+			Tools.stackTrace(e2);
+		}
+		try {
+			Files.createFile(Tools.DIRFILEPATH);
+			System.out.println("created temp.txt");
+		} catch (FileAlreadyExistsException e1) {
+			System.out.println("temp.txt checked");
+		}catch (IOException e2) {
+			Tools.stackTrace(e2);
+		}
+	}
+
 }
