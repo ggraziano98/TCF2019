@@ -31,28 +31,30 @@ public class MainApp extends Application{
 	//TODO editMetadata in file GIO
 	//TODO finish songqueue GIO
 	//TODO Handle non existing song GIO might be done
+	//TODO aggiungere canzoni a songqueue decentemente GIO controllare come sono aggiunte
+	//TODO adding playlist to playlist doesnt uodate trackview GIO
+	//TODO duration playlist GIO
+	//TODO rimuovere e aggiungere decentemente le canzoni alla playlist GIO controlla che siano tutte aggiunte nel modo giusto
+
+	//TODO contextmenu non si chiudono n� in playlistpane n� in trackview FO/GIO
+	//TODO sort playlists FO/GIO
+	
 	//TODO fix playlists special characters FO might be done
 	//TODO contextmenu che funziona su tutto il box delle playlist FO
 	//TODO fix playlist/tracklist/songqueue context menu FO
 	//TODO fix contextmenu not closing FO
+	//TODO contextmenu trackview quando non si seleziona una canzone FO se non ci sono track selezionate, il menu non deve comparire
+
 	//TODO player redesign DAVIDE
 	//TODO loading screen DAVIDE
 	//TODO canc non funziona al momento nel contextmenu DAVIDE
 	//TODO repeat graphics DAVIDE
+	//TODO repeat Image DAVIDE
+	//TODO nullpointerexceptions nel player quando non ci sono canzoni selezionate DAVIDE (rendi il player non selezionabile quando pc.getcurrenttrack() == null)
 
-	//TODO nullpointerexceptions nel player quando non ci sono canzoni selezionate
-	//TODO rimuovere e aggiungere decentemente le canzoni alla playlist
-	//TODO contextmenu trackview quando non si seleziona una canzone
-	//TODO per gli errori usare Tools.stackTrace
-	//TODO duration playlist
-	//TODO adding playlist to playlist doesnt uodate trackview
-	//TODO contextmenu non si chiudono n� in playlistpane n� in trackview
-	//TODO aggiungere canzoni a songqueue decentemente
-	//TODO repeat Image
-	//TODO sort playlists
-
-	//TODO handle contextmenu on emptys (playlist scrollpane, trackviews, album and artist panes
-
+	
+	//TODO per gli errori usare Tools.stackTrace 
+	//TODO refactor generale
 
 	public static List<String> mainDirList = new ArrayList<String>();
 	public static TrackList allSongs;

@@ -70,11 +70,6 @@ public class PlaylistStuff {
 		ScrollPane scroll = new ScrollPane();
 		scroll.setContent(playlistsVbox);
 
-		VBox.setVgrow(emptyBox, Priority.ALWAYS);
-
-		scroll.setFitToHeight(true);;
-
-
 		scroll.setFitToHeight(true);
 
 
