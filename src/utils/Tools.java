@@ -165,7 +165,6 @@ public class Tools {
 				try {
 					bw.newLine();
 					bw.append(t.getString());
-					System.out.println(t.getTitle());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

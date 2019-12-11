@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.util.Duration;
 
 
 
@@ -144,17 +145,15 @@ public class TrackList extends SimpleListProperty<Track> {
 	/**
 	 * mi da' la durata totale della tracklist
 	 *
-	 * @return DoubleProperty duration in milliseconds (needs to be an observable)
+	 * @return Duration duration in milliseconds
 	 */
-	public DoubleProperty totalDuration() {
-		DoubleProperty totalduration = new SimpleDoubleProperty(0);
+	public Duration totalDuration() {
+		double totalduration = 0;
 		for (Track track : this) {
-			track.durationProperty().addListener((obs, oldv, newv) ->{
-				totalduration.set(totalduration.get() + track.getDuration().toMinutes());
-			});
 			track.setMetadata();
+			totalduration += track.getDuration().toSeconds();			
 		}
-		return totalduration;
+		return Duration.seconds(totalduration);
 	}
 
 

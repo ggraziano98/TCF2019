@@ -114,7 +114,7 @@ public class Track{
 		if(!this.getHasMetadata()) {
 			resetProperties();
 			String fileLocation = this.getPath().toString();
-			
+
 			try {
 
 				InputStream input = new FileInputStream(new File(fileLocation));
@@ -149,15 +149,16 @@ public class Track{
 			}
 			else {
 				this.setAlbum(value.toString());
-				System.out.println(value.toString());
 			}
 		} else if (key.equals("xmpDM:artist") || key.equals("dc:creator") || key.equals("contributing artists")) {
 			if((value.toString() == "" || value.toString().replace("\\s+","").isEmpty())&& this.getArtist() == "") this.setArtist(Tools.DARTIST);
-			else {this.setArtist(value.toString()); System.out.println(value.toString());}
+			else {this.setArtist(value.toString());
+			}
 
 		} if (key.equals("title")) {
 			if(value.toString() == "" || value.toString().replace("\\s+","").isEmpty()) this.setTitle(getPath().getFileName().toString());
-			else {this.setTitle(value.toString());System.out.println(value.toString());}
+			else {this.setTitle(value.toString());
+			}
 
 		} if (key.equals("year")) {
 			if(value.toString() == ""|| value.toString().replace("\\s+","").isEmpty()) this.setYear(Tools.DYEAR);
@@ -338,8 +339,8 @@ public class Track{
 				+this.getGenre()+"&tcf&"+this.getYear()+"&tcf&"+this.getDuration()+"&tcf&"+
 				this.getPath().toString();
 	}
-	
-	
+
+
 	public void setImageView(ImageView view) {
 		view.setImage(Tools.DIMAGE);
 		Path path = this.getPath();

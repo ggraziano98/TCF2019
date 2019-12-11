@@ -126,7 +126,7 @@ public class ContextMenus{
 			public void handle(ActionEvent event) {
 				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
 				for (Track track : tracklistToAdd) {
-					MainApp.pc.getTracklist().addTrack(track);	
+					MainApp.pc.getTracklist().addNew(track);	
 
 				}
 			}
@@ -137,16 +137,18 @@ public class ContextMenus{
 			playlist.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event) {
 					TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
-					TrackList addTo = Tools.readPlaylist(playlistName);
-					
-					addTo.addAll(tracklistToAdd);
-					Tools.saveAsPlaylist(addTo, playlistName);
+					MainApp.playlistList.forEach(tl->{
+						if(tl.getPlaylistName() == playlistName) {
+							tl.addAll(tracklistToAdd);
+							Tools.saveAsPlaylist(tl, playlistName);
+						}
+					});
 				}	
 			});
 			addSongTo.getItems().add(playlist);
 		});
-		
-		
+
+
 		//controllo che non siano state create nuove playlist, se sono state create le aggiungo al menu
 		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c->{
 			addSongTo.getItems().removeIf(i->true);
@@ -155,10 +157,12 @@ public class ContextMenus{
 				playlist.setOnAction(new EventHandler<ActionEvent>() {
 					public void handle(ActionEvent event) {
 						TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
-						TrackList addTo = Tools.readPlaylist(playlistName);
-						
-						addTo.addAll(tracklistToAdd);
-						Tools.saveAsPlaylist(addTo, playlistName);
+						MainApp.playlistList.forEach(tl->{
+							if(tl.getPlaylistName() == playlistName) {
+								tl.addAll(tracklistToAdd);
+								Tools.saveAsPlaylist(tl, playlistName);
+							}
+						});
 					}	
 				});
 				addSongTo.getItems().add(playlist);
@@ -227,7 +231,7 @@ public class ContextMenus{
 		songQueue.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Track track = table.getSelectionModel().getSelectedItem();
-				MainApp.pc.getTracklist().addTrack(track);	
+				MainApp.pc.getTracklist().addNew(track);	
 			}
 		});
 
@@ -301,8 +305,8 @@ public class ContextMenus{
 		//implemento gli items
 		add.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				Object track = table.getSelectionModel().getSelectedItem();
-				MainApp.pc.getTracklist().addTrack((Track) track);
+				Track track = table.getSelectionModel().getSelectedItem();
+				MainApp.pc.getTracklist().addNew(track);
 			}
 		});
 
@@ -387,7 +391,7 @@ public class ContextMenus{
 		songQueue.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Track track = table.getSelectionModel().getSelectedItem();
-				MainApp.pc.getTracklist().addTrack(track);	
+				MainApp.pc.getTracklist().addNew(track);	
 			}
 		});
 
@@ -442,10 +446,10 @@ public class ContextMenus{
 
 	}
 
-	
-	
-	
-	
+
+
+
+
 	public static String informationTrack (Track track) {
 		String info = new String();
 

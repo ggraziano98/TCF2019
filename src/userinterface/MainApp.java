@@ -31,13 +31,13 @@ public class MainApp extends Application{
 	//TODO editMetadata in file GIO
 	//TODO finish songqueue GIO
 	//TODO Handle non existing song GIO might be done
-	//TODO aggiungere canzoni a songqueue decentemente GIO controllare come sono aggiunte
-	//TODO adding playlist to playlist doesnt uodate trackview GIO
-	//TODO duration playlist GIO
+	//TODO aggiungere canzoni a songqueue decentemente GIO controllare come sono aggiunte ContextMenu OK
 	//TODO rimuovere e aggiungere decentemente le canzoni alla playlist GIO controlla che siano tutte aggiunte nel modo giusto
 
 	//TODO contextmenu non si chiudono n� in playlistpane n� in trackview FO/GIO
 	//TODO sort playlists FO/GIO
+	//TODO playlist si eliminano dalla playlistlist anche se fai cancel. potrebbe succedere anche su altri cosi FO/GIO
+	//				la playlist non si elimina davvero facendo cancel, ma scompare solo dalla UI
 	
 	//TODO fix playlists special characters FO might be done
 	//TODO contextmenu che funziona su tutto il box delle playlist FO
@@ -51,7 +51,8 @@ public class MainApp extends Application{
 	//TODO repeat graphics DAVIDE
 	//TODO repeat Image DAVIDE
 	//TODO nullpointerexceptions nel player quando non ci sono canzoni selezionate DAVIDE (rendi il player non selezionabile quando pc.getcurrenttrack() == null)
-
+	//TODO duration playlist leggibile DAVIDE
+	//TODO duration track leggibile DAVIDE
 	
 	//TODO per gli errori usare Tools.stackTrace 
 	//TODO refactor generale
