@@ -137,13 +137,13 @@ public class PlayerController {
 		this.setCurrentInt(this.getCurrentTrack().getPosition());
 		if(player != null) {
 			player.stop();
-			player = null;
+			player.dispose();
 		}
 		try {
 			MediaPlayer mp = new MediaPlayer(new Media(Tools.cleanURL(this.getCurrentTrack().getPath().toString())));
 			this.setPlayer(mp);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Tools.stackTrace(e);
 		}
 		this.setTotalDuration(this.getCurrentTrack().getDuration());
 	}

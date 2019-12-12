@@ -440,7 +440,9 @@ public class ContextMenus{
 		//event handler del context menu
 		table.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			public void handle(ContextMenuEvent event) {
-				menu.show(table, event.getScreenX(), event.getScreenY());
+				if(table.getSelectionModel().getSelectedItem() != null) {
+					menu.show(table, event.getScreenX(), event.getScreenY());
+				}
 			}
 		});
 

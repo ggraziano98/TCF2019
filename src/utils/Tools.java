@@ -339,7 +339,6 @@ public class Tools {
 			e.printStackTrace();
 		}
 
-		MainApp.savedPlaylists.remove(playlist);
 	}
 
 
