@@ -16,6 +16,10 @@ public class SongQueueView {
 		
 		TableView<Track> table = TrackView.tableFromTracklist(MainApp.pc.getTracklist(), MainApp.pc, true);
 		
+		table.getColumns().forEach(col->{
+			col.setSortable(false);
+		});
+		
 		songQueueView.getChildren().add(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 		songQueueView.setStyle("-fx-background-color: red");

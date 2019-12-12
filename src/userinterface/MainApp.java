@@ -30,24 +30,19 @@ public class MainApp extends Application{
 	//TODO refreshDirFiles confrontare file salvati e file nella cartella per togliere quelli vecchi e aggiungere quelli nuovi GIO
 	//TODO editMetadata in file GIO
 	//TODO finish songqueue GIO
-	//TODO Handle non existing song GIO might be done
-	//TODO aggiungere canzoni a songqueue decentemente GIO controllare come sono aggiunte ContextMenu OK
-	//TODO rimuovere e aggiungere decentemente le canzoni alla playlist GIO controlla che siano tutte aggiunte nel modo giusto
-	//TODO songqueue non sortable GIO
+	//CHECK Handle non existing song GIO might be done
+	//CHECK aggiungere canzoni a songqueue decentemente GIO controllare come sono aggiunte ContextMenu OK
+	//CHECK rimuovere e aggiungere decentemente le canzoni alla playlist GIO controlla che siano tutte aggiunte nel modo giusto
 	
-	//TODO contextmenu non si chiudono n� in playlistpane n� in trackview FO/GIO
 	//TODO sort playlists FO/GIO
 	
 	//TODO fix playlists special characters FO might be done
-	//TODO contextmenu che funziona su tutto il box delle playlist FO
 	//TODO check playlist/tracklist/songqueue context menu FO
-	//TODO fix contextmenu not closing FO
 	//TODO canzoni aggiunte alla songqueue vanno dopo la canzone che suona FO
 	//TODO contextmenu trackview quando non si seleziona una canzone FO se non ci sono track selezionate, il menu non deve comparire
 
 	//TODO player redesign DAVIDE
 	//TODO loading screen DAVIDE
-	//TODO canc non funziona al momento nel contextmenu DAVIDE
 	//TODO repeat graphics DAVIDE
 	//TODO nullpointerexceptions nel player quando non ci sono canzoni selezionate DAVIDE (rendi il player non selezionabile quando pc.getcurrenttrack() == null)
 	//TODO duration playlist leggibile DAVIDE
