@@ -26,60 +26,6 @@ import utils.Tools;
 public class ContextMenus{
 
 	/**
-	 *Contest Menu del pannello playlists per area dello scrollpane vuota, newplaylist, sortbyduration, sortbyname
-	 *
-	 * @param Vbox			emptyBox
-	 */
-	public static void contextMenuPlaylists(VBox emptyBox) {
-
-		//Creo menu principale e i suoi item
-		ContextMenu menuPlaylists = new ContextMenu();
-		MenuItem newPlaylist = new MenuItem("New playlist");
-
-		//Creo menu secondario e suoi item
-		Menu sortBy = new Menu("Sort by");
-		MenuItem duration = new MenuItem("Duration");
-		MenuItem name = new MenuItem("Name");
-
-		//implemento gli items
-		newPlaylist.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				Tools.newPlaylist();
-			}
-		});
-
-		duration.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				//TODO da sviluppare order playlist by duration
-				Alert informationDialog = new Alert(AlertType.NONE, "da sviluppare", ButtonType.OK); 
-				informationDialog.show(); 
-			}
-		});
-
-		name.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				//TODO implementare il sort by duration
-				Alert informationDialog = new Alert(AlertType.NONE, "da sviluppare", ButtonType.OK); 
-				informationDialog.show(); 
-			}
-		});
-
-		//aggiungo gli items al menu secondario e al menu principale
-		sortBy.getItems().addAll(name,duration);
-		menuPlaylists.getItems().addAll(newPlaylist, sortBy);
-
-		//event hantler del menu
-		emptyBox.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
-			public void handle(ContextMenuEvent event) {
-				menuPlaylists.show(emptyBox, event.getScreenX(), event.getScreenY());
-			}
-		});
-	}
-
-
-
-
-	/**
 	 * Context menu delle playlist per area con radiobutton  newplaylist, deleteplaylist, sortbyduration, sortbyname, addallsongtoanothrplaylist
 	 * 
 	 * @param RadioButton 			button
@@ -125,9 +71,17 @@ public class ContextMenus{
 		songQueue.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
-				for (Track track : tracklistToAdd) {
-					MainApp.pc.getTracklist().addNew(track);	
 
+				if (MainApp.pc.getTracklist().getSize() == 0) {
+					for (Track track : tracklistToAdd) {
+						MainApp.pc.getTracklist().addNew(track);
+					}
+				} else {
+					int i = MainApp.pc.getCurrentInt();
+					for (Track track : tracklistToAdd) {
+						i++;
+						MainApp.pc.getTracklist().addNew(track, i);
+					}
 				}
 			}
 		});
@@ -177,7 +131,9 @@ public class ContextMenus{
 		//event handler del menu
 		button.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			public void handle(ContextMenuEvent event) {
-				menu.show(button, event.getScreenX(), event.getScreenY());
+				if(button != null) {
+					menu.show(button, event.getScreenX(), event.getScreenY());
+				}
 			}
 		});
 

@@ -105,7 +105,6 @@ public class PlaylistStuff {
 		playlistMain.getChildren().addAll(addBox, scroll);
 
 		//TODO al momento funziona male, quando davide mette a posto la grafica è da fixare
-		ContextMenus.contextMenuPlaylists(playlistMain);
 
 		return playlistMain;
 	}

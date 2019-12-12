@@ -39,10 +39,8 @@ public class MainApp extends Application{
 	//TODO sort playlists FO/GIO
 	
 	//TODO fix playlists special characters FO might be done
-	//TODO contextmenu che funziona su tutto il box delle playlist FO
 	//TODO check playlist/tracklist/songqueue context menu FO
 	//TODO fix contextmenu not closing FO
-	//TODO canzoni aggiunte alla songqueue vanno dopo la canzone che suona FO
 	//TODO contextmenu trackview quando non si seleziona una canzone FO se non ci sono track selezionate, il menu non deve comparire
 
 	//TODO player redesign DAVIDE
