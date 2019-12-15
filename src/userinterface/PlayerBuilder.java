@@ -444,15 +444,18 @@ public class PlayerBuilder {
 	 * @return
 	 */
 	public static String timeMinutes(double time) {
-
+		
 		String mS = "";
-		String m = Integer.toString((int) time/60);
+		
+		int hours = (int) time/3600;
+		if(time/3600 > 1) mS+=Integer.toString(hours)+":";
+		String m = Integer.toString((int) (time-hours*3600)/60);
 		String s = Integer.toString((int)time%60);
 		if(s.length() == 1) {
 			s = "0"+s;
 		}
 
-		mS = m + ":" +s;
+		mS += m + ":" +s;
 
 		return mS;
 

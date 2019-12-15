@@ -1,11 +1,12 @@
 package userinterface;
 
 import java.io.FileInputStream;
-import java.util.List;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javafx.collections.ListChangeListener;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -15,7 +16,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -57,8 +57,8 @@ public class PlaylistStuff {
 		addBox.getChildren().addAll(leTuePlaylists, addButton);
 		addButton.setTranslateX(Tools.DWIDTHS[0]/2-10);
 		addButton.setOnMouseClicked((e) -> {
-				Tools.newPlaylist();
-			});
+			Tools.newPlaylist();
+		});
 
 
 
@@ -88,17 +88,30 @@ public class PlaylistStuff {
 					RadioButton tbremoved = new RadioButton();
 
 					for(int i=0; i<playlistsVbox.getChildren().size(); i++) {
-					RadioButton playlist = (RadioButton) playlistsVbox.getChildren().get(i);
+						RadioButton playlist = (RadioButton) playlistsVbox.getChildren().get(i);
 						if((playlist).getText() == s) {
 							MainApp.root.getChildren().remove(playlist.getUserData());
 							tbremoved = playlist;
 						}
 					}
 
-				playlistsVbox.getChildren().remove(tbremoved);
-				MainApp.playlistList.removeIf(tl-> tl.getPlaylistName()==s);
+					playlistsVbox.getChildren().remove(tbremoved);
+					MainApp.playlistList.removeIf(tl-> tl.getPlaylistName()==s);
 
 				});
+				if(c.wasPermutated()) {
+					for(int i=0; i<MainApp.savedPlaylists.size(); i++) {
+						RadioButton playlist = (RadioButton) playlistsVbox.getChildren().get(0);
+
+						MainApp.root.getChildren().remove(playlist.getUserData());		//TODO capire se serve
+						playlistsVbox.getChildren().remove(playlist);
+
+					}
+
+					MainApp.savedPlaylists.forEach((String name)->{
+						createPlaylistView(name, playlistsVbox);
+					});
+				}
 			}
 		});
 
@@ -168,6 +181,57 @@ public class PlaylistStuff {
 		TrackView.setDragDrop(table, tracklist);
 	}
 
-
-
+/**
+ * ordina la playlist in base al nome
+ */
+	public static void sortPlaylistsByName() {
+		MainApp.savedPlaylists.sort(String.CASE_INSENSITIVE_ORDER);
 	}
+
+	
+	/**
+	 * ordina le playlist in base alla durata
+	 */
+	public static void sortPlaylistsByDuration() {
+		HashMap<String, Double> map = new HashMap<String, Double>();
+		
+		for (TrackList playlist : MainApp.playlistList) {
+			map.put(playlist.getPlaylistName(), playlist.totalDuration().toSeconds());
+		}
+
+		ValueComparator bvc = new ValueComparator(map);
+		TreeMap<String, Double> sortedmap = new TreeMap<String, Double>(bvc); 
+		sortedmap.putAll(map);
+		
+		MainApp.savedPlaylists.clear();
+		
+		for (String playlistName : sortedmap.keySet()) {
+			MainApp.savedPlaylists.add(playlistName);
+		}
+		
+	}
+
+}
+
+
+
+
+
+//TODO vedere se lasciarlo qui o spostarlo
+class ValueComparator implements Comparator<String> {
+	Map<String, Double> base;
+
+	public ValueComparator(Map<String, Double> base) {
+		this.base = base;
+	}
+
+	// Note: this comparator imposes orderings that are inconsistent with
+	// equals.
+	public int compare(String a, String b) {
+		if (base.get(a) <= base.get(b)) {
+			return -1;
+		} else {
+			return 1;
+		} // returning 0 would merge keys
+	}
+}
