@@ -4,7 +4,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import models.Track;
-import models.TrackList;
 
 public class SongQueueView {
 	

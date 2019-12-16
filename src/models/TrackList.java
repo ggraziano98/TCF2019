@@ -4,8 +4,6 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Optional;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,12 +11,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.util.Duration;
+import utils.Tools;
 
 
 
 /**
- * TODO errori
- * TODO vedere se i metodi funzionano
+ * 
  * Class model for lists of tracks, sostanzialmente una ObservableList ma con qualche funzionalit� aggiuntiva
  * Extended by SongQueue
  *
@@ -70,7 +68,7 @@ public class TrackList extends SimpleListProperty<Track> {
 
 	/**
 	 * add a track to the specified position. Will shift all successive tracks to the right
-	 * TODO implementare if sull'indice
+	 *
 	 * @param position
 	 * @param track
 	 */
@@ -80,7 +78,8 @@ public class TrackList extends SimpleListProperty<Track> {
 			this.refreshPositions();
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+//			System.out.println(e.getMessage());
+			Tools.stackTrace(e);
 		}
 	}
 
@@ -97,7 +96,7 @@ public class TrackList extends SimpleListProperty<Track> {
 
 	/**
 	 * remove a track to the specified position. Will shift all successive tracks to the right
-	 * TODO implementare if sull'indice
+	 *
 	 * @param position
 	 *
 	 */
@@ -107,7 +106,8 @@ public class TrackList extends SimpleListProperty<Track> {
 			this.refreshPositions();
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+//			System.out.println(e.getMessage());
+			Tools.stackTrace(e);
 		}
 	}
 
@@ -185,7 +185,8 @@ public class TrackList extends SimpleListProperty<Track> {
 			this.addTrack(position, new Track(path));
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			Tools.stackTrace(e);
 		}
 	}
 
@@ -203,7 +204,8 @@ public class TrackList extends SimpleListProperty<Track> {
 			this.refreshPositions();
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+//			System.out.println(e.getMessage());
+			Tools.stackTrace(e);
 		}
 	}
 
@@ -232,11 +234,7 @@ public class TrackList extends SimpleListProperty<Track> {
 				this.refreshPositions();
 			}
 			catch (Exception e) {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("error2");
-				alert.setHeaderText("Errore nella rimozione di " + track.getTitle());
-				alert.setContentText(e.getMessage());
-				alert.showAndWait();
+				Tools.stackTrace(e);
 			}
 		}
 	}

@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import models.Track;
+import utils.Tools;
 
 public class RightPanels {
 
@@ -106,7 +107,7 @@ public class RightPanels {
 			Image gucciniImage = new Image(gucciniFile);
 			gucciniView.setImage(gucciniImage);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Tools.stackTrace(e);
 		}
 
 		artistsPane.getChildren().add(gucciniView);
@@ -123,7 +124,7 @@ public class RightPanels {
 			Image radiciImage = new Image(radiciFile);
 			radiciView.setImage(radiciImage);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Tools.stackTrace(e);
 		}
 
 		albumsPane.getChildren().add(radiciView);

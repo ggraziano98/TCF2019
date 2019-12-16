@@ -101,6 +101,7 @@ public class Tools {
 				return result;
 
 			} catch (IOException e) {
+				Tools.stackTrace(e);
 				e.printStackTrace();
 				/* stampo la stacktrace in caso di errore */
 
@@ -127,6 +128,7 @@ public class Tools {
 
 			} catch (IOException e) {
 				e.printStackTrace();
+				Tools.stackTrace(e);
 				return Collections.emptyList();
 			}
 		}
@@ -155,10 +157,12 @@ public class Tools {
 					Files.deleteIfExists(filePath);
 				} catch (IOException e1) {
 					e1.printStackTrace();
+					Tools.stackTrace(e1);
 				}
 				saveAsPlaylist(tracklist, playlistName);
 			} else
 				e.printStackTrace();
+			Tools.stackTrace(e);
 		}
 		try (BufferedWriter bw= Files.newBufferedWriter(filePath)){
 			tracklist.forEach(t->{
@@ -166,13 +170,13 @@ public class Tools {
 					bw.newLine();
 					bw.append(t.getString());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					Tools.stackTrace(e);
 				}
 			});
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			Tools.stackTrace(e1);
 		}
 
 	}
@@ -200,8 +204,10 @@ public class Tools {
 					alert.setHeaderText("nome playlist gi� usato");
 					alert.setContentText("Usare un altro nome");
 					alert.showAndWait();
-				} else
+				} else {
 					e.printStackTrace();
+					Tools.stackTrace(e);
+				}
 			}
 		}
 
@@ -240,6 +246,7 @@ public class Tools {
 
 		} catch (IOException e) {
 			//TODO errore
+			Tools.stackTrace(e);
 			System.out.println("La playlist da leggere non esiste");
 		}
 
@@ -255,7 +262,6 @@ public class Tools {
 			tracklist.addTrack(track);
 			saveAsPlaylist(tracklist, playlistName);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("error1");
 			alert.setHeaderText("nome playlist gi� usato");
@@ -273,7 +279,6 @@ public class Tools {
 			deletePlaylist(playlistName, false);
 			saveAsPlaylist(tracklist, playlistName);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("error1");
 			alert.setHeaderText("nome playlist gi� usato");
@@ -281,7 +286,7 @@ public class Tools {
 			alert.showAndWait();
 		}
 	}
-	*/
+	 */
 
 	public static void deletePlaylist(String playlist) {
 		deletePlaylist(playlist, false);
@@ -335,7 +340,7 @@ public class Tools {
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			Tools.stackTrace(e);
 			e.printStackTrace();
 		}
 
@@ -366,11 +371,7 @@ public class Tools {
 					alert.showAndWait();
 				}
 			} catch (IOException e) {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("error2");
-				alert.setHeaderText("Errore generico");
-				alert.setContentText(e.getMessage());
-				alert.showAndWait();
+				Tools.stackTrace(e);
 			}
 		}
 
@@ -411,7 +412,7 @@ public class Tools {
 				return i;
 			}
 		}
-				return 0;
+		return 0;
 	}
 
 	public static ObservableList<String> getNamesSavedPlaylists(){

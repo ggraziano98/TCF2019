@@ -39,6 +39,8 @@ public class ContextMenus{
 		MenuItem play = new MenuItem("Play");
 		MenuItem shufflePlay = new MenuItem("Shuffle Play");
 		
+		
+		//da togliere quando ci sarà il bottone
 		MenuItem prova = new MenuItem("order duration");
 		prova.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
@@ -52,6 +54,8 @@ public class ContextMenus{
 			}
 		});
 
+		
+		
 		//Creo il menu secondario e un suo item
 		Menu addSongTo = new Menu("Add all the songs of this playlist to");		
 		MenuItem songQueue = new MenuItem("Song queue");

@@ -380,7 +380,6 @@ public class PlayerBuilder {
 				try {
 					pc.getCurrentTrack().setImageView(songView);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
