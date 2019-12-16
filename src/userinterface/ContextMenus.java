@@ -39,10 +39,16 @@ public class ContextMenus{
 		MenuItem play = new MenuItem("Play");
 		MenuItem shufflePlay = new MenuItem("Shuffle Play");
 		
-		MenuItem prova = new MenuItem("order name");
+		MenuItem prova = new MenuItem("order duration");
 		prova.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				PlaylistStuff.sortPlaylistsByDuration();
+			}
+		});
+		MenuItem prova1 = new MenuItem("order name");
+		prova1.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				PlaylistStuff.sortPlaylistsByName();
 			}
 		});
 
@@ -60,6 +66,9 @@ public class ContextMenus{
 				for (Track track : tracklistToAdd) {
 					MainApp.pc.getTracklist().addNew(track);
 				}
+
+				MainApp.pc.setCurrentTrack(MainApp.pc.getTracklist().get(0));	
+				MainApp.pc.play();
 			}
 		});
 
@@ -71,6 +80,9 @@ public class ContextMenus{
 				for (Track track : tracklistToAdd) {
 					MainApp.pc.getTracklist().addNew(track);
 				}
+				
+				MainApp.pc.setCurrentTrack(MainApp.pc.getTracklist().get(0));	
+				MainApp.pc.play();
 			}
 		});
 
@@ -155,7 +167,7 @@ public class ContextMenus{
 
 		//aggiungo gli items ai menu principale e secondario
 		addSongTo.getItems().addAll(separator, songQueue);
-		menu.getItems().addAll(prova, play, shufflePlay, addSongTo, duration, newPlaylist, deletePlaylist);
+		menu.getItems().addAll(prova, prova1, play, shufflePlay, addSongTo, duration, newPlaylist, deletePlaylist);
 
 		//event handler del menu
 		button.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {

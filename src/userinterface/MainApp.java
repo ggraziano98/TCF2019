@@ -45,8 +45,6 @@ public class MainApp extends Application{
 	//TODO canc non funziona al momento nel contextmenu DAVIDE
 //	//TODO repeat graphics DAVIDE
 	//TODO nullpointerexceptions nel player quando non ci sono canzoni selezionate DAVIDE (rendi il player non selezionabile quando pc.getcurrenttrack() == null)
-//	//TODO duration playlist leggibile DAVIDE
-//	//TODO duration track leggibile DAVIDE
 //	//TODO scroll on drag DAVIDE
 //	//TODO drag sulla songqueue DAVIDE
 //	//TODO drag and drop sulle playlist DAVIDE
