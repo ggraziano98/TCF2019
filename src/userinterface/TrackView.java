@@ -1,8 +1,5 @@
 package userinterface;
 
-import java.util.Comparator;
-
-import com.rometools.rome.feed.atom.Person;
 
 import controllers.PlayerController;
 import javafx.beans.property.SimpleStringProperty;

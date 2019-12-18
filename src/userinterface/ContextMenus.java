@@ -1,6 +1,8 @@
 
 package userinterface;
 
+import java.util.Collections;
+
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,70 +16,13 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.layout.VBox;
 import models.Track;
 import models.TrackList;
 import utils.Tools;
 
-//TODO implementare information se la fonte è unknown
-//TODO implementare le funzioni sort playlist by name e sort playlist by duration in contextMenuPlaylists
 
 
 public class ContextMenus{
-
-	/**
-	 *Contest Menu del pannello playlists per area dello scrollpane vuota, newplaylist, sortbyduration, sortbyname
-	 *
-	 * @param Vbox			emptyBox
-	 */
-	public static void contextMenuPlaylists(VBox emptyBox) {
-
-		//Creo menu principale e i suoi item
-		ContextMenu menuPlaylists = new ContextMenu();
-		MenuItem newPlaylist = new MenuItem("New playlist");
-
-		//Creo menu secondario e suoi item
-		Menu sortBy = new Menu("Sort by");
-		MenuItem duration = new MenuItem("Duration");
-		MenuItem name = new MenuItem("Name");
-
-		//implemento gli items
-		newPlaylist.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				Tools.newPlaylist();
-			}
-		});
-
-		duration.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				//TODO da sviluppare order playlist by duration
-				Alert informationDialog = new Alert(AlertType.NONE, "da sviluppare", ButtonType.OK); 
-				informationDialog.show(); 
-			}
-		});
-
-		name.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				//TODO implementare il sort by duration
-				Alert informationDialog = new Alert(AlertType.NONE, "da sviluppare", ButtonType.OK); 
-				informationDialog.show(); 
-			}
-		});
-
-		//aggiungo gli items al menu secondario e al menu principale
-		sortBy.getItems().addAll(name,duration);
-		menuPlaylists.getItems().addAll(newPlaylist, sortBy);
-
-		//event hantler del menu
-		emptyBox.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
-			public void handle(ContextMenuEvent event) {
-				menuPlaylists.show(emptyBox, event.getScreenX(), event.getScreenY());
-			}
-		});
-	}
-
-
-
 
 	/**
 	 * Context menu delle playlist per area con radiobutton  newplaylist, deleteplaylist, sortbyduration, sortbyname, addallsongtoanothrplaylist
@@ -91,7 +36,26 @@ public class ContextMenus{
 		MenuItem newPlaylist = new MenuItem("New playlist");
 		MenuItem deletePlaylist = new MenuItem("Delete playlist");
 		MenuItem duration = new MenuItem("Total duration");
+		MenuItem play = new MenuItem("Play");
+		MenuItem shufflePlay = new MenuItem("Shuffle Play");
+		
+		
+		//da togliere quando ci sarà il bottone
+		MenuItem prova = new MenuItem("order duration");
+		prova.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				PlaylistStuff.sortPlaylistsByDuration();
+			}
+		});
+		MenuItem prova1 = new MenuItem("order name");
+		prova1.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				PlaylistStuff.sortPlaylistsByName();
+			}
+		});
 
+		
+		
 		//Creo il menu secondario e un suo item
 		Menu addSongTo = new Menu("Add all the songs of this playlist to");		
 		MenuItem songQueue = new MenuItem("Song queue");
@@ -99,6 +63,33 @@ public class ContextMenus{
 
 
 		//Implemento gli item del menu primario
+		play.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				MainApp.pc.getTracklist().clear();
+				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
+				for (Track track : tracklistToAdd) {
+					MainApp.pc.getTracklist().addNew(track);
+				}
+
+				MainApp.pc.setCurrentTrack(MainApp.pc.getTracklist().get(0));	
+				MainApp.pc.play();
+			}
+		});
+
+		shufflePlay.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				MainApp.pc.getTracklist().clear();
+				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
+				Collections.shuffle(tracklistToAdd);
+				for (Track track : tracklistToAdd) {
+					MainApp.pc.getTracklist().addNew(track);
+				}
+				
+				MainApp.pc.setCurrentTrack(MainApp.pc.getTracklist().get(0));	
+				MainApp.pc.play();
+			}
+		});
+
 		newPlaylist.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Tools.newPlaylist();
@@ -115,7 +106,7 @@ public class ContextMenus{
 			public void handle(ActionEvent event) {
 				TrackList playlist = Tools.readPlaylist(button.getText());
 				Alert informationDialog = new Alert(AlertType.NONE,
-						"Duration of the playlist: " + playlist.totalDuration(),
+						"Duration of the playlist: " + PlayerBuilder.timeMinutes(playlist.totalDuration().toSeconds()),
 						ButtonType.OK); 
 				informationDialog.show(); 
 			}
@@ -125,9 +116,17 @@ public class ContextMenus{
 		songQueue.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
-				for (Track track : tracklistToAdd) {
-					MainApp.pc.getTracklist().addNew(track);	
 
+				if (MainApp.pc.getTracklist().getSize() == 0) {
+					for (Track track : tracklistToAdd) {
+						MainApp.pc.getTracklist().addNew(track);
+					}
+				} else {
+					int i = MainApp.pc.getCurrentInt();
+					for (Track track : tracklistToAdd) {
+						i++;
+						MainApp.pc.getTracklist().addNew(track, i);
+					}
 				}
 			}
 		});
@@ -172,15 +171,20 @@ public class ContextMenus{
 
 		//aggiungo gli items ai menu principale e secondario
 		addSongTo.getItems().addAll(separator, songQueue);
-		menu.getItems().addAll(newPlaylist, deletePlaylist, duration, addSongTo);
+		menu.getItems().addAll(prova, prova1, play, shufflePlay, addSongTo, duration, newPlaylist, deletePlaylist);
 
 		//event handler del menu
 		button.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			public void handle(ContextMenuEvent event) {
-				menu.show(button, event.getScreenX(), event.getScreenY());
+				if(button != null) {
+					menu.show(button, event.getScreenX(), event.getScreenY());
+				}
 			}
 		});
 
+		button.setOnMousePressed(ev->{
+			menu.hide();
+		});
 	}
 
 
@@ -216,13 +220,7 @@ public class ContextMenus{
 		information.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Track track = table.getSelectionModel().getSelectedItem();
-				Alert informationDialog = new Alert(AlertType.NONE,
-						"Artist: " + ((Track) track).getArtist() + "\n" +
-								"Title: " + track.getTitle() +"\n" +
-								"Album: " + track.getAlbum() +"\n" +
-								"Year: " + track.getYear() +"\n" +
-								"Duration " + track.getDuration().toMinutes()
-								,ButtonType.OK); 
+				Alert informationDialog = ContextMenus.informationTrack(track);
 				informationDialog.show(); 
 			}
 		});
@@ -231,7 +229,11 @@ public class ContextMenus{
 		songQueue.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Track track = table.getSelectionModel().getSelectedItem();
-				MainApp.pc.getTracklist().addNew(track);	
+				if (MainApp.pc.getTracklist().getSize() == 0) {
+					MainApp.pc.getTracklist().addNew(track);	
+				} else {
+					MainApp.pc.getTracklist().addNew(track,MainApp.pc.getCurrentInt() + 1);	
+				}
 			}
 		});
 
@@ -279,10 +281,13 @@ public class ContextMenus{
 		//event handler del menu
 		table.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			public void handle(ContextMenuEvent event) {
-				menu.show(table, event.getScreenX(), event.getScreenY());
-			}
+				if(table.getSelectionModel().getSelectedItem() != null) {
+					menu.show(table, event.getScreenX(), event.getScreenY());
+				}			}
 		});
-
+		table.setOnMousePressed(ev->{
+			menu.hide();
+		});
 	}
 
 
@@ -300,6 +305,7 @@ public class ContextMenus{
 		ContextMenu menu = new ContextMenu();
 		MenuItem add = new MenuItem("Add to song queue");
 		MenuItem remove = new MenuItem("Remove from song queue");
+		MenuItem clear = new MenuItem("Clear song queue");
 		MenuItem information = new MenuItem("Information");
 
 		//implemento gli items
@@ -320,27 +326,30 @@ public class ContextMenus{
 		information.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Track track = table.getSelectionModel().getSelectedItem();
-				Alert informationDialog = new Alert(AlertType.NONE,
-						"Artist: " + track.getArtist() + "\n" +
-								"Title: " + track.getTitle() +"\n" +
-								"Album: " + track.getAlbum() +"\n" +
-								"Year: " + track.getYear() +"\n" +
-								"Duration " + track.getDuration().toMinutes()
-								,ButtonType.OK); 
+				Alert informationDialog = ContextMenus.informationTrack(track);
 				informationDialog.show(); 
 			}
 		});
 
+		clear.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				MainApp.pc.getTracklist().clear();
+			}
+		});
+
 		//aggiungo gli item al menu principale
-		menu.getItems().addAll(remove, add, information);
+		menu.getItems().addAll(remove, clear, add, information);
 
 		//event handler del menu
 		table.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			public void handle(ContextMenuEvent event) {
-				menu.show(table, event.getScreenX(), event.getScreenY());
-			}
+				if(table.getSelectionModel().getSelectedItem() != null) {
+					menu.show(table, event.getScreenX(), event.getScreenY());
+				}			}
 		});
-
+		table.setOnMousePressed(ev->{
+			menu.hide();
+		});
 	}
 
 
@@ -376,13 +385,7 @@ public class ContextMenus{
 		information.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Track track = table.getSelectionModel().getSelectedItem();
-				Alert informationDialog = new Alert(AlertType.NONE,
-						"Artist: " + track.getArtist() + "\n" +
-								"Title: " + track.getTitle() +"\n" +
-								"Album: " + track.getAlbum() +"\n" +
-								"Year: " + track.getYear() +"\n" +
-								"Duration " + track.getDuration().toMinutes()
-								,ButtonType.OK); 
+				Alert informationDialog = ContextMenus.informationTrack(track);
 				informationDialog.show(); 
 			}
 		});
@@ -391,7 +394,11 @@ public class ContextMenus{
 		songQueue.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Track track = table.getSelectionModel().getSelectedItem();
-				MainApp.pc.getTracklist().addNew(track);	
+				if (MainApp.pc.getTracklist().getSize() == 0) {
+					MainApp.pc.getTracklist().addNew(track);	
+				} else {
+					MainApp.pc.getTracklist().addNew(track, MainApp.pc.getCurrentInt() + 1);	
+				}	
 			}
 		});
 
@@ -445,14 +452,18 @@ public class ContextMenus{
 				}
 			}
 		});
-
+		table.setOnMousePressed(ev->{
+			menu.hide();
+		});
 	}
 
 
 
 
 
-	public static String informationTrack (Track track) {
+
+	public static Alert informationTrack (Track track) {
+
 		String info = new String();
 
 		if(track.getArtist()!= Tools.DARTIST) {
@@ -475,9 +486,11 @@ public class ContextMenus{
 			info = info +"Year: Unknown";
 		}
 
-		info = info + "Duration " + track.getDuration().toMinutes();
+		info = info + "Duration: " + PlayerBuilder.timeMinutes(track.getDuration().toSeconds());
 
-		return info;
+		Alert informationDialog = new Alert(AlertType.NONE,	info, ButtonType.OK); 
+
+		return informationDialog;
 	}
 
 

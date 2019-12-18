@@ -33,25 +33,22 @@ public class MainApp extends Application{
 	//CHECK Handle non existing song GIO might be done
 	//CHECK aggiungere canzoni a songqueue decentemente GIO controllare come sono aggiunte ContextMenu OK
 	//CHECK rimuovere e aggiungere decentemente le canzoni alla playlist GIO controlla che siano tutte aggiunte nel modo giusto
-	
-	//TODO sort playlists FO/GIO
-	
-	//TODO fix playlists special characters FO might be done
-	//TODO check playlist/tracklist/songqueue context menu FO
-	//TODO canzoni aggiunte alla songqueue vanno dopo la canzone che suona FO
-	//TODO contextmenu trackview quando non si seleziona una canzone FO se non ci sono track selezionate, il menu non deve comparire
 
-	//TODO player redesign DAVIDE
-	//TODO loading screen DAVIDE
-	//TODO repeat graphics DAVIDE
+//	//TODO sort playlists tasti FO/GIO
+
+//	//TODO fix playlists special characters FO might be done
+
+
+//	//TODO player redesign DAVIDE
+//	//TODO loading screen DAVIDE
+	//TODO canc non funziona al momento nel contextmenu DAVIDE
+//	//TODO repeat graphics DAVIDE
 	//TODO nullpointerexceptions nel player quando non ci sono canzoni selezionate DAVIDE (rendi il player non selezionabile quando pc.getcurrenttrack() == null)
-	//TODO duration playlist leggibile DAVIDE
-	//TODO duration track leggibile DAVIDE
-	//TODO scroll on drag DAVIDE
-	//TODO drag sulla songqueue DAVIDE
-	//TODO drag and drop sulle playlist DAVIDE
-	
-	//TODO per gli errori usare Tools.stackTrace 
+//	//TODO scroll on drag DAVIDE
+//	//TODO drag sulla songqueue DAVIDE
+//	//TODO drag and drop sulle playlist DAVIDE
+
+//	//TODO per gli errori usare Tools.stackTrace
 	//TODO refactor generale
 
 	public static List<String> mainDirList = new ArrayList<String>();

@@ -39,6 +39,7 @@ public class Initialize {
 			});
 		} catch (IOException e) { 
 			System.out.println("mainDir non selezionata");
+			Tools.stackTrace(e);
 		}
 
 		while(MainApp.mainDirList.size() == 0) {
@@ -94,12 +95,13 @@ public class Initialize {
 								bw.write(dir);
 								bw.newLine();
 							} catch (IOException e) {
-								// TODO Auto-generated catch block
+								Tools.stackTrace(e);
 								e.printStackTrace();
 							}
 						});
 						
 					} catch (IOException e) {
+						Tools.stackTrace(e);
 						e.printStackTrace();
 					}
 				}
@@ -158,6 +160,7 @@ public class Initialize {
 			//TODO errore
 			System.out.println("Non è stato possibile caricare le canzoni");
 			e.printStackTrace();
+			Tools.stackTrace(e);
 		}
 
 		if(toBeRemoved.size() > 0) removeTrackFromDirFile(toBeRemoved);
@@ -183,11 +186,13 @@ public class Initialize {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					Tools.stackTrace(e);
 				}
 			});
 		
 		} catch (IOException e) {
 			e.printStackTrace();
+			Tools.stackTrace(e);
 		}
 
 		Alert alert = new Alert(AlertType.INFORMATION);
