@@ -160,9 +160,7 @@ public class Tools {
 					Tools.stackTrace(e1);
 				}
 				saveAsPlaylist(tracklist, playlistName);
-			} else
-				e.printStackTrace();
-			Tools.stackTrace(e);
+			} else Tools.stackTrace(e);
 		}
 		try (BufferedWriter bw= Files.newBufferedWriter(filePath)){
 			tracklist.forEach(t->{

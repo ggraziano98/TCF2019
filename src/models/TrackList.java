@@ -334,8 +334,6 @@ public class TrackList extends SimpleListProperty<Track> {
 			@Override
 			public Void call() throws InterruptedException{
 
-
-
 				if(l != u) {
 					for(int i = 0; i<tl.subList(l, u).size(); i++) {
 						tl.subList(l, u).get(i).setMetadata();
@@ -345,7 +343,6 @@ public class TrackList extends SimpleListProperty<Track> {
 				return null;
 			}
 		};
-		
 		pd.start(task);
 		
 		ProgressDialog.pBar.progressProperty().bind(task.progressProperty());
