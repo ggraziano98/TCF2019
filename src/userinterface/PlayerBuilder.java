@@ -337,13 +337,13 @@ public class PlayerBuilder {
 		Label songName = new Label();
 		songName.setPadding(new Insets(0, 3, 0, 3));
 		StringProperty songText = new SimpleStringProperty("");
-		if (pc.getTracklist().getSize()>0) {
+		if (pc.getCurrentTrack() != null) {
 			songText.set(pc.getCurrentTrack().getTitle());
 		}
 		else songText.set("Seleziona una canzone");
 		songName.textProperty().bind(songText);
 		pc.currentIntProperty().addListener((obs, oldv, newv)->{
-			if (pc.getTracklist().getSize()>0) {
+			if (pc.getCurrentTrack() != null) {
 				songText.set(pc.getCurrentTrack().getTitle());
 			}
 			else songText.set("Seleziona una canzone");
@@ -355,13 +355,13 @@ public class PlayerBuilder {
 		Label songArtist= new Label();
 		songArtist.setPadding(new Insets(0, 3, 0, 3));
 		StringProperty artistText = new SimpleStringProperty("");
-		if (pc.getTracklist().getSize()>0) {
+		if (pc.getCurrentTrack() != null) {
 			artistText.set(pc.getCurrentTrack().getArtist());
 		}
 		else artistText.set("");
 		songArtist.textProperty().bind(artistText);
 		pc.currentIntProperty().addListener((obs, oldv, newv)->{
-			if (pc.getTracklist().getSize()>0) {
+			if (pc.getCurrentTrack() != null) {
 				artistText.set(pc.getCurrentTrack().getArtist());
 			}
 			else artistText.set("Seleziona una canzone");
@@ -376,7 +376,7 @@ public class PlayerBuilder {
 		songView.setFitHeight(0.9*Tools.DHEIGHTS[4]);
 
 		pc.currentIntProperty().addListener((obs, oldv, newv)->{
-			if (pc.getTracklist().getSize()>0) {
+			if (pc.getCurrentTrack() != null) {
 				try {
 					pc.getCurrentTrack().setImageView(songView);
 				} catch (Exception e) {

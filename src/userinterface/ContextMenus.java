@@ -67,9 +67,7 @@ public class ContextMenus{
 			public void handle(ActionEvent event) {
 				MainApp.pc.getTracklist().clear();
 				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
-				for (Track track : tracklistToAdd) {
-					MainApp.pc.getTracklist().addNew(track);
-				}
+				MainApp.pc.setTracklist(tracklistToAdd);
 
 				MainApp.pc.setCurrentTrack(MainApp.pc.getTracklist().get(0));	
 				MainApp.pc.play();
@@ -81,9 +79,7 @@ public class ContextMenus{
 				MainApp.pc.getTracklist().clear();
 				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
 				Collections.shuffle(tracklistToAdd);
-				for (Track track : tracklistToAdd) {
-					MainApp.pc.getTracklist().addNew(track);
-				}
+				MainApp.pc.setTracklist(tracklistToAdd);
 				
 				MainApp.pc.setCurrentTrack(MainApp.pc.getTracklist().get(0));	
 				MainApp.pc.play();

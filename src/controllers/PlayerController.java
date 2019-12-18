@@ -187,7 +187,7 @@ public class PlayerController {
 
 	public final void setTracklist(TrackList tracklist) {
 		this.tracklist.set(new TrackList(tracklist));
-		this.tracklist.setMetadata();
+		this.setCurrentInt(-1);
 	}
 
 

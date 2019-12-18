@@ -7,9 +7,17 @@ import java.util.Optional;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import utils.Tools;
 
@@ -78,7 +86,7 @@ public class TrackList extends SimpleListProperty<Track> {
 			this.refreshPositions();
 		}
 		catch (Exception e) {
-//			System.out.println(e.getMessage());
+			//			System.out.println(e.getMessage());
 			Tools.stackTrace(e);
 		}
 	}
@@ -106,7 +114,7 @@ public class TrackList extends SimpleListProperty<Track> {
 			this.refreshPositions();
 		}
 		catch (Exception e) {
-//			System.out.println(e.getMessage());
+			//			System.out.println(e.getMessage());
 			Tools.stackTrace(e);
 		}
 	}
@@ -185,7 +193,7 @@ public class TrackList extends SimpleListProperty<Track> {
 			this.addTrack(position, new Track(path));
 		}
 		catch (Exception e) {
-//			e.printStackTrace();
+			//			e.printStackTrace();
 			Tools.stackTrace(e);
 		}
 	}
@@ -204,7 +212,7 @@ public class TrackList extends SimpleListProperty<Track> {
 			this.refreshPositions();
 		}
 		catch (Exception e) {
-//			System.out.println(e.getMessage());
+			//			System.out.println(e.getMessage());
 			Tools.stackTrace(e);
 		}
 	}
@@ -316,13 +324,43 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param upper
 	 */
 	public void setMetadata(int lower, int upper) {
-		lower = Math.min(lower, this.getSize());
-		upper = Math.min(upper, this.getSize());
-		if(lower != upper) {
-			this.subList(lower, upper).forEach(t->{
-				t.setMetadata();
-			});
-		}
+		TrackList tl = this;
+		int l= Math.min(lower, tl.getSize());
+		int u = Math.min(upper, tl.getSize());
+		
+		ProgressDialog pd = new ProgressDialog();
+		
+		Task<Void> task = new Task<Void>() {
+			@Override
+			public Void call() throws InterruptedException{
+
+
+
+				if(l != u) {
+					for(int i = 0; i<tl.subList(l, u).size(); i++) {
+						tl.subList(l, u).get(i).setMetadata();
+						updateProgress(i, u-l);
+					}
+				}
+				return null;
+			}
+		};
+		
+		pd.start(task);
+		
+		ProgressDialog.pBar.progressProperty().bind(task.progressProperty());
+		task.progressProperty().addListener((obs, oldv, newv)->{
+			ProgressDialog.label.setText("Loading songs... " + (int) (newv.doubleValue()*(u-l)) + "/" + (u-l));
+		});
+		
+        task.setOnSucceeded(event -> {
+        	ProgressDialog.stage.close();
+        });
+
+        Thread thread = new Thread(task);
+        thread.start();
+        
+		ProgressDialog.stage.showAndWait();
 	}
 
 	public String getPlaylistName() {
@@ -334,4 +372,28 @@ public class TrackList extends SimpleListProperty<Track> {
 		this.playlistName = playlistName;
 	}
 
+}
+
+
+final class ProgressDialog {
+	static ProgressBar pBar = new ProgressBar(0);
+	static Label label = new Label();
+	static Stage stage = new Stage();
+
+
+	public void start(Task<Void> task) {
+		VBox box = new VBox();
+		box.setAlignment(Pos.CENTER);
+		pBar.prefWidthProperty().bind(box.widthProperty().subtract(20));
+		box.setPadding(new Insets(10, 20, 10, 20));
+		
+		label.setText("Loading songs...");
+		pBar.setProgress(0);
+
+		box.getChildren().addAll(pBar, label);
+
+		Scene scene = new Scene(box, 300, 100);
+		stage.setTitle("Loading Tracks");
+		stage.setScene(scene);
+	}
 }
