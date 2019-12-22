@@ -64,9 +64,6 @@ public class PlayerBuilder {
 		rowConstraint.setValignment(VPos.CENTER);
 		playerV.getRowConstraints().add(rowConstraint);
 
-		// TODO togliere
-		playerV.setGridLinesVisible(true);
-
 		HBox playerButtons = controlStuff(pc, playerV, findText);
 		HBox sliderBox = songTime(pc);
 		sliderBox.setAlignment(Pos.CENTER);
@@ -333,7 +330,6 @@ public class PlayerBuilder {
 		
 		HBox songInfo = new HBox(10);
 		
-		//TODO songtext che gira (o almeno che ci sta dentro
 		Label songName = new Label();
 		songName.setPadding(new Insets(0, 3, 0, 3));
 		StringProperty songText = new SimpleStringProperty("");

@@ -25,7 +25,6 @@ public class RightPanels {
 
 	public static void panels() throws Exception{
 
-		//TODO make buttons into function? Would be cleaner 
 		setArtistsPane();
 		setAlbumsPane();
 

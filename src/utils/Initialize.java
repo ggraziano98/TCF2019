@@ -157,9 +157,7 @@ public class Initialize {
 				}
 			}
 		} catch (IOException e) {
-			//TODO errore
 			System.out.println("Non è stato possibile caricare le canzoni");
-			e.printStackTrace();
 			Tools.stackTrace(e);
 		}
 
@@ -184,7 +182,6 @@ public class Initialize {
 					bw.newLine();
 					bw.write(t.getString());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					Tools.stackTrace(e);
 				}

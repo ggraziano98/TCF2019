@@ -1,15 +1,16 @@
 package userinterface;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.List;
 
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
@@ -81,6 +82,7 @@ public class PlaylistStuff {
 
 		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c-> {
 			while(c.next()) {
+
 				c.getAddedSubList().forEach(s->{
 					createPlaylistView(s, playlistsVbox);
 				});
@@ -99,25 +101,12 @@ public class PlaylistStuff {
 					MainApp.playlistList.removeIf(tl-> tl.getPlaylistName()==s);
 
 				});
-				if(c.wasPermutated()) {
-					for(int i=0; i<MainApp.savedPlaylists.size(); i++) {
-						RadioButton playlist = (RadioButton) playlistsVbox.getChildren().get(0);
 
-						MainApp.root.getChildren().remove(playlist.getUserData());		//TODO capire se serve
-						playlistsVbox.getChildren().remove(playlist);
-
-					}
-
-					MainApp.savedPlaylists.forEach((String name)->{
-						createPlaylistView(name, playlistsVbox);
-					});
-				}
 			}
 		});
 
 		playlistMain.getChildren().addAll(addBox, scroll);
 
-		//TODO al momento funziona male, quando davide mette a posto la grafica è da fixare
 
 		return playlistMain;
 	}
@@ -131,7 +120,7 @@ public class PlaylistStuff {
 	 * @param mainPanel
 	 * @param dataPane
 	 */
-	private static void playlistButton(String string, VBox box, ToggleGroup mainPanel, Node dataPane) {
+	private static void playlistButton(String string, VBox box, ToggleGroup mainPanel, VBox dataPane) {
 		RadioButton playlistButton = new RadioButton(string);
 		playlistButton.getStyleClass().remove("radio-button");
 		playlistButton.getStyleClass().add("toggle-button");
@@ -179,22 +168,41 @@ public class PlaylistStuff {
 
 
 		TrackView.setDragDrop(table, tracklist);
+		
 	}
 
-/**
- * ordina la playlist in base al nome
- */
-	public static void sortPlaylistsByName() {
-		MainApp.savedPlaylists.sort(String.CASE_INSENSITIVE_ORDER);
+	/**
+	 * ordina la playlist in base al nome
+	 * 
+	 * @param aToZ true if A->Z, false if Z->A
+	 */
+	public static void sortPlaylistsByName(boolean aToZ) {
+		List<Node> list = new ArrayList<Node>(MainApp.playlistsVbox.getChildren());
+
+		list.sort(new NameComparator());
+		if(!aToZ) Collections.reverse(list);
+		MainApp.playlistsVbox.getChildren().clear();
+		MainApp.playlistsVbox.getChildren().addAll(list);
 	}
 
-	
+
 	/**
 	 * ordina le playlist in base alla durata
+	 * 
+	 * @param smallerFirst true if smaller goes first
 	 */
-	public static void sortPlaylistsByDuration() {
-		HashMap<String, Double> map = new HashMap<String, Double>();
+	public static void sortPlaylistsByDuration(boolean smallerFirst) {
+		List<Node> list = new ArrayList<Node>(MainApp.playlistsVbox.getChildren());
+
+		list.sort(new DurationComparator());
+		if(smallerFirst) Collections.reverse(list);
+		MainApp.playlistsVbox.getChildren().clear();
+		MainApp.playlistsVbox.getChildren().addAll(list);
 		
+		/*UNUSED
+		 * 
+		HashMap<String, Double> map = new HashMap<String, Double>();
+
 		for (TrackList playlist : MainApp.playlistList) {
 			map.put(playlist.getPlaylistName(), playlist.totalDuration().toSeconds());
 		}
@@ -202,23 +210,43 @@ public class PlaylistStuff {
 		ValueComparator bvc = new ValueComparator(map);
 		TreeMap<String, Double> sortedmap = new TreeMap<String, Double>(bvc); 
 		sortedmap.putAll(map);
-		
+
 		MainApp.savedPlaylists.clear();
-		
+
 		for (String playlistName : sortedmap.keySet()) {
 			MainApp.savedPlaylists.add(playlistName);
 		}
-		
+		*/
+
 	}
 
 }
 
+class NameComparator implements Comparator<Node> {
+	@Override
+	public int compare(Node a, Node b) {
+		return ((Labeled) a).getText().compareToIgnoreCase(((Labeled) b).getText());
+	}
+}
 
 
-
-
-//TODO vedere se lasciarlo qui o spostarlo
-class ValueComparator implements Comparator<String> {
+class DurationComparator implements Comparator<Node> {
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public int compare(Node a, Node b) {
+		TrackList ta = (TrackList) ((TableView<Track>) ((VBox) a.getUserData()).getChildren().get(0)).getUserData();
+		TrackList tb = (TrackList) ((TableView<Track>) ((VBox) b.getUserData()).getChildren().get(0)).getUserData();
+		if (tb.totalDuration().greaterThan(ta.totalDuration())) return 1;
+		else {
+			if(tb.totalDuration().lessThan(ta.totalDuration())) return -1;
+			return ta.getPlaylistName().compareToIgnoreCase(tb.getPlaylistName());
+		}
+	}
+	
+	
+	/*UNUSED
+	 * 
 	Map<String, Double> base;
 
 	public ValueComparator(Map<String, Double> base) {
@@ -234,4 +262,5 @@ class ValueComparator implements Comparator<String> {
 			return 1;
 		} // returning 0 would merge keys
 	}
+	*/
 }

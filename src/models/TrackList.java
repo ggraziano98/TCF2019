@@ -131,7 +131,6 @@ public class TrackList extends SimpleListProperty<Track> {
 		this.add(0, track);
 		this.refreshPositions();
 
-		// TODO check
 		this.fireValueChangedEvent();
 	}
 
@@ -222,7 +221,6 @@ public class TrackList extends SimpleListProperty<Track> {
 
 	/**
 	 * overload di RemoveTrackToPosition
-	 * TODO vedere se funziona
 	 *
 	 * @param track
 	 *
@@ -235,8 +233,6 @@ public class TrackList extends SimpleListProperty<Track> {
 		Optional<ButtonType> result = selection.showAndWait();
 		if (result.get() == ButtonType.OK){
 			try {
-				System.out.println("sto cercando di rimuovere");
-
 				this.remove(track);
 
 				this.refreshPositions();

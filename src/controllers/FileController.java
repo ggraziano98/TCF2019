@@ -90,8 +90,6 @@ public class FileController {
 		Track track = new Track(path);
 		track.setMetadata();
 
-		//TODO controllare che funzioni
-
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
@@ -126,33 +124,6 @@ public class FileController {
 			}
 		});
 	}
-
-	/*
-	public void editInfo(Track track, String info) {
-		// TODO get info screen
-
-		// TODO input message
-
-		Scanner input = new Scanner(System.in);
-
-		switch(info) {
-		case "artist":
-			track.setArtist(input.toString());
-		case "album":
-			track.setAlbum(input.toString());
-		case "title":
-			track.setTitle(input.toString());
-		case "genre":
-			track.setGenre(input.toString());
-		case "year":
-			track.setYear(input);
-		case "Duration":
-			track.setDuration(input);
-		case "image":
-			track.setImage(input);
-		}
-	}
-	 */
 
 	/**
 	 * Controllo se un file è della giusta estensione

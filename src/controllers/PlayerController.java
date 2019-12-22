@@ -16,7 +16,6 @@ import userinterface.MainApp;
 import utils.Tools;
 
 public class PlayerController {
-	//TODO make sure songs are closed properly
 
 	/**
 	 * inizializzo i data member, mi dicono la canzone corrente e quella successiva
@@ -156,7 +155,6 @@ public class PlayerController {
 	}
 
 
-	//TODO controllare se giusto
 	public final void setCurrentTrack(Track currentTrack) {
 		if(this.currentTrack != null) {
 			this.currentTrack.setPlaying(false);

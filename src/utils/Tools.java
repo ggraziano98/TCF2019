@@ -141,7 +141,7 @@ public class Tools {
 
 
 
-	/**TODO errore
+	/**
 	 * funzione che salva la tracklist come file di testo
 	 *
 	 * @param tracklist
@@ -215,7 +215,7 @@ public class Tools {
 
 
 
-	/**TODO errore
+	/**
 	 *
 	 * prende il nome del file di testo di una tracklist salvata e crea un oggetto tracklist con i path contenuti nel file di testo
 	 *
@@ -243,7 +243,6 @@ public class Tools {
 			br.close();
 
 		} catch (IOException e) {
-			//TODO errore
 			Tools.stackTrace(e);
 			System.out.println("La playlist da leggere non esiste");
 		}
@@ -295,7 +294,6 @@ public class Tools {
 	 *
 	 * mi permette di eliminare una playlist in file di testo
 	 *
-	 * TODO messaggio completamento operazione
 	 *
 	 * @param playlist
 	 */
@@ -331,7 +329,6 @@ public class Tools {
 
 			} else {
 				if(Files.deleteIfExists(filePath)) {
-					//TODO non so se qua ci vada
 					MainApp.savedPlaylists.remove(playlist);
 				}
 				else System.out.println("Non esiste la playlist selezionata");
@@ -345,7 +342,6 @@ public class Tools {
 	}
 
 
-	//TODO handle tracklist errors
 	public static void DeleteTrack(Track track) {
 		Alert selection = new Alert(AlertType.CONFIRMATION);
 		selection.setTitle("Delete song");

@@ -38,34 +38,34 @@ public class ContextMenus{
 		MenuItem duration = new MenuItem("Total duration");
 		MenuItem play = new MenuItem("Play");
 		MenuItem shufflePlay = new MenuItem("Shuffle Play");
-		
-		
-		//da togliere quando ci sarà il bottone
-		MenuItem prova = new MenuItem("order duration");
-		prova.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				PlaylistStuff.sortPlaylistsByDuration();
-			}
-		});
-		MenuItem prova1 = new MenuItem("order name");
-		prova1.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				PlaylistStuff.sortPlaylistsByName();
-			}
-		});
 
-		
-		
 		//Creo il menu secondario e un suo item
 		Menu addSongTo = new Menu("Add all the songs of this playlist to");		
 		MenuItem songQueue = new MenuItem("Song queue");
 		SeparatorMenuItem separator = new SeparatorMenuItem();
 
 
+		//da togliere quando ci sarà il bottone
+		MenuItem prova = new MenuItem("order duration");
+		prova.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				boolean visible = button.isVisible();
+				PlaylistStuff.sortPlaylistsByDuration(true);
+				button.setVisible(visible);
+			}
+		});
+		MenuItem prova1 = new MenuItem("order name");
+		prova1.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				boolean visible = button.isVisible();
+				PlaylistStuff.sortPlaylistsByName(true);
+				button.setVisible(visible);
+			}
+		});
+
 		//Implemento gli item del menu primario
 		play.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				MainApp.pc.getTracklist().clear();
 				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
 				MainApp.pc.setTracklist(tracklistToAdd);
 
@@ -80,7 +80,7 @@ public class ContextMenus{
 				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
 				Collections.shuffle(tracklistToAdd);
 				MainApp.pc.setTracklist(tracklistToAdd);
-				
+
 				MainApp.pc.setCurrentTrack(MainApp.pc.getTracklist().get(0));	
 				MainApp.pc.play();
 			}
@@ -127,47 +127,28 @@ public class ContextMenus{
 			}
 		});
 
+		//menu che fa aggiungere tutte le canzoni in una playlist alla playlist selezionata
 		MainApp.savedPlaylists.forEach((String playlistName)->{
-			MenuItem playlist = new MenuItem(playlistName);	
-			playlist.setOnAction(new EventHandler<ActionEvent>() {
-				public void handle(ActionEvent event) {
-					TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
-					MainApp.playlistList.forEach(tl->{
-						if(tl.getPlaylistName() == playlistName) {
-							tl.addAll(tracklistToAdd);
-							Tools.saveAsPlaylist(tl, playlistName);
-						}
-					});
-				}	
-			});
-			addSongTo.getItems().add(playlist);
+			addSongTo.getItems().add(addPlaylistToPlaylist(playlistName, button));
 		});
 
 
 		//controllo che non siano state create nuove playlist, se sono state create le aggiungo al menu
 		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c->{
-			addSongTo.getItems().removeIf(i->true);
-			c.getList().forEach(playlistName->{
-				MenuItem playlist = new MenuItem(playlistName);	
-				playlist.setOnAction(new EventHandler<ActionEvent>() {
-					public void handle(ActionEvent event) {
-						TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
-						MainApp.playlistList.forEach(tl->{
-							if(tl.getPlaylistName() == playlistName) {
-								tl.addAll(tracklistToAdd);
-								Tools.saveAsPlaylist(tl, playlistName);
-							}
-						});
-					}	
+			while(c.next()) {
+				addSongTo.getItems().removeIf(i->!MainApp.savedPlaylists.contains(i.getText()));
+				c.getAddedSubList().forEach(playlistName->{
+					addSongTo.getItems().add(addPlaylistToPlaylist(playlistName, button));
 				});
-				addSongTo.getItems().add(playlist);
-			});
-			addSongTo.getItems().addAll(separator,songQueue);
+				addSongTo.getItems().addAll(separator,songQueue);
+			}
 		});
 
 		//aggiungo gli items ai menu principale e secondario
 		addSongTo.getItems().addAll(separator, songQueue);
-		menu.getItems().addAll(prova, prova1, play, shufflePlay, addSongTo, duration, newPlaylist, deletePlaylist);
+		menu.getItems().addAll(prova, prova1, new SeparatorMenuItem(),
+				play, shufflePlay, addSongTo, duration, new SeparatorMenuItem(),
+				newPlaylist, deletePlaylist);
 
 		//event handler del menu
 		button.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
@@ -182,6 +163,30 @@ public class ContextMenus{
 			menu.hide();
 		});
 	}
+
+	/**
+	 * MenuItem delle playlist che permette di aggiungere tutte le track di una playlist a un'altra playlist
+	 * @param playlistName Nome della playlist a cui aggiungere
+	 * @param button RadioButton a cui è collegata la playlist da aggiungere
+	 * @return
+	 */
+	private static MenuItem addPlaylistToPlaylist(String playlistName, RadioButton button) {
+		MenuItem playlist  = new MenuItem(playlistName);
+		playlist.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
+				MainApp.playlistList.forEach(tl->{
+					if(tl.getPlaylistName() == playlistName) {
+						tl.addAll(tracklistToAdd);
+						Tools.saveAsPlaylist(tl, playlistName);
+					}
+				});
+			}
+		});
+
+		return playlist;
+	}
+
 
 
 
@@ -234,40 +239,18 @@ public class ContextMenus{
 		});
 
 		MainApp.savedPlaylists.forEach((String playlistName)->{
-			MenuItem playlist = new MenuItem(playlistName);	
-			playlist.setOnAction(new EventHandler<ActionEvent>() {
-				public void handle(ActionEvent event) {
-					Object track = table.getSelectionModel().getSelectedItem();
-					MainApp.playlistList.forEach(tl->{
-						if(tl.getPlaylistName() == playlistName) {
-							tl.addNew((Track) track);
-							Tools.saveAsPlaylist(tl, playlistName);
-						}
-					});
-				}	
-			});
-			addSongTo.getItems().add(playlist);
+			addSongTo.getItems().add(addTrackToPlaylist(playlistName, table));
 		});
 
 		//controllo che non siano state create altre playlist
 		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c->{
-			addSongTo.getItems().removeIf(i->true);
-			c.getList().forEach(playlistName->{
-				MenuItem playlist = new MenuItem(playlistName);
-				playlist.setOnAction(new EventHandler<ActionEvent>() {
-					public void handle(ActionEvent event) {
-						Track track = table.getSelectionModel().getSelectedItem();
-						MainApp.playlistList.forEach(tl->{
-							if(tl.getPlaylistName() == playlistName) {
-								tl.addNew(track);
-								Tools.saveAsPlaylist(tl, playlistName);
-							}
-						});
-					}
+			while(c.next()) {
+				addSongTo.getItems().removeIf(i->!MainApp.savedPlaylists.contains(i.getText()));
+				c.getAddedSubList().forEach(playlistName->{
+					addSongTo.getItems().add(addTrackToPlaylist(playlistName, table));
 				});
-				addSongTo.getItems().add(playlist);
-			});
-			addSongTo.getItems().addAll(separatorMenuItem,songQueue);
+				addSongTo.getItems().addAll(separatorMenuItem,songQueue);
+			}
 		});
 
 		//aggiungo tutto ai rispettivi menu
@@ -284,6 +267,29 @@ public class ContextMenus{
 		table.setOnMousePressed(ev->{
 			menu.hide();
 		});
+	}
+
+
+	/**
+	 * 
+	 * @param playlistName
+	 * @param table
+	 * @return
+	 */
+	private static MenuItem addTrackToPlaylist(String playlistName, TableView<Track> table) {
+		MenuItem playlist = new MenuItem(playlistName);	
+		playlist.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				Object track = table.getSelectionModel().getSelectedItem();
+				MainApp.playlistList.forEach(tl->{
+					if(tl.getPlaylistName() == playlistName) {
+						tl.addNew((Track) track);
+						Tools.saveAsPlaylist(tl, playlistName);
+					}
+				});
+			}	
+		});
+		return playlist;
 	}
 
 
@@ -315,7 +321,8 @@ public class ContextMenus{
 		remove.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Object item = table.getSelectionModel().getSelectedItem();
-				MainApp.pc.getTracklist().removeTrack((Track) item);
+				MainApp.pc.getTracklist().remove((Track) item);
+				MainApp.pc.getTracklist().refreshPositions();
 			}
 		});
 
@@ -329,7 +336,10 @@ public class ContextMenus{
 
 		clear.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
+				Track track = MainApp.pc.getCurrentTrack();
 				MainApp.pc.getTracklist().clear();
+				MainApp.pc.getTracklist().addTrack(track);
+				MainApp.pc.refreshCurrentInt();
 			}
 		});
 
@@ -397,53 +407,34 @@ public class ContextMenus{
 				}	
 			}
 		});
-
-		MainApp.savedPlaylists.forEach((String playlistName)->{
-			MenuItem playlist = new MenuItem(playlistName);	
-			playlist.setOnAction(new EventHandler<ActionEvent>() {
-				public void handle(ActionEvent event) {
-					Track track = table.getSelectionModel().getSelectedItem();
-					MainApp.playlistList.forEach(tl->{
-						if(tl.getPlaylistName() == playlistName) {
-							tl.addNew(track);
-							Tools.saveAsPlaylist(tl, playlistName);
-						}
-					});
-				}	
-			});
-
-			addSongTo.getItems().add(playlist);
-		});
-
+		
+		/*
 		//controllo che non ci siano nuovi elementi playlist
 		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c->{
-			addSongTo.getItems().removeIf(i->true);
-			c.getList().forEach(playlistName->{
-				MenuItem playlist = new MenuItem(playlistName);
-				playlist.setOnAction(new EventHandler<ActionEvent>() {
-					public void handle(ActionEvent event) {
-						Track track = table.getSelectionModel().getSelectedItem();
-						MainApp.playlistList.forEach(tl->{
-							if(tl.getPlaylistName() == playlistName) {
-								tl.addNew(track);
-								Tools.saveAsPlaylist(tl, playlistName);
-							}
-						});
-					}
+			menu.getItems().remove(addSongTo);
+			while(c.next()) {				
+				addSongTo.getItems().clear();
+				c.getList().forEach(playlistName->{
+					addSongTo.getItems().add(addTrackToPlaylist(playlistName, table));
 				});
-				addSongTo.getItems().add(playlist);
-			});
-			addSongTo.getItems().addAll(separator,songQueue);
+				addSongTo.getItems().addAll(separator,songQueue);
+			}
+			menu.getItems().add(0, addSongTo);
 		});
+		*/
 
 		//aggiungo gli item ai menu
-		addSongTo.getItems().add(songQueue);
 		menu.getItems().addAll(addSongTo, information, separator, remove);
 
 		//event handler del context menu
 		table.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			public void handle(ContextMenuEvent event) {
 				if(table.getSelectionModel().getSelectedItem() != null) {
+					addSongTo.getItems().clear();
+					MainApp.savedPlaylists.forEach((String playlistName)->{
+						addSongTo.getItems().add(addTrackToPlaylist(playlistName, table));
+					});
+					addSongTo.getItems().addAll(new SeparatorMenuItem(),songQueue);
 					menu.show(table, event.getScreenX(), event.getScreenY());
 				}
 			}

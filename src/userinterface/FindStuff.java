@@ -45,7 +45,7 @@ public class FindStuff {
 	public static void find(String keyWord) {	
 
 		GridPane root = MainApp.root;
-		// TODO espandere 
+		//TODO espandere se si fa ArtistsPane
 		List<Track> list = MainApp.allSongs.stream().filter(t->{
 			return (
 					t.getAlbum().toLowerCase().contains(keyWord.toLowerCase()) ||
