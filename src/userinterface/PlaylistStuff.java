@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
@@ -55,15 +56,39 @@ public class PlaylistStuff {
 		addView.setFitHeight(20);
 		addView.setFitWidth(20);
 		Button addButton = new Button("",addView);
-		addBox.getChildren().addAll(leTuePlaylists, addButton);
-		addButton.setTranslateX(Tools.DWIDTHS[0]/2-10);
+		addButton.setTranslateX(Tools.DWIDTHS[0]/4-10);
 		addButton.setOnMouseClicked((e) -> {
 			Tools.newPlaylist();
 		});
 
+		FileInputStream sortByNameFile = new FileInputStream("files\\player\\sortname.png");
+		Image sortByNameImage = new Image(sortByNameFile);
+		ImageView sortByNameView = new ImageView(sortByNameImage);
+		sortByNameView.setFitHeight(20);
+		sortByNameView.setFitWidth(20);
+		Button sortByNameButton = new Button("",sortByNameView);	
+		sortByNameButton.setTranslateX(Tools.DWIDTHS[0]/4-10);
+		AtomicBoolean sortNameValue = new AtomicBoolean(true);
+		sortByNameButton.setOnMouseClicked((e) -> {
+			PlaylistStuff.sortPlaylistsByName(sortNameValue.get());
+			sortNameValue.set(!sortNameValue.get());
+		});		
+
+		FileInputStream sortByDurationFile = new FileInputStream("files\\player\\sortduration.png");
+		Image sortByDurationImage = new Image(sortByDurationFile);
+		ImageView sortByDurationView = new ImageView(sortByDurationImage);
+		sortByDurationView.setFitHeight(20);
+		sortByDurationView.setFitWidth(20);
+		Button sortByDurationButton = new Button("",sortByDurationView);	
+		sortByDurationButton.setTranslateX(Tools.DWIDTHS[0]/4-10);
+		AtomicBoolean sortDurationValue = new AtomicBoolean(true);
+		sortByDurationButton.setOnMouseClicked((e) -> {
+			PlaylistStuff.sortPlaylistsByDuration(sortDurationValue.get());
+			sortDurationValue.set(!sortDurationValue.get());
+		});
 
 
-
+		addBox.getChildren().addAll(leTuePlaylists, addButton, sortByNameButton, sortByDurationButton);
 
 
 		VBox playlistsVbox = MainApp.playlistsVbox;;
@@ -168,7 +193,7 @@ public class PlaylistStuff {
 
 
 		TrackView.setDragDrop(table, tracklist);
-		
+
 	}
 
 	/**
@@ -198,7 +223,7 @@ public class PlaylistStuff {
 		if(smallerFirst) Collections.reverse(list);
 		MainApp.playlistsVbox.getChildren().clear();
 		MainApp.playlistsVbox.getChildren().addAll(list);
-		
+
 		/*UNUSED
 		 * 
 		HashMap<String, Double> map = new HashMap<String, Double>();
@@ -216,7 +241,7 @@ public class PlaylistStuff {
 		for (String playlistName : sortedmap.keySet()) {
 			MainApp.savedPlaylists.add(playlistName);
 		}
-		*/
+		 */
 
 	}
 
@@ -231,7 +256,7 @@ class NameComparator implements Comparator<Node> {
 
 
 class DurationComparator implements Comparator<Node> {
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public int compare(Node a, Node b) {
@@ -243,8 +268,8 @@ class DurationComparator implements Comparator<Node> {
 			return ta.getPlaylistName().compareToIgnoreCase(tb.getPlaylistName());
 		}
 	}
-	
-	
+
+
 	/*UNUSED
 	 * 
 	Map<String, Double> base;
@@ -262,5 +287,5 @@ class DurationComparator implements Comparator<Node> {
 			return 1;
 		} // returning 0 would merge keys
 	}
-	*/
+	 */
 }

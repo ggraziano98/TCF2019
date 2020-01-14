@@ -45,24 +45,6 @@ public class ContextMenus{
 		SeparatorMenuItem separator = new SeparatorMenuItem();
 
 
-		//da togliere quando ci sarà il bottone
-		MenuItem prova = new MenuItem("order duration");
-		prova.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				boolean visible = button.isVisible();
-				PlaylistStuff.sortPlaylistsByDuration(true);
-				button.setVisible(visible);
-			}
-		});
-		MenuItem prova1 = new MenuItem("order name");
-		prova1.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				boolean visible = button.isVisible();
-				PlaylistStuff.sortPlaylistsByName(true);
-				button.setVisible(visible);
-			}
-		});
-
 		//Implemento gli item del menu primario
 		play.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
@@ -146,8 +128,7 @@ public class ContextMenus{
 
 		//aggiungo gli items ai menu principale e secondario
 		addSongTo.getItems().addAll(separator, songQueue);
-		menu.getItems().addAll(prova, prova1, new SeparatorMenuItem(),
-				play, shufflePlay, addSongTo, duration, new SeparatorMenuItem(),
+		menu.getItems().addAll( play, shufflePlay, new SeparatorMenuItem(), addSongTo, duration, new SeparatorMenuItem(),
 				newPlaylist, deletePlaylist);
 
 		//event handler del menu

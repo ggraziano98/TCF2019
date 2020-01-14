@@ -57,7 +57,7 @@ public class Initialize {
 		dialog.setTitle("Select Directory");
 		dialog.setHeaderText("Inserire il path alla directory selezionata");
 		dialog.setContentText("L'operazione porebbe richiedere del tempo");
-		
+
 
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == ButtonType.OK) {
@@ -70,62 +70,67 @@ public class Initialize {
 
 		if (result.isPresent() && result.get() != null){
 			setAttempt = true;
-			if(Files.isDirectory(Paths.get(result.get())) && !result.get().isEmpty()){
-				boolean isContained = false;
-				boolean contains = false;
-				String savedDir = "";
+			try {
+				if(Files.isDirectory(Paths.get(result.get())) && !result.get().isEmpty()){
+					boolean isContained = false;
+					boolean contains = false;
+					String savedDir = "";
 
-				for(String s:MainApp.mainDirList){
-					isContained = Tools.getDirsInDir(Paths.get(s)).contains(Paths.get(result.get()));
-					contains = Tools.getDirsInDir(Paths.get(result.get())).contains(Paths.get(s));
-					if(isContained || contains) {
-						savedDir = s;
-						System.out.println("contains " + contains + " is contained "+ isContained);
-						break;
+					for(String s:MainApp.mainDirList){
+						isContained = Tools.getDirsInDir(Paths.get(s)).contains(Paths.get(result.get()));
+						contains = Tools.getDirsInDir(Paths.get(result.get())).contains(Paths.get(s));
+						if(isContained || contains) {
+							savedDir = s;
+							System.out.println("contains " + contains + " is contained "+ isContained);
+							break;
+						}
+					};
+
+
+					if(!isContained && !contains) {
+						MainApp.mainDirList.add(result.get());
+						setDirSongs(result.get());
+						try (BufferedWriter bw= Files.newBufferedWriter(Tools.DIRFILEPATH)){
+							MainApp.mainDirList.forEach(dir->{
+								try {
+									bw.write(dir);
+									bw.newLine();
+								} catch (IOException e) {
+									Tools.stackTrace(e);
+									e.printStackTrace();
+								}
+							});
+
+						} catch (IOException e) {
+							Tools.stackTrace(e);
+							e.printStackTrace();
+						}
 					}
-				};
-
-
-				if(!isContained && !contains) {
-					MainApp.mainDirList.add(result.get());
-					setDirSongs(result.get());
-					try (BufferedWriter bw= Files.newBufferedWriter(Tools.DIRFILEPATH)){
-						MainApp.mainDirList.forEach(dir->{
-							try {
-								bw.write(dir);
-								bw.newLine();
-							} catch (IOException e) {
-								Tools.stackTrace(e);
-								e.printStackTrace();
-							}
-						});
-						
-					} catch (IOException e) {
-						Tools.stackTrace(e);
-						e.printStackTrace();
+					else if(isContained){
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setTitle("Errore");
+						alert.setHeaderText("La directory indicata è gia inclusa in una delle directory salvate: " + savedDir);
+						alert.showAndWait();
+						return addDirectory();
+					} else {
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setTitle("Errore");
+						alert.setHeaderText("La directory indicata include una directory già salvata: " + savedDir);
+						alert.showAndWait();
+						return addDirectory();
 					}
 				}
-				else if(isContained){
+				else {
 					Alert alert = new Alert(AlertType.ERROR);
 					alert.setTitle("Errore");
-					alert.setHeaderText("La directory indicata è gia inclusa in una delle directory salvate: " + savedDir);
-					alert.showAndWait();
-					return addDirectory();
-				} else {
-					Alert alert = new Alert(AlertType.ERROR);
-					alert.setTitle("Errore");
-					alert.setHeaderText("La directory indicata include una directory già salvata: " + savedDir);
+					alert.setHeaderText("Il path indicato non è una directory");
 					alert.showAndWait();
 					return addDirectory();
 				}
+			} catch (IllegalArgumentException e){
+				Tools.stackTrace(e);
 			}
-			else {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("Errore");
-				alert.setHeaderText("Il path indicato non è una directory");
-				alert.showAndWait();
-				return addDirectory();
-			}
+			
 		}
 
 		MainApp.allSongs = Initialize.getAllSongs();
@@ -171,7 +176,7 @@ public class Initialize {
 
 		TrackList tl = FileController.getFilesFromDir(dirPath);
 		tl.setMetadata();
-		
+
 
 		try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Tools.ALLSONGSFILEPATH.toString(), true), "UTF-8"))){
 			bw.newLine();
@@ -186,7 +191,7 @@ public class Initialize {
 					Tools.stackTrace(e);
 				}
 			});
-		
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			Tools.stackTrace(e);
@@ -269,7 +274,7 @@ public class Initialize {
 
 
 	public static void refreshDirFies() {
-		
+
 		//check if dir still exists. if it doesn't, remove it from the DirFile
 		try (BufferedWriter bw = Files.newBufferedWriter(Tools.DIRFILEPATH)){
 			MainApp.mainDirList.forEach(s->{
@@ -287,7 +292,7 @@ public class Initialize {
 		}
 
 	}
-	
+
 	public static void checkMainFiles() {
 		try {
 			Files.createDirectories(Paths.get("playlists"));

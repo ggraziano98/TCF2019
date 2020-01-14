@@ -190,8 +190,9 @@ public class Tools {
 
 		if (result.isPresent() && !result.get().isEmpty()){
 			playlistName = result.get();
-			Path filePath = Paths.get("playlists", playlistName + ".txt");
+
 			try {
+				Path filePath = Paths.get("playlists", playlistName + ".txt");
 				Files.createFile(filePath);
 				MainApp.savedPlaylists.add(playlistName);
 
@@ -203,9 +204,11 @@ public class Tools {
 					alert.setContentText("Usare un altro nome");
 					alert.showAndWait();
 				} else {
-					e.printStackTrace();
+//					e.printStackTrace();
 					Tools.stackTrace(e);
 				}
+			} catch (IllegalArgumentException e1) {
+				Tools.invalidCharacter();
 			}
 		}
 
@@ -214,6 +217,8 @@ public class Tools {
 
 
 
+
+	
 
 	/**
 	 *
@@ -482,6 +487,14 @@ public class Tools {
 		// Set expandable Exception into the dialog pane.
 		alert.getDialogPane().setExpandableContent(expContent);
 
+		alert.showAndWait();
+	}
+	
+	public static void invalidCharacter() {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Invalid playlist name");
+		alert.setHeaderText("Cambiare nome alla playlist");
+		alert.setContentText("I seguenti caratteri non possono essere usati nel nome di una playlist: \n : , < , > , * , | , ? " );
 		alert.showAndWait();
 	}
 }
