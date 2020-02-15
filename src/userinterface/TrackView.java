@@ -90,6 +90,7 @@ public class TrackView {
 		}
 
 		table.setItems(tracklist);
+		table.setId("transparent");
 
 		pc.currentIntProperty().addListener(listener->{
 			table.refresh();

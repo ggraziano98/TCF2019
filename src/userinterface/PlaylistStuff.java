@@ -21,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
@@ -40,6 +41,7 @@ public class PlaylistStuff {
 	public static VBox playlist() throws Exception{
 
 		VBox playlistMain = new VBox();
+		playlistMain.setId("transparent");
 
 
 		HBox addBox = new HBox();
@@ -48,6 +50,7 @@ public class PlaylistStuff {
 		Text leTuePlaylists = new Text("  Le tue playlists");
 		leTuePlaylists.setTextAlignment(TextAlignment.LEFT);
 		leTuePlaylists.setFont(Font.font("Cavolini", FontPosture.ITALIC, 15));
+		leTuePlaylists.setFill(Color.WHITE);
 
 
 		FileInputStream addFile = new FileInputStream("files\\player\\add.png");
@@ -91,11 +94,11 @@ public class PlaylistStuff {
 		addBox.getChildren().addAll(leTuePlaylists, addButton, sortByNameButton, sortByDurationButton);
 
 
-		VBox playlistsVbox = MainApp.playlistsVbox;;
+		VBox playlistsVbox = MainApp.playlistsVbox;
+		playlistsVbox.setStyle("-fx-background-color: transparent");
 
 		ScrollPane scroll = new ScrollPane();
 		scroll.setContent(playlistsVbox);
-
 		scroll.setFitToHeight(true);
 
 
@@ -131,6 +134,7 @@ public class PlaylistStuff {
 		});
 
 		playlistMain.getChildren().addAll(addBox, scroll);
+		playlistMain.setId("transparent");
 
 
 		return playlistMain;
@@ -155,19 +159,19 @@ public class PlaylistStuff {
 		playlistButton.setMaxWidth(width);
 		playlistButton.setAlignment(Pos.CENTER_LEFT);
 		playlistButton.setToggleGroup(mainPanel);
-		playlistButton.setStyle(Tools.TRANSBUTT);
-		playlistButton.setOnMouseMoved((e)->{
-			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
-			else playlistButton.setStyle(Tools.BOLDBUTT);
-		});
-		playlistButton.setOnMouseExited((e)->{
-			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
-			else playlistButton.setStyle(Tools.TRANSBUTT);
-		});
-		playlistButton.selectedProperty().addListener((e)->{
-			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
-			else playlistButton.setStyle(Tools.TRANSBUTT);
-		});
+//		playlistButton.setStyle(Tools.TRANSBUTT);
+//		playlistButton.setOnMouseMoved((e)->{
+//			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
+//			else playlistButton.setStyle(Tools.BOLDBUTT);
+//		});
+//		playlistButton.setOnMouseExited((e)->{
+//			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
+//			else playlistButton.setStyle(Tools.TRANSBUTT);
+//		});
+//		playlistButton.selectedProperty().addListener((e)->{
+//			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
+//			else playlistButton.setStyle(Tools.TRANSBUTT);
+//		});
 		box.getChildren().add(playlistButton);
 		dataPane.setVisible(false);
 		playlistButton.setUserData(dataPane);

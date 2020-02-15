@@ -80,7 +80,7 @@ public class PlayerBuilder {
 		playerV.add(volumeBox, 2, 0);
 		
 		playerV.setGridLinesVisible(false);
-		playerV.setStyle("-fx-background-color: #F4D03F");
+		playerV.setId("transaprent");
 
 
 		return playerV;
@@ -134,6 +134,10 @@ public class PlayerBuilder {
 		ImageView shuffleView = new ImageView(shuffleImage);
 		shuffleView.setFitHeight(18);
 		shuffleView.setFitWidth(18);
+		ImageView shuffleViewTrasp = new ImageView(shuffleImage);
+		shuffleViewTrasp.setStyle("-fx-opacity: 0.7");
+		shuffleViewTrasp.setFitHeight(18);
+		shuffleViewTrasp.setFitWidth(18);
 
 		FileInputStream repeatFile = new FileInputStream("files\\Player\\repeat.png");
 		Image repeatImage = new Image(repeatFile);
@@ -141,6 +145,32 @@ public class PlayerBuilder {
 		ImageView repeatView = new ImageView(repeatImage);
 		repeatView.setFitHeight(18);
 		repeatView.setFitWidth(18);
+		ImageView repeatViewTrasp = new ImageView(repeatImage);
+		repeatViewTrasp.setStyle("-fx-opacity: 0.7");
+		repeatViewTrasp.setFitHeight(18);
+		repeatViewTrasp.setFitWidth(18);
+		
+		FileInputStream repeat1File = new FileInputStream("files\\Player\\repeat1.png");
+		Image repeat1Image = new Image(repeat1File);
+		repeat1File.close();
+		ImageView repeat1View = new ImageView(repeat1Image);
+		repeat1View.setFitHeight(18);
+		repeat1View.setFitWidth(18);
+		ImageView repeat1ViewTrasp = new ImageView(repeat1Image);
+		repeat1ViewTrasp.setStyle("-fx-opacity: 0.7");
+		repeat1ViewTrasp.setFitHeight(18);
+		repeat1ViewTrasp.setFitWidth(18);
+		
+		FileInputStream repeatAllFile = new FileInputStream("files\\Player\\repeatAll.png");
+		Image repeatAllImage = new Image(repeatAllFile);
+		repeatAllFile.close();
+		ImageView repeatAllView = new ImageView(repeatAllImage);
+		repeatAllView.setFitHeight(18);
+		repeatAllView.setFitWidth(18);
+		ImageView repeatAllViewTrasp = new ImageView(repeatAllImage);
+		repeatAllViewTrasp.setStyle("-fx-opacity: 0.7");
+		repeatAllViewTrasp.setFitHeight(18);
+		repeatAllViewTrasp.setFitWidth(18);
 
 		Button playButton = new Button("",playView);
 		playButton.setStyle("-fx-background-color: transparent");
@@ -152,8 +182,10 @@ public class PlayerBuilder {
 		buttonMouse(nextButton, nextView, nextViewTrasp);
 		Button shuffleButton = new Button("",shuffleView);
 		shuffleButton.setStyle("-fx-background-color: transparent");
+		buttonMouse(shuffleButton, shuffleView, shuffleViewTrasp);
 		Button repeatButton = new Button("",repeatView);
 		repeatButton.setStyle("-fx-background-color: transparent");
+		//buttonMouse(repeatButton, repeatView, repeatViewTrasp);
 
 
 
@@ -166,7 +198,19 @@ public class PlayerBuilder {
 		repeatButton.setOnAction(ev->{
 			MainApp.repeat = (MainApp.repeat+1)%3;
 		});
-
+		
+		
+	/*	repeatButton.setOnAction(ev->{
+			if(MainApp.repeat == 1) {
+				buttonMouse(repeatButton, repeatAllView, repeatAllViewTrasp);
+			}
+			if(MainApp.repeat == 2) {
+				buttonMouse(repeatButton, repeat1View, repeat1ViewTrasp);
+			}
+			else buttonMouse(repeatButton, repeatView, repeatViewTrasp);
+		});
+*/
+		
 
 		AtomicBoolean play = new AtomicBoolean(false);
 		playButton.setOnMouseClicked((e) -> {

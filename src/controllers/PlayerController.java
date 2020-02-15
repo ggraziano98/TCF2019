@@ -13,6 +13,7 @@ import javafx.util.Duration;
 import models.Track;
 import models.TrackList;
 import userinterface.MainApp;
+import userinterface.Visualizer;
 import utils.Tools;
 
 public class PlayerController {
@@ -64,16 +65,24 @@ public class PlayerController {
 	}
 
 	public void play() {
-		this.getPlayer().setOnReady(()-> {
-			this.getPlayer().play();
-			this.setTotalDuration(this.getPlayer().getMedia().getDuration());
+		MediaPlayer player = this.getPlayer();
+		player.setOnReady(()-> {
+			player.play();
+			this.setTotalDuration(player.getMedia().getDuration());
 		});
-		this.setTotalDuration(this.getPlayer().getMedia().getDuration());
-		this.getPlayer().play();
+		this.setTotalDuration(player.getMedia().getDuration());
+		player.play();
 		this.getCurrentTrack().setPlaying(true);
+		
+		player.setAudioSpectrumInterval(0.05);
+		player.setAudioSpectrumNumBands(Visualizer.nbin);
+		player.setAudioSpectrumThreshold(-90);
+		player.setAudioSpectrumListener((double timestamp, double duration, float[] magnitudes, float[] phases) -> {
+			Visualizer.update(magnitudes, player.getAudioSpectrumThreshold());
+		});
 
 
-		this.getPlayer().setOnEndOfMedia(()->this.next());
+		player.setOnEndOfMedia(()->this.next());
 		this.setPlaying(true);
 
 	}

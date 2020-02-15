@@ -1,0 +1,113 @@
+#grad{
+    -fx-background-color: linear-gradient(to bottom right, #ff7f50, #6a5acd);
+}
+
+.root{
+	-fx-background-color: linear-gradient(to bottom right, #000852, #1a1a1a);
+}
+
+.table-view .column-header,
+.table-view .column-header-background .filler {
+    -fx-background-color:  pink;
+}
+
+.table-view .column-header {
+    -fx-background-color: pink;
+}
+
+.corner {-fx-background-color: transparent;}
+
+.table-view .column-header .label{
+   -fx-text-fill: white;
+}
+
+.table-view > .virtual-flow > .scroll-bar:vertical,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track-background, 
+.table-view > .virtual-flow > .scroll-bar:horizontal,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track-background{
+    -fx-background-color: transparent;
+}
+
+.table-view > .virtual-flow > .scroll-bar:vertical > .thumb,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .thumb{
+	-fx-color: #6a5acd;
+}
+
+
+#transparent{
+	-fx-background-color: transparent;
+}
+
+#opacity{
+	-fx-background-opacity: 0.7;
+}
+
+.scroll-pane > .viewport{
+	-fx-background-color: transparent;
+	-fx-control-inner-background: transparent;
+}
+
+.scroll-pane{
+	-fx-background-color: transparent;
+	-fx-control-inner-background: transparent;
+}
+
+.vbox{
+	-fx-background-color: transparent;}
+
+#white_text{
+	-fx-text-fill: white;
+}
+
+.toggle-button{
+	-fx-border-color: transparent;
+	-fx-border-width: 2;
+	-fx-border-color: transparent;
+	-fx-background-radius: 0;
+	-fx-background-color: transparent;
+	-fx-text-fill: white;
+}
+
+.toggle-button:hover{
+	-fx-border-color: white;
+}
+
+.toggle-button:selected{
+	-fx-border-color: white;
+}
+
+.styleImportant {
+   -fx-dark-text-color: #FF0000;
+   -fx-mid-text-color: #FF0000;
+   -fx-light-text-color: #FF0000;
+
+   -fx-background-color: #FF9999;
+}
+
+.table-view .table-cell{
+	-fx-background-color: transparent;
+	-fx-text-fill: white;
+}
+
+.table-row-cell{
+	-fx-background-color: transparent;
+}
+
+.table-view:focused .table-row-cell:selected{
+	 -fx-border-color: white;
+}
+
+.table-cell{
+	-fx-border-color: transparent;
+}
+
+.vbox{
+	-fx-background-color: orange;
+}
+
+.table-view:row-selection .table-row-cell:filled:hover {
+    -fx-background-color: #db4d8d;
+}
+

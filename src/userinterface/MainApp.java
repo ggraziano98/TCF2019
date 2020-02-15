@@ -16,7 +16,9 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import models.TrackList;
 import utils.Initialize;
 import utils.Tools;
@@ -92,13 +94,14 @@ public class MainApp extends Application{
 		pc = new PlayerController();
 
 		Scene scene = new Scene(root, 650, 600);
+		scene.getStylesheets().add(getClass().getResource("light.css").toExternalForm());
 
 
 		// Set values for songsPane, artistsPane, albumsPane, songQueueView
 		RightPanels.panels();
 
 		//Set Icon
-		FileInputStream gioFile = new FileInputStream("files\\gio.png");
+		FileInputStream gioFile = new FileInputStream("files\\p.png");
 		Image gioImage = new Image(gioFile);
 		gioFile.close();
 		primaryStage.getIcons().add(gioImage);
@@ -146,6 +149,10 @@ public class MainApp extends Application{
 		primaryStage.setMinWidth(950);
 		primaryStage.setMinHeight(650);
 		primaryStage.show();
+		
+		Visualizer.visualize();
+		
+
 
 	}
 

@@ -29,20 +29,20 @@ public class Root {
 
 		GridPane root = new GridPane();
 		//GRIDPANE è il pane di livello piu alto, contiene tutti gli altri
-		FileInputStream bgFile = new FileInputStream("files\\bg.png");
-		Image bgImage = new Image(bgFile, Tools.screenWidth, Tools.screenHeight, true, true);
-
-		 root.setBackground(new Background(new BackgroundImage(bgImage, BackgroundRepeat.REPEAT,
-                 BackgroundRepeat.REPEAT,
-                 BackgroundPosition.DEFAULT,
-                 BackgroundSize.DEFAULT)));
+//		FileInputStream bgFile = new FileInputStream("files\\bg.png");
+//		Image bgImage = new Image(bgFile, Tools.screenWidth, Tools.screenHeight, true, true);
+//
+//		 root.setBackground(new Background(new BackgroundImage(bgImage, BackgroundRepeat.REPEAT,
+//                 BackgroundRepeat.REPEAT,
+//                 BackgroundPosition.DEFAULT,
+//                 BackgroundSize.DEFAULT)));
 
 
 		root.setVgap(10);
 		root.setHgap(10);
 		root.setPadding(new Insets(5, 5, 5, 5));
 		root.setGridLinesVisible(false);
-		root.setStyle("-fx-backgound-color: blue");
+		//root.setId("grad");
 
 		double[] widths = Tools.DWIDTHS;
 		double[] heights = Tools.DHEIGHTS;
@@ -69,12 +69,10 @@ public class Root {
 		row4.setMinHeight(heights[2]);
 		row4.setVgrow(Priority.ALWAYS);
 
-
-
-
 		root.getRowConstraints().addAll(row1, row2, row3,row4);
 
-
+		Visualizer.visualize();
+		root.add(Visualizer.visuaPane, 0, 0, 2, 4);
 
 		MenuBar menuBar = new MenuBar();
 	     Menu menuFile = new Menu("File directory");
@@ -95,6 +93,7 @@ public class Root {
 	     menuBar.getMenus().addAll(menuFile, menuEdit, menuInformation);
 	     menuBar.setMaxWidth(0.9*widths[0]);
 	     HBox menuBox = new HBox();
+	     menuBox.setId("transparent");
 	     menuBox.getChildren().add(menuBar);
 	     menuBox.setAlignment(Pos.CENTER);
 
