@@ -197,6 +197,7 @@ public class PlaylistStuff {
 
 
 		TrackView.setDragDrop(table, tracklist);
+		TrackView.setMultipleSelection(table, tracklist);
 
 	}
 

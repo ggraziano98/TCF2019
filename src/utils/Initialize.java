@@ -23,6 +23,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 import models.Track;
 import models.TrackList;
 import userinterface.MainApp;
@@ -50,35 +52,29 @@ public class Initialize {
 		}
 	}
 
+	
 	public static boolean addDirectory() {
 		boolean setAttempt = false;
 
-		TextInputDialog dialog = new TextInputDialog("");
-		dialog.setTitle("Select Directory");
-		dialog.setHeaderText("Inserire il path alla directory selezionata");
-		dialog.setContentText("L'operazione porebbe richiedere del tempo");
-
-
-		dialog.setResultConverter(dialogButton -> {
-			if (dialogButton == ButtonType.OK) {
-				return dialog.getEditor().getText();
-			}
-			return null;
-		});
-
-		Optional<String> result = dialog.showAndWait();
-
-		if (result.isPresent() && result.get() != null){
+		Stage dialogStage = new Stage();
+		DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("selezionare una cartella di musica");
+        File selectedDirectory = chooser.showDialog(dialogStage);  
+        dialogStage.close();
+        
+		if (selectedDirectory != null){
 			setAttempt = true;
+			
 			try {
-				if(Files.isDirectory(Paths.get(result.get())) && !result.get().isEmpty()){
+				
+				if(Files.isDirectory(selectedDirectory.toPath())){
 					boolean isContained = false;
 					boolean contains = false;
 					String savedDir = "";
 
 					for(String s:MainApp.mainDirList){
-						isContained = Tools.getDirsInDir(Paths.get(s)).contains(Paths.get(result.get()));
-						contains = Tools.getDirsInDir(Paths.get(result.get())).contains(Paths.get(s));
+						isContained = Tools.getDirsInDir(Paths.get(s)).contains(selectedDirectory.toPath());
+						contains = Tools.getDirsInDir(selectedDirectory.toPath()).contains(Paths.get(s));
 						if(isContained || contains) {
 							savedDir = s;
 							System.out.println("contains " + contains + " is contained "+ isContained);
@@ -86,12 +82,13 @@ public class Initialize {
 						}
 					};
 
-
 					if(!isContained && !contains) {
-						MainApp.mainDirList.add(result.get());
-						setDirSongs(result.get());
+						MainApp.mainDirList.add(selectedDirectory.getPath());
+						setDirSongs(selectedDirectory.getPath());
+						
 						try (BufferedWriter bw= Files.newBufferedWriter(Tools.DIRFILEPATH)){
 							MainApp.mainDirList.forEach(dir->{
+								
 								try {
 									bw.write(dir);
 									bw.newLine();
@@ -99,13 +96,14 @@ public class Initialize {
 									Tools.stackTrace(e);
 									e.printStackTrace();
 								}
+								
 							});
-
 						} catch (IOException e) {
 							Tools.stackTrace(e);
 							e.printStackTrace();
 						}
 					}
+					
 					else if(isContained){
 						Alert alert = new Alert(AlertType.ERROR);
 						alert.setTitle("Errore");
@@ -120,6 +118,7 @@ public class Initialize {
 						return addDirectory();
 					}
 				}
+				
 				else {
 					Alert alert = new Alert(AlertType.ERROR);
 					alert.setTitle("Errore");
@@ -127,6 +126,7 @@ public class Initialize {
 					alert.showAndWait();
 					return addDirectory();
 				}
+				
 			} catch (IllegalArgumentException e){
 				Tools.stackTrace(e);
 			}
@@ -136,12 +136,9 @@ public class Initialize {
 		MainApp.allSongs = Initialize.getAllSongs();
 
 		return setAttempt;
-
-
-
 	}
 
-
+	
 	public static TrackList getAllSongs() {
 		List<String> toBeRemoved = new ArrayList<String>();
 		TrackList tracklist = new TrackList();
