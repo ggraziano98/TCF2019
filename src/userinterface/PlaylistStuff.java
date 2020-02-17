@@ -59,34 +59,51 @@ public class PlaylistStuff {
 		addView.setFitHeight(20);
 		addView.setFitWidth(20);
 		Button addButton = new Button("",addView);
+		addButton.setId("buttons");
 		addButton.setTranslateX(Tools.DWIDTHS[0]/4-10);
 		addButton.setOnMouseClicked((e) -> {
 			Tools.newPlaylist();
 		});
 
-		FileInputStream sortByNameFile = new FileInputStream("files\\player\\sortname.png");
-		Image sortByNameImage = new Image(sortByNameFile);
-		ImageView sortByNameView = new ImageView(sortByNameImage);
-		sortByNameView.setFitHeight(20);
-		sortByNameView.setFitWidth(20);
-		Button sortByNameButton = new Button("",sortByNameView);	
+		FileInputStream namedownFile = new FileInputStream("files\\player\\namedown.png");
+		Image namedownImage = new Image(namedownFile);
+		ImageView namedownView = new ImageView(namedownImage);
+		namedownView.setFitHeight(20);
+		namedownView.setFitWidth(20);
+		FileInputStream nameupFile = new FileInputStream("files\\player\\nameup.png");
+		Image nameupImage = new Image(nameupFile);
+		ImageView nameupView = new ImageView(nameupImage);
+		nameupView.setFitHeight(20);
+		nameupView.setFitWidth(20);
+		Button sortByNameButton = new Button("",namedownView);	
+		sortByNameButton.setId("buttons");
 		sortByNameButton.setTranslateX(Tools.DWIDTHS[0]/4-10);
 		AtomicBoolean sortNameValue = new AtomicBoolean(true);
 		sortByNameButton.setOnMouseClicked((e) -> {
 			PlaylistStuff.sortPlaylistsByName(sortNameValue.get());
+			if (sortNameValue.get() == true) sortByNameButton.setGraphic(namedownView);
+			else sortByNameButton.setGraphic(nameupView);
 			sortNameValue.set(!sortNameValue.get());
 		});		
 
-		FileInputStream sortByDurationFile = new FileInputStream("files\\player\\sortduration.png");
-		Image sortByDurationImage = new Image(sortByDurationFile);
-		ImageView sortByDurationView = new ImageView(sortByDurationImage);
-		sortByDurationView.setFitHeight(20);
-		sortByDurationView.setFitWidth(20);
-		Button sortByDurationButton = new Button("",sortByDurationView);	
+		FileInputStream timedownFile = new FileInputStream("files\\player\\timedown.png");
+		Image timedownImage = new Image(timedownFile);
+		ImageView timedownView = new ImageView(timedownImage);
+		timedownView.setFitHeight(20);
+		timedownView.setFitWidth(20);
+		FileInputStream timeupFile = new FileInputStream("files\\player\\timeup.png");
+		Image timeupImage = new Image(timeupFile);
+		ImageView timeupView = new ImageView(timeupImage);
+		timeupView.setFitHeight(20);
+		timeupView.setFitWidth(20);
+		Button sortByDurationButton = new Button("",timedownView);	
+		sortByDurationButton.setId("buttons");
 		sortByDurationButton.setTranslateX(Tools.DWIDTHS[0]/4-10);
 		AtomicBoolean sortDurationValue = new AtomicBoolean(true);
 		sortByDurationButton.setOnMouseClicked((e) -> {
 			PlaylistStuff.sortPlaylistsByDuration(sortDurationValue.get());
+			if (sortDurationValue.get() == false) sortByDurationButton.setGraphic(timedownView);
+			else sortByDurationButton.setGraphic(timeupView);
 			sortDurationValue.set(!sortDurationValue.get());
 		});
 

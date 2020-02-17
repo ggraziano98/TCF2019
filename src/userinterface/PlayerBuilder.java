@@ -197,6 +197,15 @@ public class PlayerBuilder {
 
 		repeatButton.setOnAction(ev->{
 			MainApp.repeat = (MainApp.repeat+1)%3;
+			if(repeatButton.getGraphic() == repeatView || repeatButton.getGraphic() == repeatViewTrasp) {
+				repeatButton.setGraphic(repeatAllView);
+			}
+//			if(repeatButton.getGraphic() == repeatAllView || repeatButton.getGraphic() == repeatAllViewTrasp) {
+//				repeatButton.setGraphic(repeat1View);
+//			}
+//			if(repeatButton.getGraphic() == repeat1View || repeatButton.getGraphic() == repeat1ViewTrasp) {
+//				repeatButton.setGraphic(repeatView);
+			
 		});
 		
 		
@@ -210,6 +219,8 @@ public class PlayerBuilder {
 			else buttonMouse(repeatButton, repeatView, repeatViewTrasp);
 		});
 */
+		
+		
 		
 
 		AtomicBoolean play = new AtomicBoolean(false);
