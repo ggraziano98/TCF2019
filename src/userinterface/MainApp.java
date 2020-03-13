@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
@@ -73,6 +74,9 @@ public class MainApp extends Application{
 	public static TextField findText = new TextField();
 	public static ToggleGroup mainPanel = new ToggleGroup();
 	public static VBox playlistsVbox = new VBox();
+	
+	public static MenuItem themeItem = new MenuItem();
+
 
 	public static List<TrackList> playlistList = new ArrayList<TrackList>();
 
@@ -94,7 +98,20 @@ public class MainApp extends Application{
 		pc = new PlayerController();
 
 		Scene scene = new Scene(root, 650, 600);
-		scene.getStylesheets().add(getClass().getResource("light.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("dark.css").toExternalForm());
+		
+		Root.Light().setOnAction(e-> {
+			 if( scene.getStylesheets().contains( "dark.css" ) ) {
+			    scene.getStylesheets().remove(getClass().getResource("dark.css").toExternalForm());
+				scene.getStylesheets().add(getClass().getResource("light.css").toExternalForm());
+			 }
+		   } );
+		Root.Dark().setOnAction(e-> {
+			if( scene.getStylesheets().contains( "light.css" ) ) {
+			scene.getStylesheets().remove(getClass().getResource("light.css").toExternalForm());
+			scene.getStylesheets().add(getClass().getResource("dark.css").toExternalForm());
+			}
+		   } );
 
 
 		// Set values for songsPane, artistsPane, albumsPane, songQueueView
@@ -155,6 +172,9 @@ public class MainApp extends Application{
 
 
 	}
+
+
+
 
 	public static void main(String[] args) {
 		launch(args);

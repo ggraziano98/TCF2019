@@ -15,8 +15,14 @@ import javafx.scene.layout.VBox;
 import models.Track;
 import models.TrackList;
 import utils.Tools;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 
 public class FindStuff {
+	
+	public static FontAwesomeIconView searchButtonIcon = new FontAwesomeIconView();
+	
+	
 
 	public static HBox findBox() {
 
@@ -24,8 +30,12 @@ public class FindStuff {
 		HBox findHBox = new HBox();
 		findHBox.setAlignment(Pos.CENTER);
 		MainApp.findText.setMinWidth(Tools.DWIDTHS[0]*0.75);
-		Button findButton = new Button("cerca");
-
+		Button findButton = new Button();
+		searchButtonIcon.setIcon(FontAwesomeIcon.SEARCH);
+		searchButtonIcon.setStyleClass("cticon");
+		findButton.setGraphic(searchButtonIcon);
+		
+		
 		findHBox.getChildren().add(MainApp.findText);	
 		findHBox.getChildren().add(findButton);
 

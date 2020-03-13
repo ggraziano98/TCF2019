@@ -32,7 +32,7 @@ public class RightPanels {
 
 		RadioButton songsButton = new RadioButton("songs");
 		songsButton.getStyleClass().remove("radio-button");
-		songsButton.getStyleClass().add("toggle-button");
+		songsButton.setId("rightbuttons");
 		
 		TableView<Track> table = TrackView.tableFromTracklist(MainApp.allSongs, MainApp.pc);
 				
@@ -44,21 +44,19 @@ public class RightPanels {
 
 		RadioButton artistsButton = new RadioButton("artists");
 		artistsButton.getStyleClass().remove("radio-button");
-		artistsButton.getStyleClass().add("toggle-button");
-		artistsButton.setStyle("-fx-background-color:green");
+		artistsButton.setId("rightbuttons");
 
 		Label artists_albumsLabel = new Label("  ");
 
 		RadioButton albumsButton = new RadioButton("albums");
 		albumsButton.getStyleClass().remove("radio-button");
-		albumsButton.getStyleClass().add("toggle-button");
-		albumsButton.setStyle("-fx-base: lightblue");
+		albumsButton.setId("rightbuttons");
 		
 		Label albums_queueLabel = new Label("  ");
 		
 		RadioButton queueButton = new RadioButton("Song Queue");
 		queueButton.getStyleClass().remove("radio-button");
-		queueButton.getStyleClass().add("toggle-button");
+		queueButton.setId("rightbuttons");
 
 
 		buttonBox.getChildren().add(songsButton);

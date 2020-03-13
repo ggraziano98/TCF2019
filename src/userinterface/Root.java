@@ -1,6 +1,6 @@
 package userinterface;
 
-import java.io.FileInputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,12 +9,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -23,7 +17,7 @@ import javafx.scene.layout.RowConstraints;
 import utils.Initialize;
 import utils.Tools;
 
-public class Root {
+public class Root{
 
 	public static final GridPane rootPane() throws Exception {
 
@@ -85,9 +79,12 @@ public class Root {
 					Initialize.addDirectory();
 					}
 			});
-
+	     
 
 	     menuFile.getItems().add(item1);
+	     menuEdit.getItems().add(Root.Dark());
+	     menuEdit.getItems().add(Root.Light());
+
 
 
 	     menuBar.getMenus().addAll(menuFile, menuEdit, menuInformation);
@@ -101,5 +98,22 @@ public class Root {
 
 		return root;
 	}
+	 
+	    public static MenuItem Light()  
+	    { 
+	        // Here we are creating Object of  
+	        // NewKeywordExample using new keyword 
+	        MenuItem obj = new MenuItem("light"); 
+	      return obj;
+	    } 
+	    
+	    public static MenuItem Dark()  
+	    { 
+	        // Here we are creating Object of  
+	        // NewKeywordExample using new keyword 
+	        MenuItem obj = new MenuItem("dark"); 
+	      return obj;
+	    } 
+	} 
 
-}
+

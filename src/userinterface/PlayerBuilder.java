@@ -27,7 +27,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 import utils.Tools;
-
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 
 public class PlayerBuilder {
 
@@ -92,13 +93,65 @@ public class PlayerBuilder {
 	public static HBox controlStuff(PlayerController pc, GridPane playerV, TextField findText) throws Exception{
 		HBox playerButtons = new HBox(5);
 
+		
+		
+		FontAwesomeIconView playButtonIcon = new FontAwesomeIconView(FontAwesomeIcon.PLAY_CIRCLE);
+		playButtonIcon.setStyleClass("-fx-fill: white");
+		playButtonIcon.prefHeight(30);
+		playButtonIcon.prefWidth(30);
+		FontAwesomeIconView playButtonIconTrasp = new FontAwesomeIconView(FontAwesomeIcon.PLAY_CIRCLE);
+		playButtonIconTrasp.setOpacity(1);
+		
+		FontAwesomeIconView pauseButtonIcon = new FontAwesomeIconView(FontAwesomeIcon.PAUSE);
+		FontAwesomeIconView pauseButtonIconTrasp = new FontAwesomeIconView(FontAwesomeIcon.PAUSE);
+		pauseButtonIconTrasp.setOpacity(0.3);
+
+		FontAwesomeIconView nextButtonIcon = new FontAwesomeIconView(FontAwesomeIcon.STEP_FORWARD);
+		FontAwesomeIconView nextButtonIconTrasp = new FontAwesomeIconView(FontAwesomeIcon.STEP_FORWARD);
+		nextButtonIconTrasp.setOpacity(0.3);
+		
+		FontAwesomeIconView prevButtonIcon = new FontAwesomeIconView(FontAwesomeIcon.STEP_BACKWARD);
+		FontAwesomeIconView prevButtonIconTrasp = new FontAwesomeIconView(FontAwesomeIcon.STEP_BACKWARD);
+		prevButtonIconTrasp.setOpacity(0.3);
+		
+		FontAwesomeIconView shuffleButtonIcon = new FontAwesomeIconView(FontAwesomeIcon.RANDOM);
+		FontAwesomeIconView shuffleButtonIconTrasp = new FontAwesomeIconView(FontAwesomeIcon.RANDOM);
+		shuffleButtonIconTrasp.setOpacity(0.3);
+		
+		FontAwesomeIconView repeatButtonIcon = new FontAwesomeIconView(FontAwesomeIcon.REPEAT);
+		FontAwesomeIconView repeatButtonIconTrasp = new FontAwesomeIconView(FontAwesomeIcon.REPEAT);
+		repeatButtonIconTrasp.setOpacity(0.3);
+		
+		Button playButton = new Button();
+		playButton.setGraphic(playButtonIconTrasp);
+		playButton.setStyle("-fx-background-color: transparent");
+		/*buttonMouseIcon(playButton, playButtonIcon, playButtonIconTrasp);
+		buttonMouseIcon(playButton, pauseButtonIcon, pauseButtonIconTrasp);*/
+		Button prevButton = new Button("",prevButtonIconTrasp);
+		prevButton.setStyle("-fx-background-color: transparent");
+		buttonMouseIcon(prevButton, prevButtonIcon, prevButtonIconTrasp);
+		Button nextButton = new Button();
+		nextButton.setGraphic(nextButtonIconTrasp);
+		nextButton.setStyle("-fx-background-color: transparent");
+		buttonMouseIcon(nextButton, nextButtonIcon, nextButtonIconTrasp);
+		Button shuffleButton = new Button("",shuffleButtonIconTrasp);
+		shuffleButton.setStyle("-fx-background-color: transparent");
+		buttonMouseIcon(shuffleButton, shuffleButtonIcon, shuffleButtonIconTrasp);
+		Button repeatButton = new Button("",repeatButtonIcon);
+		repeatButton.setStyle("-fx-background-color: transparent");
+		buttonMouseIcon(repeatButton, repeatButtonIcon, repeatButtonIconTrasp);
+		
+		
+
+/*
+
 		FileInputStream playFile = new FileInputStream("files\\Player\\play.png");
 		Image playImage = new Image(playFile);
 		playFile.close();
 		ImageView playView = new ImageView(playImage);
 		playView.setFitHeight(30);
 		playView.setFitWidth(30);
-
+		
 		FileInputStream pauseFile = new FileInputStream("files\\Player\\pause.png");
 		Image pauseImage = new Image(pauseFile);
 		pauseFile.close();
@@ -172,12 +225,14 @@ public class PlayerBuilder {
 		repeatAllViewTrasp.setFitHeight(18);
 		repeatAllViewTrasp.setFitWidth(18);
 
-		Button playButton = new Button("",playView);
+		Button playButton = new Button();
+		playButton.setGraphic(playButtonIcon);
 		playButton.setStyle("-fx-background-color: transparent");
 		Button prevButton = new Button("",prevViewTrasp);
 		prevButton.setStyle("-fx-background-color: transparent");
 		buttonMouse(prevButton, prevView, prevViewTrasp);
-		Button nextButton = new Button("",nextViewTrasp);
+		Button nextButton = new Button();
+		nextButton.setGraphic(nextButtonIcon);
 		nextButton.setStyle("-fx-background-color: transparent");
 		buttonMouse(nextButton, nextView, nextViewTrasp);
 		Button shuffleButton = new Button("",shuffleView);
@@ -187,7 +242,7 @@ public class PlayerBuilder {
 		repeatButton.setStyle("-fx-background-color: transparent");
 		//buttonMouse(repeatButton, repeatView, repeatViewTrasp);
 
-
+*/
 
 
 		shuffleButton.setOnAction(ev->{
@@ -197,8 +252,8 @@ public class PlayerBuilder {
 
 		repeatButton.setOnAction(ev->{
 			MainApp.repeat = (MainApp.repeat+1)%3;
-			if(repeatButton.getGraphic() == repeatView || repeatButton.getGraphic() == repeatViewTrasp) {
-				repeatButton.setGraphic(repeatAllView);
+			if(repeatButton.getGraphic() == repeatButtonIcon || repeatButton.getGraphic() == repeatButtonIconTrasp) {
+				repeatButton.setGraphic(repeatButtonIcon);
 			}
 //			if(repeatButton.getGraphic() == repeatAllView || repeatButton.getGraphic() == repeatAllViewTrasp) {
 //				repeatButton.setGraphic(repeat1View);
@@ -226,11 +281,11 @@ public class PlayerBuilder {
 		AtomicBoolean play = new AtomicBoolean(false);
 		playButton.setOnMouseClicked((e) -> {
 			playPause(play, pc);
-			setPlayingImage(playButton, play, playView, pauseView);
+			setPlayingImageIcon(playButton, play, playButtonIcon, pauseButtonIcon);
 		});
 		pc.playingProperty().addListener((obs, oldv, newv)->{
 			play.set(newv.booleanValue());
-			setPlayingImage(playButton, play, playView, pauseView);
+			setPlayingImageIcon(playButton, play, playButtonIcon, pauseButtonIcon);
 		});
 
 		prevButton.setOnMouseClicked((e) -> previousSong(pc));
@@ -247,11 +302,11 @@ public class PlayerBuilder {
 			if(k.getTarget() != findText) {
 				if ( k.getCode() == KeyCode.SPACE){
 					playPause(play, pc);
-					setPlayingImage(playButton, play, playView, pauseView);
+					setPlayingImageIcon(playButton, play, playButtonIconTrasp, pauseButtonIconTrasp);
 				}
 				if ( k.getCode() == KeyCode.K){
 					playPause(play, pc);
-					setPlayingImage(playButton, play, playView, pauseView);
+					setPlayingImageIcon(playButton, play, playButtonIconTrasp, pauseButtonIconTrasp);
 				}
 				
 				if ( k.getCode() == KeyCode.L) nextSong(pc);
@@ -376,7 +431,14 @@ public class PlayerBuilder {
 		pc.setMuted(muted.get());
 	}
 
+	/*
 	public static void setPlayingImage(Button playButton, AtomicBoolean play, ImageView playView, ImageView pauseView) {
+		if (!play.get()) playButton.setGraphic(playView);
+		else playButton.setGraphic(pauseView);
+	}
+	*/
+	
+	public static void setPlayingImageIcon(Button playButton, AtomicBoolean play, FontAwesomeIconView playView, FontAwesomeIconView pauseView) {
 		if (!play.get()) playButton.setGraphic(playView);
 		else playButton.setGraphic(pauseView);
 	}
@@ -512,8 +574,18 @@ public class PlayerBuilder {
 	}
 
 
-
+/*
 	public static void buttonMouse (Button b, ImageView v, ImageView t) {
+		b.setOnMouseEntered((e) -> {
+			b.setGraphic(v);
+		});
+		b.setOnMouseExited((e) -> {
+			b.setGraphic(t);
+		});
+	}
+	*/
+	
+	public static void buttonMouseIcon (Button b, FontAwesomeIconView v, FontAwesomeIconView t) {
 		b.setOnMouseEntered((e) -> {
 			b.setGraphic(v);
 		});
