@@ -28,27 +28,22 @@ import utils.Tools;
 
 
 public class MainApp extends Application{
+	
+	//TODO tasto cerca non funziona
+	//TODO fix errore quando si fa play senza canzone selezinoata
+	//TODO dark/light switch
+	//TODO information: keybinds, nomi
+	//TODO rimuovere artisti e album
+	//TODO repeat graphics DAVIDE
 
+	//MAYBEMAYBEMAYBE
+	//TODO drag sulla songqueue DAVIDE
+	//TODO drag and drop sulle playlist DAVIDE
 	//TODO refreshDirFiles confrontare file salvati e file nella cartella per togliere quelli vecchi e aggiungere quelli nuovi GIO
 	//TODO editMetadata in file GIO
 	//TODO finish songqueue GIO
 	//TODO cancel loading songs
-	
-	
-//	//TODO sort playlists tasti FO/GIO
 
-//	//CHECK fix playlists special characters FO
-
-
-//	//TODO player redesign DAVIDE
-//	//TODO repeat graphics DAVIDE
-	//TODO nullpointerexceptions nel player quando non ci sono canzoni selezionate DAVIDE (rendi il player non selezionabile quando pc.getcurrenttrack() == null)
-//	//TODO scroll on drag DAVIDE
-//	//TODO drag sulla songqueue DAVIDE
-//	//TODO drag and drop sulle playlist DAVIDE
-
-//	//TODO per gli errori usare Tools.stackTrace
-	//TODO refactor generale
 
 	public static List<String> mainDirList = new ArrayList<String>();
 	public static TrackList allSongs;
