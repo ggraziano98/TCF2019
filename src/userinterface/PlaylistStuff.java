@@ -20,8 +20,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
@@ -29,6 +31,7 @@ import javafx.scene.text.TextAlignment;
 import models.Track;
 import models.TrackList;
 import utils.Tools;
+
 
 public class PlaylistStuff {
 
@@ -38,6 +41,9 @@ public class PlaylistStuff {
 	 *
 	 * @return ScrollPane playlist
 	 */
+	
+	
+    
 	public static VBox playlist() throws Exception{
 
 		VBox playlistMain = new VBox();
@@ -49,61 +55,82 @@ public class PlaylistStuff {
 		addBox.setMaxWidth(0.9*Tools.DWIDTHS[0]);
 		Text leTuePlaylists = new Text("  Le tue playlists");
 		leTuePlaylists.setTextAlignment(TextAlignment.LEFT);
-		leTuePlaylists.setFont(Font.font("Cavolini", FontPosture.ITALIC, 15));
+		leTuePlaylists.setFont(Font.font("", FontPosture.ITALIC, 0.45*Tools.DHEIGHTS[1]));
 		leTuePlaylists.setFill(Color.WHITE);
-
-
-		FileInputStream addFile = new FileInputStream("files\\player\\add.png");
-		Image addImage = new Image(addFile);
-		ImageView addView = new ImageView(addImage);
-		addView.setFitHeight(20);
-		addView.setFitWidth(20);
-		Button addButton = new Button("",addView);
+		
+		
+		Double listSize = (double) Tools.DHEIGHTS[4]*0.25;		
+		
+		SVGPath plus = new SVGPath();
+		plus.setContent("M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-32 252c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92H92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z");
+		final Region plusShape = PlayerBuilder.iconShape(plus, listSize, PlayerBuilder.black);
+		final Region plusShapeTrasp = PlayerBuilder.iconShape(plus, listSize, PlayerBuilder.blackTrasp);
+		
+		Button addButton = new Button("",plusShapeTrasp);
 		addButton.setId("buttons");
+		PlayerBuilder.buttonMouseIconRegion(addButton, plusShape, plusShapeTrasp);
 		addButton.setTranslateX(Tools.DWIDTHS[0]/4-10);
 		addButton.setOnMouseClicked((e) -> {
 			Tools.newPlaylist();
 		});
-
-		FileInputStream namedownFile = new FileInputStream("files\\player\\namedown.png");
-		Image namedownImage = new Image(namedownFile);
-		ImageView namedownView = new ImageView(namedownImage);
-		namedownView.setFitHeight(20);
-		namedownView.setFitWidth(20);
-		FileInputStream nameupFile = new FileInputStream("files\\player\\nameup.png");
-		Image nameupImage = new Image(nameupFile);
-		ImageView nameupView = new ImageView(nameupImage);
-		nameupView.setFitHeight(20);
-		nameupView.setFitWidth(20);
-		Button sortByNameButton = new Button("",namedownView);	
+		
+		
+		SVGPath sortA = new SVGPath();
+		sortA.setContent("M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z");
+		final Region sortAShape = PlayerBuilder.iconShape(sortA, listSize, PlayerBuilder.black);
+		final Region sortAShapeTrasp = PlayerBuilder.iconShape(sortA, listSize, PlayerBuilder.blackTrasp);
+		
+		SVGPath sortZ = new SVGPath();
+		sortZ.setContent("M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm112-128h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 65.63V48a16 16 0 0 0-16-16H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 190.37V208a16 16 0 0 0 16 16zm159.06 234.62l-59.27-160A16 16 0 0 0 372.72 288h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 480h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 480H432a16 16 0 0 0 15.06-21.38zM335.61 400L352 352l16.39 48z");
+		final Region sortZShape = PlayerBuilder.iconShape(sortZ, listSize, PlayerBuilder.black);
+		final Region sortZShapeTrasp = PlayerBuilder.iconShape(sortZ, listSize, PlayerBuilder.blackTrasp);
+		
+		
+		Button sortByNameButton = new Button("",sortAShapeTrasp);	
 		sortByNameButton.setId("buttons");
+		PlayerBuilder.buttonMouseIconRegion(sortByNameButton, sortAShape, sortAShapeTrasp);
 		sortByNameButton.setTranslateX(Tools.DWIDTHS[0]/4-10);
 		AtomicBoolean sortNameValue = new AtomicBoolean(true);
 		sortByNameButton.setOnMouseClicked((e) -> {
 			PlaylistStuff.sortPlaylistsByName(sortNameValue.get());
-			if (sortNameValue.get() == true) sortByNameButton.setGraphic(namedownView);
-			else sortByNameButton.setGraphic(nameupView);
+			if (sortNameValue.get() == true) {
+				sortByNameButton.setGraphic(sortAShape);
+				PlayerBuilder.buttonMouseIconRegion(sortByNameButton, sortAShape, sortAShapeTrasp);
+			}
+			else {
+				sortByNameButton.setGraphic(sortZShape);
+				PlayerBuilder.buttonMouseIconRegion(sortByNameButton, sortZShape, sortZShapeTrasp);
+			}
 			sortNameValue.set(!sortNameValue.get());
 		});		
-
-		FileInputStream timedownFile = new FileInputStream("files\\player\\timedown.png");
-		Image timedownImage = new Image(timedownFile);
-		ImageView timedownView = new ImageView(timedownImage);
-		timedownView.setFitHeight(20);
-		timedownView.setFitWidth(20);
-		FileInputStream timeupFile = new FileInputStream("files\\player\\timeup.png");
-		Image timeupImage = new Image(timeupFile);
-		ImageView timeupView = new ImageView(timeupImage);
-		timeupView.setFitHeight(20);
-		timeupView.setFitWidth(20);
-		Button sortByDurationButton = new Button("",timedownView);	
+		
+		
+		SVGPath sortS = new SVGPath();
+		sortS.setContent("M304 416h-64a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-128-64h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.37 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm256-192H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h192a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-64 128H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM496 32H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h256a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z");
+		final Region sortSShape = PlayerBuilder.iconShape(sortS, listSize, PlayerBuilder.black);
+		final Region sortSShapeTrasp = PlayerBuilder.iconShape(sortS, listSize, PlayerBuilder.blackTrasp);
+		
+		SVGPath sortL = new SVGPath();
+		sortL.setContent("M240 96h64a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16h-64a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16zm0 128h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16zm256 192H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h256a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-256-64h192a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16zm-64 0h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.37 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352z");
+		final Region sortLShape = PlayerBuilder.iconShape(sortL, listSize, PlayerBuilder.black);
+		final Region sortLShapeTrasp = PlayerBuilder.iconShape(sortL, listSize, PlayerBuilder.blackTrasp);
+		
+		
+		Button sortByDurationButton = new Button("",sortSShapeTrasp);	
 		sortByDurationButton.setId("buttons");
+		PlayerBuilder.buttonMouseIconRegion(sortByDurationButton, sortSShape, sortSShapeTrasp);
 		sortByDurationButton.setTranslateX(Tools.DWIDTHS[0]/4-10);
 		AtomicBoolean sortDurationValue = new AtomicBoolean(true);
 		sortByDurationButton.setOnMouseClicked((e) -> {
 			PlaylistStuff.sortPlaylistsByDuration(sortDurationValue.get());
-			if (sortDurationValue.get() == false) sortByDurationButton.setGraphic(timedownView);
-			else sortByDurationButton.setGraphic(timeupView);
+			if (sortDurationValue.get() == false) {
+				sortByDurationButton.setGraphic(sortLShape);
+				PlayerBuilder.buttonMouseIconRegion(sortByDurationButton, sortLShape, sortLShapeTrasp);
+			}
+			else {
+				sortByDurationButton.setGraphic(sortSShape);
+				PlayerBuilder.buttonMouseIconRegion(sortByDurationButton, sortSShape, sortSShapeTrasp);
+			}
 			sortDurationValue.set(!sortDurationValue.get());
 		});
 

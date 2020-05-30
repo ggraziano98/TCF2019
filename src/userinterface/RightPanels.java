@@ -18,15 +18,15 @@ import utils.Tools;
 public class RightPanels {
 
 	static HBox buttonBox = new HBox();
-	static FlowPane albumsPane = new FlowPane();
-	static FlowPane artistsPane = new FlowPane();
+//	static FlowPane albumsPane = new FlowPane();
+//  static FlowPane artistsPane = new FlowPane();
 	static VBox songsPane = new VBox();
 
 
 	public static void panels() throws Exception{
 
-		setArtistsPane();
-		setAlbumsPane();
+//		setArtistsPane();
+//		setAlbumsPane();
 
 		buttonBox.setAlignment(Pos.CENTER);
 
@@ -42,17 +42,17 @@ public class RightPanels {
 
 		Label songs_artistsLabel = new Label("  ");
 
-		RadioButton artistsButton = new RadioButton("artists");
-		artistsButton.getStyleClass().remove("radio-button");
-		artistsButton.setId("rightbuttons");
-
-		Label artists_albumsLabel = new Label("  ");
-
-		RadioButton albumsButton = new RadioButton("albums");
-		albumsButton.getStyleClass().remove("radio-button");
-		albumsButton.setId("rightbuttons");
-		
-		Label albums_queueLabel = new Label("  ");
+//		RadioButton artistsButton = new RadioButton("artists");
+//		artistsButton.getStyleClass().remove("radio-button");
+//		artistsButton.setId("rightbuttons");
+//
+//		Label artists_albumsLabel = new Label("  ");
+//
+//		RadioButton albumsButton = new RadioButton("albums");
+//		albumsButton.getStyleClass().remove("radio-button");
+//		albumsButton.setId("rightbuttons");
+//		
+//		Label albums_queueLabel = new Label("  ");
 		
 		RadioButton queueButton = new RadioButton("Song Queue");
 		queueButton.getStyleClass().remove("radio-button");
@@ -61,70 +61,70 @@ public class RightPanels {
 
 		buttonBox.getChildren().add(songsButton);
 		buttonBox.getChildren().add(songs_artistsLabel);
-		buttonBox.getChildren().add(artistsButton);
-		buttonBox.getChildren().add(artists_albumsLabel);
-		buttonBox.getChildren().add(albumsButton);
-		buttonBox.getChildren().add(albums_queueLabel);
+//		buttonBox.getChildren().add(artistsButton);
+//		buttonBox.getChildren().add(artists_albumsLabel);
+//		buttonBox.getChildren().add(albumsButton);
+//		buttonBox.getChildren().add(albums_queueLabel);
 		buttonBox.getChildren().add(queueButton);
 		
 		MainApp.songQueueView = SongQueueView.songQueueView();
 
 
-		albumsButton.setUserData(albumsPane);
-		artistsButton.setUserData(artistsPane);
+//		albumsButton.setUserData(albumsPane);
+//		artistsButton.setUserData(artistsPane);
 		songsButton.setUserData(songsPane);
 		queueButton.setUserData(MainApp.songQueueView);
 
 
 		songsButton.setToggleGroup(MainApp.mainPanel);
-		artistsButton.setToggleGroup(MainApp.mainPanel);
-		albumsButton.setToggleGroup(MainApp.mainPanel);
+//		artistsButton.setToggleGroup(MainApp.mainPanel);
+//		albumsButton.setToggleGroup(MainApp.mainPanel);
 		queueButton.setToggleGroup(MainApp.mainPanel);
 
 		songsButton.setSelected(true);
-		albumsButton.setSelected(false);
-		artistsButton.setSelected(false);
+//		albumsButton.setSelected(false);
+//		artistsButton.setSelected(false);
 		queueButton.setSelected(false);
 
 		songsPane.setVisible(true);
-		albumsPane.setVisible(false);
-		artistsPane.setVisible(false);
+//		albumsPane.setVisible(false);
+//		artistsPane.setVisible(false);
 		MainApp.songQueueView.setVisible(false);
 		
 		ContextMenus.contextMenuSongs(table);
 	}
 
 
-	public static void setArtistsPane(){
+//	public static void setArtistsPane(){
+//
+//		//TODO implement
+//		ImageView gucciniView = new ImageView();
+//
+//		try(FileInputStream gucciniFile = new FileInputStream("files\\mainPane\\guccini.png")){
+//			Image gucciniImage = new Image(gucciniFile);
+//			gucciniView.setImage(gucciniImage);
+//		} catch (Exception e) {
+//			Tools.stackTrace(e);
+//		}
+//
+//		artistsPane.getChildren().add(gucciniView);
+//		artistsPane.setStyle("-fx-base: lightgreen");
+//	}
 
-		//TODO implement
-		ImageView gucciniView = new ImageView();
 
-		try(FileInputStream gucciniFile = new FileInputStream("files\\mainPane\\guccini.png")){
-			Image gucciniImage = new Image(gucciniFile);
-			gucciniView.setImage(gucciniImage);
-		} catch (Exception e) {
-			Tools.stackTrace(e);
-		}
-
-		artistsPane.getChildren().add(gucciniView);
-		artistsPane.setStyle("-fx-base: lightgreen");
-	}
-
-
-	public static void setAlbumsPane(){
-
-		//TODO implement
-		ImageView radiciView = new ImageView();
-
-		try(FileInputStream radiciFile = new FileInputStream("files\\mainPane\\radici.png")){
-			Image radiciImage = new Image(radiciFile);
-			radiciView.setImage(radiciImage);
-		} catch (Exception e) {
-			Tools.stackTrace(e);
-		}
-
-		albumsPane.getChildren().add(radiciView);
-		albumsPane.setStyle("-fx-background-color:blue");
-	}
+//	public static void setAlbumsPane(){
+//
+//		//TODO implement
+//		ImageView radiciView = new ImageView();
+//
+//		try(FileInputStream radiciFile = new FileInputStream("files\\mainPane\\radici.png")){
+//			Image radiciImage = new Image(radiciFile);
+//			radiciView.setImage(radiciImage);
+//		} catch (Exception e) {
+//			Tools.stackTrace(e);
+//		}
+//
+//		albumsPane.getChildren().add(radiciView);
+//		albumsPane.setStyle("-fx-background-color:blue");
+//	}
 }

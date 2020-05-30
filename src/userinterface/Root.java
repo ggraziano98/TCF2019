@@ -1,11 +1,11 @@
 package userinterface;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -14,6 +14,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import utils.Initialize;
 import utils.Tools;
 
@@ -70,24 +72,35 @@ public class Root{
 
 		MenuBar menuBar = new MenuBar();
 	     Menu menuFile = new Menu("File directory");
-	     Menu menuEdit = new Menu("Edit");
-	     Menu menuInformation = new Menu("Information");
+	     Menu menuInformation = new Menu("Informazioni");
 
-	     MenuItem item1 = new MenuItem("Set file directory");
+	     MenuItem item1 = new MenuItem("Add file directory");
 	     item1.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event) {
 					Initialize.addDirectory();
 					}
 			});
-	     
+	     	     
 
 	     menuFile.getItems().add(item1);
-	     menuEdit.getItems().add(Root.Dark());
-	     menuEdit.getItems().add(Root.Light());
 
+	     MenuItem item2 = new MenuItem("Vedi informazioni");
+	     item2.setOnAction(new EventHandler<ActionEvent>() {
+	    		    public void handle(ActionEvent event) {
+	    		    	
+         try {
+			Info.start();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}    		    		    		
+	    		    }
+	    		
+	    		});
 
+	     menuInformation.getItems().add(item2);
 
-	     menuBar.getMenus().addAll(menuFile, menuEdit, menuInformation);
+	     menuBar.getMenus().addAll(menuFile, menuInformation);
 	     menuBar.setMaxWidth(0.9*widths[0]);
 	     HBox menuBox = new HBox();
 	     menuBox.setId("transparent");
@@ -99,21 +112,21 @@ public class Root{
 		return root;
 	}
 	 
-	    public static MenuItem Light()  
-	    { 
-	        // Here we are creating Object of  
-	        // NewKeywordExample using new keyword 
-	        MenuItem obj = new MenuItem("light"); 
-	      return obj;
-	    } 
-	    
-	    public static MenuItem Dark()  
-	    { 
-	        // Here we are creating Object of  
-	        // NewKeywordExample using new keyword 
-	        MenuItem obj = new MenuItem("dark"); 
-	      return obj;
-	    } 
+	
+	    public void info() {
+	    	Stage stage = new Stage();
+	    	Button lel = new Button("lel");
+	 
+	        StackPane root = new StackPane();
+	        root.getChildren().add(lel);
+	 
+	        Scene scene = new Scene(root, 450, 250);
+	 
+	        stage.setTitle("JavaFX Open a new Window");
+	       // stage.setScene(scene);
+	        stage.show();
+	    }
+
 	} 
 
 

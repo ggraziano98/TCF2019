@@ -7,6 +7,5 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="libs/tika-app-1.22.jar"/>
-	<classpathentry kind="lib" path="C:/Users/davide/git/TCF2019/libs/fontawesomefx-8.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

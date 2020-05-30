@@ -70,7 +70,7 @@ public class Tools {
 	public static Image DIMAGE;
 
 	static {
-		try(FileInputStream nothingYetFile = new FileInputStream("files\\Player\\404.png")) {
+		try(FileInputStream nothingYetFile = new FileInputStream("files\\404.png")) {
 			DIMAGE = new Image(nothingYetFile);
 		} catch (Exception e) {
 		}

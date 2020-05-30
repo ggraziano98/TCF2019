@@ -36,8 +36,6 @@ public class ContextMenus{
 		MenuItem newPlaylist = new MenuItem("New playlist");
 		MenuItem deletePlaylist = new MenuItem("Delete playlist");
 		MenuItem duration = new MenuItem("Total duration");
-		MenuItem play = new MenuItem("Play");
-		MenuItem shufflePlay = new MenuItem("Shuffle Play");
 
 		//Creo il menu secondario e un suo item
 		Menu addSongTo = new Menu("Add all the songs of this playlist to");		
@@ -46,28 +44,6 @@ public class ContextMenus{
 
 
 		//Implemento gli item del menu primario
-		play.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
-				MainApp.pc.setTracklist(tracklistToAdd);
-
-				MainApp.pc.setCurrentTrack(MainApp.pc.getTracklist().get(0));	
-				MainApp.pc.play();
-			}
-		});
-
-		shufflePlay.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				MainApp.pc.getTracklist().clear();
-				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
-				Collections.shuffle(tracklistToAdd);
-				MainApp.pc.setTracklist(tracklistToAdd);
-
-				MainApp.pc.setCurrentTrack(MainApp.pc.getTracklist().get(0));	
-				MainApp.pc.play();
-			}
-		});
-
 		newPlaylist.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Tools.newPlaylist();
@@ -94,18 +70,23 @@ public class ContextMenus{
 		songQueue.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
+				int l;
 
 				if (MainApp.pc.getTracklist().getSize() == 0) {
+					l=-1;
 					for (Track track : tracklistToAdd) {
 						MainApp.pc.getTracklist().addNew(track);
 					}
 				} else {
 					int i = MainApp.pc.getCurrentInt();
+					l=i;
 					for (Track track : tracklistToAdd) {
 						i++;
 						MainApp.pc.getTracklist().addNew(track, i);
 					}
 				}
+		
+					MainApp.pc.previousTracklist=MainApp.pc.getTracklist();
 			}
 		});
 
@@ -128,7 +109,7 @@ public class ContextMenus{
 
 		//aggiungo gli items ai menu principale e secondario
 		addSongTo.getItems().addAll(separator, songQueue);
-		menu.getItems().addAll( play, shufflePlay, new SeparatorMenuItem(), addSongTo, duration, new SeparatorMenuItem(),
+		menu.getItems().addAll(addSongTo, duration, new SeparatorMenuItem(),
 				newPlaylist, deletePlaylist);
 
 		//event handler del menu
@@ -216,7 +197,9 @@ public class ContextMenus{
 				} else {
 					MainApp.pc.getTracklist().addNew(track,MainApp.pc.getCurrentInt() + 1);	
 				}
+				MainApp.pc.previousTracklist = MainApp.pc.getTracklist();
 			}
+			
 		});
 
 		MainApp.savedPlaylists.forEach((String playlistName)->{
@@ -296,6 +279,7 @@ public class ContextMenus{
 			public void handle(ActionEvent event) {
 				Track track = table.getSelectionModel().getSelectedItem();
 				MainApp.pc.getTracklist().addNew(track);
+				MainApp.pc.previousTracklist=MainApp.pc.getTracklist();
 			}
 		});
 
@@ -386,6 +370,7 @@ public class ContextMenus{
 				} else {
 					MainApp.pc.getTracklist().addNew(track, MainApp.pc.getCurrentInt() + 1);	
 				}	
+				MainApp.pc.previousTracklist = MainApp.pc.getTracklist();
 			}
 		});
 		

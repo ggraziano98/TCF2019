@@ -32,6 +32,7 @@ public class PlayerController {
 
 	private BooleanProperty playing;
 	private BooleanProperty muted;
+	public TrackList previousTracklist;
 	/**
 	 * costruttore di default
 	 */

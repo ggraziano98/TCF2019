@@ -18,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import models.TrackList;
@@ -81,12 +82,13 @@ public class MainApp extends Application{
 	public static List<TrackList> playlistList = new ArrayList<TrackList>();
 
 	public static int repeat = 0;
+	public static int shuffle = 0;
+	
+	
 
 	public void start(Stage primaryStage) throws Exception {
 
 		Initialize.checkMainFiles();
-
-
 
 
 		root = Root.rootPane();
@@ -97,21 +99,21 @@ public class MainApp extends Application{
 
 		pc = new PlayerController();
 
-		Scene scene = new Scene(root, 650, 600);
+		Scene scene = new Scene(root, Tools.DWIDTHS[1]*1.5, Tools.DHEIGHTS[2]*1.8);
 		scene.getStylesheets().add(getClass().getResource("dark.css").toExternalForm());
 		
-		Root.Light().setOnAction(e-> {
-			 if( scene.getStylesheets().contains( "dark.css" ) ) {
-			    scene.getStylesheets().remove(getClass().getResource("dark.css").toExternalForm());
-				scene.getStylesheets().add(getClass().getResource("light.css").toExternalForm());
-			 }
-		   } );
-		Root.Dark().setOnAction(e-> {
-			if( scene.getStylesheets().contains( "light.css" ) ) {
-			scene.getStylesheets().remove(getClass().getResource("light.css").toExternalForm());
-			scene.getStylesheets().add(getClass().getResource("dark.css").toExternalForm());
-			}
-		   } );
+//		Root.Light().setOnAction(e-> {
+//			 if( scene.getStylesheets().contains( "dark.css" ) ) {
+//			    scene.getStylesheets().remove(getClass().getResource("dark.css").toExternalForm());
+//				scene.getStylesheets().add(getClass().getResource("light.css").toExternalForm());
+//			 }
+//		   } );
+//		Root.Dark().setOnAction(e-> {
+//			if( scene.getStylesheets().contains( "light.css" ) ) {
+//			scene.getStylesheets().remove(getClass().getResource("light.css").toExternalForm());
+//			scene.getStylesheets().add(getClass().getResource("dark.css").toExternalForm());
+//			}
+//		   } );
 
 
 		// Set values for songsPane, artistsPane, albumsPane, songQueueView
@@ -131,8 +133,8 @@ public class MainApp extends Application{
 
 		buttonBox = RightPanels.buttonBox;
 
-		albumsPane = RightPanels.albumsPane;
-		artistsPane = RightPanels.artistsPane;
+//		albumsPane = RightPanels.albumsPane;
+//		artistsPane = RightPanels.artistsPane;
 		songsPane = RightPanels.songsPane;
 
 
@@ -145,8 +147,8 @@ public class MainApp extends Application{
 		root.add(buttonBox, 1, 1);
 		root.add(playlistPane, 0, 3);
 
-		root.add(albumsPane, 1, 2, 1, 2);
-		root.add(artistsPane, 1, 2, 1, 2);
+//		root.add(albumsPane, 1, 2, 1, 2);
+//		root.add(artistsPane, 1, 2, 1, 2);
 		root.add(songsPane, 1, 2, 1, 2);
 
 		//Set buttons to switch between songs, album and artist panes
@@ -157,17 +159,19 @@ public class MainApp extends Application{
 			}
 			((Node) newv.getUserData()).setVisible(true);
 		});
+		
 
 
 
 		//aggiungo tutto alla window
-		primaryStage.setTitle("Best player ever");
+		primaryStage.setTitle("P per player");
 		primaryStage.setScene(scene);
-		primaryStage.setMinWidth(950);
-		primaryStage.setMinHeight(650);
+		primaryStage.setMinWidth(Tools.DWIDTHS[1]*1.55);
+		primaryStage.setMinHeight(Tools.DHEIGHTS[2]*1.84);
 		primaryStage.show();
 		
 		Visualizer.visualize();
+		
 		
 
 

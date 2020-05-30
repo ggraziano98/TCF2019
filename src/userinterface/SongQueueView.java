@@ -21,8 +21,8 @@ public class SongQueueView {
 		
 		songQueueView.getChildren().add(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
-		songQueueView.setStyle("-fx-background-color: red");
 		ContextMenus.contextMenuSongQueue(table);
+		TrackView.setDragDrop(table, MainApp.pc.getTracklist());
 		return songQueueView;
 	}
 

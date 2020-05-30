@@ -23,6 +23,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 import models.Track;
 import models.TrackList;
 import userinterface.MainApp;
@@ -51,7 +53,7 @@ public class Initialize {
 	}
 
 	public static boolean addDirectory() {
-		boolean setAttempt = false;
+	/*	boolean setAttempt = false;
 
 		TextInputDialog dialog = new TextInputDialog("");
 		dialog.setTitle("Select Directory");
@@ -127,6 +129,89 @@ public class Initialize {
 					alert.showAndWait();
 					return addDirectory();
 				}
+			} catch (IllegalArgumentException e){
+				Tools.stackTrace(e);
+			}
+			
+		}
+
+		MainApp.allSongs = Initialize.getAllSongs();
+
+		return setAttempt;*/
+		
+		boolean setAttempt = false;
+
+		Stage dialogStage = new Stage();
+		DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("selezionare una cartella di musica");
+        File selectedDirectory = chooser.showDialog(dialogStage);  
+        dialogStage.close();
+        
+		if (selectedDirectory != null){
+			setAttempt = true;
+			
+			try {
+				
+				if(Files.isDirectory(selectedDirectory.toPath())){
+					boolean isContained = false;
+					boolean contains = false;
+					String savedDir = "";
+
+					for(String s:MainApp.mainDirList){
+						isContained = Tools.getDirsInDir(Paths.get(s)).contains(selectedDirectory.toPath());
+						contains = Tools.getDirsInDir(selectedDirectory.toPath()).contains(Paths.get(s));
+						if(isContained || contains) {
+							savedDir = s;
+							System.out.println("contains " + contains + " is contained "+ isContained);
+							break;
+						}
+					};
+
+					if(!isContained && !contains) {
+						MainApp.mainDirList.add(selectedDirectory.getPath());
+						setDirSongs(selectedDirectory.getPath());
+						
+						try (BufferedWriter bw= Files.newBufferedWriter(Tools.DIRFILEPATH)){
+							MainApp.mainDirList.forEach(dir->{
+								
+								try {
+									bw.write(dir);
+									bw.newLine();
+								} catch (IOException e) {
+									Tools.stackTrace(e);
+									e.printStackTrace();
+								}
+								
+							});
+						} catch (IOException e) {
+							Tools.stackTrace(e);
+							e.printStackTrace();
+						}
+					}
+					
+					else if(isContained){
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setTitle("Errore");
+						alert.setHeaderText("La directory indicata è gia inclusa in una delle directory salvate: " + savedDir);
+						alert.showAndWait();
+						return addDirectory();
+					} else {
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setTitle("Errore");
+						alert.setHeaderText("La directory indicata include una directory già salvata: " + savedDir);
+						alert.showAndWait();
+						return addDirectory();
+					}
+				}
+				
+				else {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Errore");
+					alert.setHeaderText("Il path indicato non è una directory");
+					alert.showAndWait();
+					return addDirectory();
+				}
+				
 			} catch (IllegalArgumentException e){
 				Tools.stackTrace(e);
 			}
