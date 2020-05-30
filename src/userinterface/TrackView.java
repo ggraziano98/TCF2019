@@ -137,60 +137,6 @@ public class TrackView {
 	}
 
 
-/*	public static void setDragDrop(TableView<Track> table, TrackList tracklist) {
-		 table.setRowFactory(tv -> {
-	            TableRow<Track> row = new TableRow<>();
-
-	            row.setOnDragDetected(event -> {
-	                if (! row.isEmpty()) {
-	                    Integer index = row.getIndex();
-	                    Dragboard db = row.startDragAndDrop(TransferMode.MOVE);
-	                    db.setDragView(row.snapshot(null, null));
-	                    ClipboardContent cc = new ClipboardContent();
-	                    cc.put(SERIALIZED_MIME_TYPE, index);
-	                    db.setContent(cc);
-	                    event.consume();
-	                }
-	            });
-
-	            row.setOnDragOver(event -> {
-	                Dragboard db = event.getDragboard();
-	                if (db.hasContent(SERIALIZED_MIME_TYPE)) {
-	                    if (row.getIndex() != ((Integer)db.getContent(SERIALIZED_MIME_TYPE)).intValue()) {
-	                        event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-	                        event.consume();
-	                    }
-	                }
-	            });
-
-	            row.setOnDragDropped(event -> {
-	                Dragboard db = event.getDragboard();
-	                if (db.hasContent(SERIALIZED_MIME_TYPE)) {
-	                    int draggedIndex = (Integer) db.getContent(SERIALIZED_MIME_TYPE);
-	                    Track draggedTrack = table.getItems().remove(draggedIndex);
-
-	                    int dropIndex ;
-
-	                    if (row.isEmpty()) {
-	                        dropIndex = table.getItems().size() ;
-	                    } else {
-	                        dropIndex = row.getIndex();
-	                    }
-
-	                    table.getItems().add(dropIndex, draggedTrack);
-	                    tracklist.refreshPositions();
-	                    MainApp.pc.refreshCurrentInt();
-	                    event.setDropCompleted(true);
-	                    table.getSelectionModel().select(dropIndex);
-
-	                     event.consume();
-	                }
-	                Tools.saveAsPlaylist(tracklist, tracklist.getPlaylistName());
-	            });
-
-	            return row ;
-	        });
-	}*/
 	
 	public static void setDragDrop(TableView<Track> table, TrackList tracklist) {
 		table.setRowFactory(tv -> {

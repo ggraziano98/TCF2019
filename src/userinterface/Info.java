@@ -28,15 +28,15 @@ public class Info {
     public static void start() {
     	Stage primaryStage = new Stage();
 		File file = new File("src\\userinterface\\info.txt");
-        Collection<CountryData> list = null;
+        Collection<Data> list = null;
 		try {
 			list = Files.readAllLines(file.toPath())
 			                .stream()
 			                .map(line -> {
 			                    String[] details = line.split(",");
-			                    CountryData cd = new CountryData();
-			                    cd.setCountry(details[0]);
-			                    cd.setCapital(details[1]);
+			                    Data cd = new Data();
+			                    cd.setAction(details[0]);
+			                    cd.setCommand(details[1]);
 //                            cd.setPopulation(details[2]);
 //                            cd.setDemocracy(details[3]);
 			                    return cd;
@@ -47,20 +47,17 @@ public class Info {
 			e.printStackTrace();
 		}
 
-        ObservableList<CountryData> details = FXCollections.observableArrayList(list);
+        ObservableList<Data> details = FXCollections.observableArrayList(list);
 
-        TableView<CountryData> tableView = new TableView<>();
-        TableColumn<CountryData, String> col1 = new TableColumn<>();
-        TableColumn<CountryData, String> col2 = new TableColumn<>();
-        TableColumn<CountryData, String> col3 = new TableColumn<>();
-        TableColumn<CountryData, String> col4 = new TableColumn<>();
+        TableView<Data> tableView = new TableView<>();
+        TableColumn<Data, String> col1 = new TableColumn<>("Azione");
+        TableColumn<Data, String> col2 = new TableColumn<>("Comando");
 
-        tableView.getColumns().addAll(col1, col2, col3, col4);
+        tableView.getColumns().addAll(col1, col2);
 
-        col1.setCellValueFactory(data -> data.getValue().countryProperty());
-        col2.setCellValueFactory(data -> data.getValue().capitalProperty());
-//        col3.setCellValueFactory(data -> data.getValue().populationProperty());
-//        col4.setCellValueFactory(data -> data.getValue().democracyProperty());
+        col1.setCellValueFactory(data -> data.getValue().actionProperty());
+        col2.setCellValueFactory(data -> data.getValue().commandProperty());
+
 
         tableView.setItems(details);
         tableView.setSelectionModel(null);
@@ -74,58 +71,34 @@ public class Info {
 
 
 
-     private static class CountryData {
+     private static class Data {
         StringProperty country = new SimpleStringProperty();
         StringProperty capital = new SimpleStringProperty();
-        StringProperty population = new SimpleStringProperty();
-        StringProperty democracy = new SimpleStringProperty();
-        public final StringProperty countryProperty() {
+        public final StringProperty commandProperty() {
             return this.country;
         }
 
-        public final java.lang.String getCountry() {
-            return this.countryProperty().get();
+        public final java.lang.String getCommand() {
+            return this.commandProperty().get();
         }
 
-        public final void setCountry(final java.lang.String country) {
-            this.countryProperty().set(country);
+        public final void setCommand(final java.lang.String country) {
+            this.commandProperty().set(country);
         }
 
-        public final StringProperty capitalProperty() {
+        public final StringProperty actionProperty() {
             return this.capital;
         }
 
-        public final java.lang.String getCapital() {
-            return this.capitalProperty().get();
+        public final java.lang.String getAction() {
+            return this.actionProperty().get();
         }
 
-        public final void setCapital(final java.lang.String capital) {
-            this.capitalProperty().set(capital);
+        public final void setAction(final java.lang.String capital) {
+            this.actionProperty().set(capital);
         }
 
-//        public final StringProperty populationProperty() {
-//            return this.population;
-//        }
-//
-//        public final java.lang.String getPopulation() {
-//            return this.populationProperty().get();
-//        }
-//
-//        public final void setPopulation(final java.lang.String population) {
-//            this.populationProperty().set(population);
-//        }
-//
-//        public final StringProperty democracyProperty() {
-//            return this.democracy;
-//        }
-//
-//        public final java.lang.String getDemocracy() {
-//            return this.democracyProperty().get();
-//        }
-//
-//        public final void setDemocracy(final java.lang.String democracy) {
-//            this.democracyProperty().set(democracy);
-//        }
+
 
 
 
