@@ -1,0 +1,6 @@
+Play/Pausa , tasto K
+Traccia successiva , tasto L
+Traccia precedente , tasto J
+Manda avanti di 10 sec , tasto O
+Manda indietro di 10 sec , tasto I
+Disattiva il volume , tasto M
