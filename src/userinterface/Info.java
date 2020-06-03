@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -22,9 +21,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import utils.Tools;
 
@@ -38,7 +35,8 @@ public class Info {
 
 
 	
-    public static void start() throws Exception{
+    @SuppressWarnings("unchecked")
+	public static void start() throws Exception{
     	Stage primaryStage = new Stage();
 		File file = new File("src\\userinterface\\comandi.txt");
         Collection<Data> list = null;
@@ -139,9 +137,9 @@ public class Info {
             return this.country;
         }
 
-        public final java.lang.String getCommand() {
-            return this.commandProperty().get();
-        }
+//        public final java.lang.String getCommand() {
+//            return this.commandProperty().get();
+//        }
 
         public final void setCommand(final java.lang.String country) {
             this.commandProperty().set(country);
@@ -151,9 +149,9 @@ public class Info {
             return this.capital;
         }
 
-        public final java.lang.String getAction() {
-            return this.actionProperty().get();
-        }
+//        public final java.lang.String getAction() {
+//            return this.actionProperty().get();
+//        }
 
         public final void setAction(final java.lang.String capital) {
             this.actionProperty().set(capital);

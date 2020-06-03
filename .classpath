@@ -6,6 +6,7 @@
 		</accessrules>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="ima"/>
 	<classpathentry kind="lib" path="libs/tika-app-1.22.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

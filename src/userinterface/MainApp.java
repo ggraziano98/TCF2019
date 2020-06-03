@@ -1,6 +1,7 @@
 package userinterface;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +18,10 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import models.TrackList;
 import utils.Initialize;
+import utils.ResourceLoader;
 import utils.Tools;
 
 
@@ -120,7 +119,7 @@ public class MainApp extends Application{
 		RightPanels.panels();
 
 		//Set Icon
-		FileInputStream gioFile = new FileInputStream("files\\p.png");
+		InputStream gioFile = ResourceLoader.load("p.png");
 		Image gioImage = new Image(gioFile);
 		gioFile.close();
 		primaryStage.getIcons().add(gioImage);

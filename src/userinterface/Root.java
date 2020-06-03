@@ -4,19 +4,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import utils.Initialize;
 import utils.Tools;
 
@@ -113,20 +108,6 @@ public class Root{
 		return root;
 	}
 	 
-	
-	    public void info() {
-	    	Stage stage = new Stage();
-	    	Button lel = new Button("lel");
-	 
-	        StackPane root = new StackPane();
-	        root.getChildren().add(lel);
-	 
-	        Scene scene = new Scene(root, 450, 250);
-	 
-	        stage.setTitle("JavaFX Open a new Window");
-	       // stage.setScene(scene);
-	        stage.show();
-	    }
 
 	} 
 

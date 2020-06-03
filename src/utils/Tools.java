@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.FileAlreadyExistsException;
@@ -70,7 +71,7 @@ public class Tools {
 	public static Image DIMAGE;
 
 	static {
-		try(FileInputStream nothingYetFile = new FileInputStream("files\\404.png")) {
+		try(InputStream nothingYetFile = ResourceLoader.load("404.png")) {
 			DIMAGE = new Image(nothingYetFile);
 		} catch (Exception e) {
 		}
