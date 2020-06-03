@@ -125,7 +125,7 @@ public class TrackView {
 			}
 		});
 
-		table.setMinHeight(400);
+		table.setMinHeight(Tools.DHEIGHTS[2]);
 		table.setUserData(tracklist);
 
 		return table;

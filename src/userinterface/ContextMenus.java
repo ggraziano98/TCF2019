@@ -177,6 +177,7 @@ public class ContextMenus{
 			public void handle(ActionEvent event) {
 				Object item = table.getSelectionModel().getSelectedItem();
 				Tools.DeleteTrack((Track) item);
+				MainApp.allSongs.remove((Track) item);
 			}	
 		});
 

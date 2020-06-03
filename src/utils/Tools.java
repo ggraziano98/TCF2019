@@ -63,7 +63,7 @@ public class Tools {
 
 
 	public static final double[] DWIDTHS= {screenWidth*0.2, screenWidth*0.4};
-
+	
 	public static final double[] DHEIGHTS = {screenHeight*0.05, screenHeight*0.045, screenHeight*0.4, screenHeight*0.045, screenHeight*0.1};
 
 
@@ -239,9 +239,9 @@ public class Tools {
 				if (arr.length == 7) {
 					Path path = Paths.get(arr[6]);
 					if(Files.isRegularFile(path)){
-						tracklist.addTrack(new Track(arr));;
+						tracklist.addTrack(new Track(arr));
 					}
-					else System.out.println(path.toString() + "\tNon � un file corretto");
+					else System.out.println(path.toString() + "\t Non e' un file corretto");
 				}
 			}
 
@@ -252,6 +252,7 @@ public class Tools {
 			System.out.println("La playlist da leggere non esiste");
 		}
 
+		saveAsPlaylist(tracklist, playlist);
 		return tracklist;
 	}
 
@@ -351,7 +352,7 @@ public class Tools {
 		Alert selection = new Alert(AlertType.CONFIRMATION);
 		selection.setTitle("Delete song");
 		selection.setHeaderText("Warning");
-		selection.setContentText("Sei sicuro di voler eliminare la canzone " + track.getTitle() + " definitivamente");
+		selection.setContentText("Sei sicuro di voler eliminare la canzone " + track.getTitle() + " definitivamente?");
 
 		Optional<ButtonType> result = selection.showAndWait();
 		if (result.get() == ButtonType.OK){
@@ -359,7 +360,7 @@ public class Tools {
 				if(Files.deleteIfExists(track.getPath())) {
 					Alert yes = new Alert(AlertType.CONFIRMATION);
 					yes.setTitle("Eliminazione canzone");
-					yes.setContentText("Canzone eliminata correttamente");
+					yes.setContentText("Canzone eliminata correttamente dal computer. Per aggiornare le playlist e' necessario chiudere e riaprire il programma");
 					yes.showAndWait();
 				}
 				else {

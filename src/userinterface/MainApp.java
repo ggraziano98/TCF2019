@@ -159,15 +159,14 @@ public class MainApp extends Application{
 			}
 			((Node) newv.getUserData()).setVisible(true);
 		});
-		
-
+	
 
 
 		//aggiungo tutto alla window
 		primaryStage.setTitle("P per player");
 		primaryStage.setScene(scene);
 		primaryStage.setMinWidth(Tools.DWIDTHS[1]*1.55);
-		primaryStage.setMinHeight(Tools.DHEIGHTS[2]*1.84);
+		primaryStage.setMinHeight(Tools.DHEIGHTS[2]*1.9);
 		primaryStage.show();
 		
 		Visualizer.visualize();

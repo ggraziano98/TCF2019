@@ -192,8 +192,10 @@ public class PlayerBuilder {
 		buttonMouseIconRegion(repeatButton, repeatShape, repeatShapeTrasp);
 		
 		
-		shuffleButton.setOnAction(ev->{
-			if (!MainApp.songQueueView.isVisible()) {
+
+			shuffleButton.setOnAction(ev->{
+		
+			if (!MainApp.songQueueView.isVisible() && MainApp.pc.getCurrentTrack()!=null) {
 			MainApp.shuffle = (MainApp.shuffle+1)%2;
 			if (MainApp.shuffle == 1) {
 				MainApp.pc.getTracklist().shuffle(pc.getCurrentTrack());
@@ -207,12 +209,16 @@ public class PlayerBuilder {
 				shuffleButton.setGraphic(shuffleShape);
 				buttonMouseIconRegion(shuffleButton, shuffleShape, shuffleShapeTrasp);
 			}}
-			else {
+			if (MainApp.songQueueView.isVisible() && MainApp.pc.getCurrentTrack()!=null) {
+				MainApp.shuffle = (MainApp.shuffle+1)%2;
 				MainApp.pc.getTracklist().shuffle(pc.getCurrentTrack());
 			    MainApp.pc.refreshCurrentInt();
+			    shuffleButton.setGraphic(shuffleShape);
+				buttonMouseIconRegion(shuffleButton, shuffleShape, shuffleShapeTrasp);
 			}
 		});
-		
+	
+	
 		
 		
 
