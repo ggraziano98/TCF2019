@@ -108,6 +108,11 @@ public class Root{
 		return root;
 	}
 	 
+//	public void runAnotherApp(Class<? extends Application> anotherAppClass) throws Exception {
+//	    Application app2 = anotherAppClass.newInstance(); 
+//	    Stage anotherStage = new Stage();
+//	    app2.start(anotherStage);
+//	}
 
 	} 
 

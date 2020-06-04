@@ -1,13 +1,15 @@
 package userinterface;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+
+import org.apache.commons.io.FileUtils;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,6 +25,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
+import utils.ResourceLoader;
 import utils.Tools;
 
 
@@ -38,7 +41,9 @@ public class Info {
     @SuppressWarnings("unchecked")
 	public static void start() throws Exception{
     	Stage primaryStage = new Stage();
-		File file = new File("src\\userinterface\\comandi.txt");
+    	InputStream stream = ResourceLoader.load("comandi.txt");
+		File file = File.createTempFile("tempinfo", ".txt");
+		FileUtils.copyInputStreamToFile(stream, file);
         Collection<Data> list = null;
 		try {
 			list = Files.readAllLines(file.toPath())
@@ -120,12 +125,14 @@ public class Info {
         primaryStage.setMinHeight(Tools.DHEIGHTS[2]*1.4);
         primaryStage.setMaxHeight(Tools.DHEIGHTS[2]*1.4);
         primaryStage.setTitle("Informazioni");
-        FileInputStream gioFile = new FileInputStream("files\\p.png");
+        InputStream gioFile = ResourceLoader.load("p.png");
 		Image gioImage = new Image(gioFile);
 		gioFile.close();
 		primaryStage.getIcons().add(gioImage);
         primaryStage.show();
     }
+    
+	
 
 
 
@@ -164,9 +171,12 @@ public class Info {
     }
      
      
-     public static void initialize(TextArea a) {
+     public static void initialize(TextArea a) throws IOException{
          try {
-             Scanner s = new Scanner(new File("src\\userinterface\\info.txt"));
+        	 InputStream stream = ResourceLoader.load("info.txt");
+     		File file = File.createTempFile("tempinfo1", ".txt");
+     		FileUtils.copyInputStreamToFile(stream, file);
+             Scanner s = new Scanner(file);
              while (s.hasNext()) {
                  if (s.hasNextInt()) { // check if next token is an int
                      a.appendText(s.nextInt() + " "); // display the found integer
@@ -178,6 +188,12 @@ public class Info {
              System.err.println(ex);
          }
      }
-     
 
+
+
+//	@Override
+//	public void start(Stage primaryStage) throws Exception {		
+//	}
+     
 }
+

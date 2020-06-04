@@ -359,6 +359,7 @@ public class Tools {
 		if (result.get() == ButtonType.OK){
 			try {
 				if(Files.deleteIfExists(track.getPath())) {
+					MainApp.allSongs.remove((track));
 					Alert yes = new Alert(AlertType.CONFIRMATION);
 					yes.setTitle("Eliminazione canzone");
 					yes.setContentText("Canzone eliminata correttamente dal computer. Per aggiornare le playlist e' necessario chiudere e riaprire il programma");
