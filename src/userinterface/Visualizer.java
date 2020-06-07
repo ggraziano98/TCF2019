@@ -5,6 +5,7 @@ import java.util.List;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -22,7 +23,7 @@ public class Visualizer {
 		visuaPane.setPadding(new Insets(5, 5, 5, 5));
 		visuaPane.setSpacing(3);
 		visuaPane.setStyle("-fx-background-color: transparent");
-		//Scene visuaScene = new Scene(visuaPane, 200, 200);
+		Scene visuaScene = new Scene(visuaPane, 200, 200);
 		
 		double space = visuaPane.getSpacing()*(nbin + 1) + nbin + 4.;
 		

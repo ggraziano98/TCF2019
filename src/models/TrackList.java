@@ -375,6 +375,7 @@ final class ProgressDialog {
 
 
 	public void start(Task<Void> task) {
+		pBar = new ProgressBar(0);
 		VBox box = new VBox();
 		box.setAlignment(Pos.CENTER);
 		pBar.prefWidthProperty().bind(box.widthProperty().subtract(20));

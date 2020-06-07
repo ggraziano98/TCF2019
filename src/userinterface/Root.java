@@ -70,7 +70,7 @@ public class Root{
 	     Menu menuFile = new Menu("File directory");
 	     Menu menuInformation = new Menu("Informazioni");
 
-	     MenuItem item1 = new MenuItem("Add file directory");
+	     MenuItem item1 = new MenuItem("Aggiungi cartella di musica (richiesto riavvio)");
 	     item1.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event) {
 					Initialize.addDirectory();
