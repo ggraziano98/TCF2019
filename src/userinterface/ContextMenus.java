@@ -1,8 +1,6 @@
 
 package userinterface;
 
-import java.util.Collections;
-
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -70,6 +68,7 @@ public class ContextMenus{
 		songQueue.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
+				@SuppressWarnings("unused")
 				int l;
 
 				if (MainApp.pc.getTracklist().getSize() == 0) {

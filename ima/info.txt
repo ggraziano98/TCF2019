@@ -1,0 +1,2 @@
+Questa applicazione per la riproduzione di file musicali in formato mp3 e' stata creata nell'ambito del corso Tecniche di Calcolo per la Fisica.
+

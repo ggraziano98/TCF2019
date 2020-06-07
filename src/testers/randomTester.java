@@ -4,8 +4,6 @@ package testers;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javafx.collections.MapChangeListener.Change;
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import utils.Tools;
@@ -20,7 +18,7 @@ public class randomTester{
 		String cleanPathS = Tools.cleanURL(path.toString());
 		
 
-		JFXPanel panel = new JFXPanel();
+		//JFXPanel panel = new JFXPanel();
 		try {
 			Media media = new Media(cleanPathS);	
 			

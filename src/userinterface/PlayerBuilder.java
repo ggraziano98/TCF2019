@@ -1,6 +1,5 @@
 package userinterface;
 
-import java.io.FileInputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import controllers.PlayerController;
@@ -13,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -24,7 +22,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -192,8 +189,10 @@ public class PlayerBuilder {
 		buttonMouseIconRegion(repeatButton, repeatShape, repeatShapeTrasp);
 		
 		
-		shuffleButton.setOnAction(ev->{
-			if (!MainApp.songQueueView.isVisible()) {
+
+			shuffleButton.setOnAction(ev->{
+		
+			if (!MainApp.songQueueView.isVisible() && MainApp.pc.getCurrentTrack()!=null) {
 			MainApp.shuffle = (MainApp.shuffle+1)%2;
 			if (MainApp.shuffle == 1) {
 				MainApp.pc.getTracklist().shuffle(pc.getCurrentTrack());
@@ -207,12 +206,16 @@ public class PlayerBuilder {
 				shuffleButton.setGraphic(shuffleShape);
 				buttonMouseIconRegion(shuffleButton, shuffleShape, shuffleShapeTrasp);
 			}}
-			else {
+			if (MainApp.songQueueView.isVisible() && MainApp.pc.getCurrentTrack()!=null) {
+				MainApp.shuffle = (MainApp.shuffle+1)%2;
 				MainApp.pc.getTracklist().shuffle(pc.getCurrentTrack());
 			    MainApp.pc.refreshCurrentInt();
+			    shuffleButton.setGraphic(shuffleShape);
+				buttonMouseIconRegion(shuffleButton, shuffleShape, shuffleShapeTrasp);
 			}
 		});
-		
+	
+	
 		
 		
 

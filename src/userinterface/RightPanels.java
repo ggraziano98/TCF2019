@@ -1,17 +1,17 @@
 package userinterface;
 
-import java.io.FileInputStream;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import models.Track;
 import utils.Tools;
 
@@ -30,9 +30,17 @@ public class RightPanels {
 
 		buttonBox.setAlignment(Pos.CENTER);
 
-		RadioButton songsButton = new RadioButton("songs");
+		RadioButton songsButton = new RadioButton();
+		Text songs= new Text("songs");
+		songs.setFont(Font.font("Verdana", FontWeight.BOLD, Tools.DHEIGHTS[1]*0.28));
+		songs.setFill(Color.WHITE);
+		songsButton.setGraphic(songs);
 		songsButton.getStyleClass().remove("radio-button");
 		songsButton.setId("rightbuttons");
+		songsButton.setMinHeight(Tools.DHEIGHTS[1]*0.8);
+		songsButton.setMaxHeight(Tools.DHEIGHTS[1]*0.8);
+		songsButton.setMinWidth(Tools.DWIDTHS[1]*0.1);
+		songsButton.setMaxWidth(Tools.DWIDTHS[1]*0.1);
 		
 		TableView<Track> table = TrackView.tableFromTracklist(MainApp.allSongs, MainApp.pc);
 				
@@ -54,9 +62,17 @@ public class RightPanels {
 //		
 //		Label albums_queueLabel = new Label("  ");
 		
-		RadioButton queueButton = new RadioButton("Song Queue");
+		RadioButton queueButton = new RadioButton();
+		Text queue= new Text("song queue");
+		queue.setFont(Font.font("Verdana", FontWeight.BOLD, Tools.DHEIGHTS[1]*0.28));
+		queue.setFill(Color.WHITE);
+		queueButton.setGraphic(queue);
 		queueButton.getStyleClass().remove("radio-button");
 		queueButton.setId("rightbuttons");
+		queueButton.setMinHeight(Tools.DHEIGHTS[1]*0.8);
+		queueButton.setMaxHeight(Tools.DHEIGHTS[1]*0.8);
+		queueButton.setMinWidth(Tools.DWIDTHS[1]*0.15);
+		queueButton.setMaxWidth(Tools.DWIDTHS[1]*0.15);
 
 
 		buttonBox.getChildren().add(songsButton);
