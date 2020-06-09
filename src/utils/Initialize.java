@@ -18,8 +18,15 @@ import java.util.List;
 
 import controllers.FileController;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import models.Track;
@@ -28,6 +35,8 @@ import userinterface.MainApp;
 
 public class Initialize {
 
+	// Imposto la directory iniziale della musica
+	// Se non ci sono directory salvate, chiedo di impostarne una
 	public static final void setMainDir() {
 		try (BufferedReader br= Files.newBufferedReader(Tools.DIRFILEPATH)){
 			br.lines().forEach(line->{
@@ -58,83 +67,78 @@ public class Initialize {
         File selectedDirectory = chooser.showDialog(dialogStage);  
         dialogStage.close();
         
-		if (selectedDirectory != null){
-			setAttempt = true;
-			
-			try {
-				
-				if(Files.isDirectory(selectedDirectory.toPath())){
-					boolean isContained = false;
-					boolean contains = false;
-					String savedDir = "";
-
-					for(String s:MainApp.mainDirList){
-						isContained = Tools.getDirsInDir(Paths.get(s)).contains(selectedDirectory.toPath());
-						contains = Tools.getDirsInDir(selectedDirectory.toPath()).contains(Paths.get(s));
-						if(isContained || contains) {
-							savedDir = s;
-							System.out.println("contains " + contains + " is contained "+ isContained);
-							break;
-						}
-					};
-
-					if(!isContained && !contains) {
-						MainApp.mainDirList.add(selectedDirectory.getPath());
-						setDirSongs(selectedDirectory.getPath());
-						
-						try (BufferedWriter bw= Files.newBufferedWriter(Tools.DIRFILEPATH)){
-							MainApp.mainDirList.forEach(dir->{
-								
-								try {
-									bw.write(dir);
-									bw.newLine();
-								} catch (IOException e) {
-									Tools.stackTrace(e);
-									e.printStackTrace();
-								}
-								
-							});
-						} catch (IOException e) {
-							Tools.stackTrace(e);
-							e.printStackTrace();
-						}
-					}
-					
-					else if(isContained){
-						Alert alert = new Alert(AlertType.ERROR);
-						alert.setTitle("Errore");
-						alert.setHeaderText("La directory indicata è già inclusa in una delle directory salvate: " + savedDir);
-						alert.showAndWait();
-						return addDirectory();
-					} else {
-						Alert alert = new Alert(AlertType.ERROR);
-						alert.setTitle("Errore");
-						alert.setHeaderText("La directory indicata include una directory già salvata: " + savedDir);
-						alert.showAndWait();
-						return addDirectory();
-					}
-				}
-				
-				else {
-					Alert alert = new Alert(AlertType.ERROR);
-					alert.setTitle("Errore");
-					alert.setHeaderText("Il path indicato non è una directory");
-					alert.showAndWait();
-					return addDirectory();
-				}
-				
-			} catch (IllegalArgumentException e){
-				Tools.stackTrace(e);
-			}
-			
+		if (selectedDirectory != null){	
+			setAttempt = writeAddedDir(selectedDirectory);
 		}
-
-		MainApp.allSongs = Initialize.getAllSongs();
 
 		return setAttempt;
 
+	}
+	
+	static private boolean writeAddedDir(File selectedDirectory) {
+		try {
+			
+			if(Files.isDirectory(selectedDirectory.toPath())){
+				boolean isContained = false;
+				boolean contains = false;
+				String savedDir = "";
 
+				for(String s:MainApp.mainDirList){
+					isContained = Tools.getDirsInDir(Paths.get(s)).contains(selectedDirectory.toPath());
+					contains = Tools.getDirsInDir(selectedDirectory.toPath()).contains(Paths.get(s));
+					if(isContained || contains) {
+						savedDir = s;
+						System.out.println("contains " + contains + " is contained "+ isContained);
+						break;
+					}
+				};
 
+				if(!isContained && !contains) {
+					MainApp.mainDirList.add(selectedDirectory.getPath());
+					setDirSongs(selectedDirectory.getPath());
+					
+					try (BufferedWriter bw= Files.newBufferedWriter(Tools.DIRFILEPATH)){
+						MainApp.mainDirList.forEach(dir->{
+							
+							try {
+								bw.write(dir);
+								bw.newLine();
+							} catch (IOException e) {
+								Tools.stackTrace(e);
+								e.printStackTrace();
+							}
+							
+						});
+					} catch (IOException e) {
+						Tools.stackTrace(e);
+						e.printStackTrace();
+					}
+				}
+				
+				else if(isContained){
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Errore");
+					alert.setHeaderText("La directory indicata è già inclusa in una delle directory salvate: " + savedDir);
+					alert.showAndWait();
+					return addDirectory();
+				} else {
+					removeDir(savedDir);
+					writeAddedDir(selectedDirectory);
+				}
+			}
+			
+			else {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Errore");
+				alert.setHeaderText("Il path indicato non è una directory");
+				alert.showAndWait();
+				return addDirectory();
+			}
+			
+		} catch (IllegalArgumentException e){
+			Tools.stackTrace(e);
+		}
+		return true;
 	}
 
 
@@ -149,7 +153,7 @@ public class Initialize {
 				if (arr.length == 7) {
 					Path path = Paths.get(arr[6]);
 					if(Files.isRegularFile(path)){
-						tracklist.addTrack(new Track(arr));;
+						tracklist.add(new Track(arr));;
 					}
 					else {
 						System.out.println(path.toString() + "\tNon � un file corretto");
@@ -169,57 +173,97 @@ public class Initialize {
 
 	public static void setDirSongs(String dir) {
 		Path dirPath = Paths.get(dir);
+		TrackList original = new TrackList();
+		
+		if(MainApp.allSongs != null) {			
+			original.setAll(MainApp.allSongs);
+		} 
 
 		TrackList tl = FileController.getFilesFromDir(dirPath);
-		tl.setMetadata();
+		
+		ProgressDialog pd = new ProgressDialog();
+		
+		Task<Void> task = new Task<Void>() {
+			@Override
+			public Void call() throws InterruptedException{
 
-
-		try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Tools.ALLSONGSFILEPATH.toString(), true), "UTF-8"))){
-			bw.newLine();
-			bw.newLine();
-			bw.write(dir);
-			tl.forEach(t->{
-				try {
-					bw.newLine();
-					bw.write(t.getString());
-				} catch (IOException e) {
-					e.printStackTrace();
-					Tools.stackTrace(e);
+				for(int i = 0; i<tl.size(); i++) {
+					tl.get(i).setMetadata();
+					updateProgress(i, tl.size());
 				}
-			});
+				return null;
+			}
+		};
+		pd.start(task);
+		
+		ProgressDialog.pBar.progressProperty().bind(task.progressProperty());
+		task.progressProperty().addListener((obs, oldv, newv)->{
+			int prog = (int) (newv.doubleValue()*tl.getSize());
+			if(prog != 0 && prog%50 == 0) {
+				MainApp.allSongs.setAll(original);
+				MainApp.allSongs.addAll(tl.subList(0, prog));
+			}
+			ProgressDialog.label.setText("Loading songs... " + prog + "/" + tl.getSize());
+		});
+		
+        task.setOnSucceeded(event -> {
+        	MainApp.allSongs.setAll(Initialize.getAllSongs());
+        	ProgressDialog.stage.close();
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Completato");
+			alert.setHeaderText("Canzoni impostate correttamente");
+			alert.showAndWait();
+			
+			try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Tools.ALLSONGSFILEPATH.toString(), true), "UTF-8"))){
+				bw.newLine();
+				bw.newLine();
+				bw.write(Tools.DIRBREAK);
+				bw.newLine();
+				bw.write(dir);
+				tl.forEach(t->{
+					try {
+						bw.newLine();
+						bw.write(t.getString());
+					} catch (IOException e) {
+						e.printStackTrace();
+						Tools.stackTrace(e);
+					}
+				});
 
-		} catch (IOException e) {
-			e.printStackTrace();
-			Tools.stackTrace(e);
-		}
+			} catch (IOException e) {
+				e.printStackTrace();
+				Tools.stackTrace(e);
+			}
+        	MainApp.allSongs.setAll(Initialize.getAllSongs());
 
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Completato");
-		alert.setHeaderText("Canzoni impostate correttamente");
-		alert.showAndWait();
+        });
+
+        Thread thread = new Thread(task);
+        thread.start();
+        
+		ProgressDialog.stage.show();
 	}
 
 	public static void removeDir(String dir) {
 		File f = new File(Tools.ALLSONGSFILEPATH.toString());
 		File temp = new File("temp.txt");
 		try (BufferedWriter bw = Files.newBufferedWriter(temp.toPath());
-				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(Tools.ALLSONGSFILEPATH.toString()), "UTF-8"));){
-			String currentLine;
-			boolean remove = false;
-			while((currentLine = br.readLine()) != null){
-				if(currentLine == dir) remove = true;
-				else if(MainApp.mainDirList.contains(currentLine)) remove = false;
-				if(remove) {
-					System.out.println(currentLine);
-					currentLine = "";
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(Tools.ALLSONGSFILEPATH.toString()), "UTF-8"));
+				){
+				String currentLine;
+				boolean remove = false;
+				while((currentLine = br.readLine()) != null){
+					if(currentLine.contentEquals(dir)) remove = true;
+					else if(currentLine.contentEquals(Tools.DIRBREAK)) remove = false;
+					if(!remove) {
+						bw.write(currentLine + System.getProperty("line.separator"));
+					}
 				}
-				bw.write(currentLine + System.getProperty("line.separator"));
+			} catch (Exception e) {
+				Tools.stackTrace(e);
 			}
-			f.delete();
-			temp.renameTo(f);
-		} catch (Exception e) {
-			Tools.stackTrace(e);
-		}
+		f.delete();
+		temp.renameTo(f);
 		MainApp.mainDirList.remove(dir);
 
 		try(BufferedWriter bw = Files.newBufferedWriter(Tools.DIRFILEPATH)){
@@ -233,7 +277,7 @@ public class Initialize {
 		} catch (Exception e) {
 			Tools.stackTrace(e);
 		}
-		MainApp.allSongs = Initialize.getAllSongs();
+		MainApp.allSongs.setAll(Initialize.getAllSongs());
 
 	}
 
@@ -289,6 +333,7 @@ public class Initialize {
 
 	}
 
+	// controllo che tutti i file richiesti esistano
 	public static void checkMainFiles() {
 		try {
 			Files.createDirectories(Paths.get("playlists"));
@@ -325,5 +370,29 @@ public class Initialize {
 			Tools.stackTrace(e2);
 		}
 	}
+}
 
+
+final class ProgressDialog {
+	static ProgressBar pBar = new ProgressBar(0);
+	static Label label = new Label();
+	static Stage stage = new Stage();
+
+
+	public void start(Task<Void> task) {
+		pBar = new ProgressBar(0);
+		VBox box = new VBox();
+		box.setAlignment(Pos.CENTER);
+		pBar.prefWidthProperty().bind(box.widthProperty().subtract(20));
+		box.setPadding(new Insets(10, 20, 10, 20));
+		
+		label.setText("Loading songs...");
+		pBar.setProgress(0);
+
+		box.getChildren().addAll(pBar, label);
+
+		Scene scene = new Scene(box, 300, 100);
+		stage.setTitle("Loading Tracks");
+		stage.setScene(scene);
+	}
 }

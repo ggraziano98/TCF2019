@@ -44,6 +44,7 @@ public class RightPanels {
 		
 		TableView<Track> table = TrackView.tableFromTracklist(MainApp.allSongs, MainApp.pc);
 				
+		songsPane.getChildren().clear();
 		songsPane.getChildren().add(table);
 		ContextMenus.contextMenuTrackPlaylist(table, MainApp.allSongs);
 		VBox.setVgrow(table, Priority.ALWAYS);

@@ -19,6 +19,8 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import userinterface.MainApp;
+import utils.Initialize;
 import utils.Tools;
 
 
@@ -26,7 +28,7 @@ import utils.Tools;
 /**
  * 
  * Class model for lists of tracks, sostanzialmente una ObservableList ma con qualche funzionalit� aggiuntiva
- * Extended by SongQueue
+ * per associare alle track la loro posizione nella tracklist
  *
  * @param songList		ObservableList of paths to the track
  *
@@ -67,37 +69,32 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * add a track to the end of the TrackList
 	 *
 	 * @param track
+	 * @return 
 	 */
-	public void addTrack(Track track) {
-		this.addTrack(this.size(), track);
+	@Override
+	public void add(int pos, Track track) {
+		super.add(pos, track);
+		this.refreshPositions();
 	}
-
-
-
-	/**
-	 * add a track to the specified position. Will shift all successive tracks to the right
-	 *
-	 * @param position
-	 * @param track
-	 */
-	public void addTrack(int position, Track track) {
-		try {
-			this.add(position, track);
-			this.refreshPositions();
-		}
-		catch (Exception e) {
-			//			System.out.println(e.getMessage());
-			Tools.stackTrace(e);
-		}
+	
+	@Override
+	public boolean add(Track track) {
+		this.add(this.size(), track);
+		return true;
 	}
-
+	
+	public boolean addAll(TrackList tl) {
+		super.addAll(tl);
+		this.refreshPositions();
+		return true;
+	}
 
 
 	/**
 	 * remove a track to the end of the TrackList
 	 */
-	public void removeTrack() {
-		this.removeTrack(this.size() - 1);		//ci va il meno uno, altrimenti non mi cancella l'ultimo
+	public Track remove() {
+		return this.remove(this.size() - 1);		//ci va il meno uno, altrimenti non mi cancella l'ultimo
 	}
 
 
@@ -106,17 +103,14 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * remove a track to the specified position. Will shift all successive tracks to the right
 	 *
 	 * @param position
+	 * @return Track removed
 	 *
 	 */
-	public void removeTrack(int position) {
-		try {
-			this.remove(position);
-			this.refreshPositions();
-		}
-		catch (Exception e) {
-			//			System.out.println(e.getMessage());
-			Tools.stackTrace(e);
-		}
+	@Override
+	public Track remove(int position) {
+		Track r = super.remove(position);
+		this.refreshPositions();
+		return r;
 	}
 
 
@@ -142,8 +136,8 @@ public class TrackList extends SimpleListProperty<Track> {
 	 */
 	public void changeOrder(int position1, int position2) {
 		Track track = this.get(position1);
-		removeTrack(position1);
-		addTrack(position2, track);
+		remove(position1);
+		add(position2, track);
 		this.refreshPositions();
 	}
 
@@ -176,9 +170,9 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param position
 	 * @param track
 	 */
-	public void addTrack(Path path) {
-		this.addTrack(this.size(), path);
-	}
+//	public void addTrack(Path path) {
+//		this.addTrack(this.size(), path);
+//	}
 
 
 	/**
@@ -187,15 +181,15 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param position
 	 * @param track
 	 */
-	public void addTrack(int position, Path path) {
-		try {
-			this.addTrack(position, new Track(path));
-		}
-		catch (Exception e) {
-			//			e.printStackTrace();
-			Tools.stackTrace(e);
-		}
-	}
+//	public void addTrack(int position, Path path) {
+//		try {
+//			this.addTrack(position, new Track(path));
+//		}
+//		catch (Exception e) {
+//			//			e.printStackTrace();
+//			Tools.stackTrace(e);
+//		}
+//	}
 
 
 
@@ -205,16 +199,16 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param path
 	 *
 	 */
-	public void removeTrack(Path path) {
-		try {
-			this.remove(new Track(path));
-			this.refreshPositions();
-		}
-		catch (Exception e) {
-			//			System.out.println(e.getMessage());
-			Tools.stackTrace(e);
-		}
-	}
+//	public void removeTrack(Path path) {
+//		try {
+//			this.remove(new Track(path));
+//			this.refreshPositions();
+//		}
+//		catch (Exception e) {
+//			//			System.out.println(e.getMessage());
+//			Tools.stackTrace(e);
+//		}
+//	}
 
 
 
@@ -234,8 +228,6 @@ public class TrackList extends SimpleListProperty<Track> {
 		if (result.get() == ButtonType.OK){
 			try {
 				this.remove(track);
-
-				this.refreshPositions();
 			}
 			catch (Exception e) {
 				Tools.stackTrace(e);
@@ -251,16 +243,16 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param position2
 	 * @param path1
 	 */
-	public void changeOrder(int position2 ,Path path1) {
-		int position1;
-		int i=0;
-		while (this.get(i)==path1) {
-			i++;
-		}
-		position1 = i - 1;
-		removeTrack(position1);
-		addTrack(position2, path1);
-	}
+//	public void changeOrder(int position2 ,Path path1) {
+//		int position1;
+//		int i=0;
+//		while (this.get(i)==path1) {
+//			i++;
+//		}
+//		position1 = i - 1;
+//		removeTrack(position1);
+//		addTrack(position2, path1);
+//	}
 
 
 
@@ -271,16 +263,16 @@ public class TrackList extends SimpleListProperty<Track> {
 	 * @param position2
 	 * @param track1
 	 */
-	public void changeOrder(int position2, Track track1) {
-		int position1;
-		int i=0;
-		while (this.get(i)==track1.getPath()) {
-			i++;
-		}
-		position1 = i - 1;
-		removeTrack(position1);
-		addTrack(position2, track1);
-	}
+//	public void changeOrder(int position2, Track track1) {
+//		int position1;
+//		int i=0;
+//		while (this.get(i)==track1.getPath()) {
+//			i++;
+//		}
+//		position1 = i - 1;
+//		removeTrack(position1);
+//		addTrack(position2, track1);
+//	}
 
 
 	public void refreshPositions() {
@@ -306,55 +298,6 @@ public class TrackList extends SimpleListProperty<Track> {
 		this.refreshPositions();
 	}
 
-	/**
-	 * sets metadata for the whole tracklist
-	 */
-	public void setMetadata() {
-		this.setMetadata(0, this.getSize());
-	}
-
-
-	/**
-	 *
-	 * @param lower
-	 * @param upper
-	 */
-	public void setMetadata(int lower, int upper) {
-		TrackList tl = this;
-		int l= Math.min(lower, tl.getSize());
-		int u = Math.min(upper, tl.getSize());
-		
-		ProgressDialog pd = new ProgressDialog();
-		
-		Task<Void> task = new Task<Void>() {
-			@Override
-			public Void call() throws InterruptedException{
-
-				if(l != u) {
-					for(int i = 0; i<tl.subList(l, u).size(); i++) {
-						tl.subList(l, u).get(i).setMetadata();
-						updateProgress(i, u-l);
-					}
-				}
-				return null;
-			}
-		};
-		pd.start(task);
-		
-		ProgressDialog.pBar.progressProperty().bind(task.progressProperty());
-		task.progressProperty().addListener((obs, oldv, newv)->{
-			ProgressDialog.label.setText("Loading songs... " + (int) (newv.doubleValue()*(u-l)) + "/" + (u-l));
-		});
-		
-        task.setOnSucceeded(event -> {
-        	ProgressDialog.stage.close();
-        });
-
-        Thread thread = new Thread(task);
-        thread.start();
-        
-		ProgressDialog.stage.showAndWait();
-	}
 
 	public String getPlaylistName() {
 		return playlistName;
@@ -365,29 +308,4 @@ public class TrackList extends SimpleListProperty<Track> {
 		this.playlistName = playlistName;
 	}
 
-}
-
-
-final class ProgressDialog {
-	static ProgressBar pBar = new ProgressBar(0);
-	static Label label = new Label();
-	static Stage stage = new Stage();
-
-
-	public void start(Task<Void> task) {
-		pBar = new ProgressBar(0);
-		VBox box = new VBox();
-		box.setAlignment(Pos.CENTER);
-		pBar.prefWidthProperty().bind(box.widthProperty().subtract(20));
-		box.setPadding(new Insets(10, 20, 10, 20));
-		
-		label.setText("Loading songs...");
-		pBar.setProgress(0);
-
-		box.getChildren().addAll(pBar, label);
-
-		Scene scene = new Scene(box, 300, 100);
-		stage.setTitle("Loading Tracks");
-		stage.setScene(scene);
-	}
 }

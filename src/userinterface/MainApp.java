@@ -6,7 +6,9 @@ import java.util.List;
 
 import controllers.PlayerController;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
@@ -27,30 +29,9 @@ import utils.Tools;
 
 
 
-public class MainApp extends Application{
+public class MainApp extends Application{	
 
-	//TODO refreshDirFiles confrontare file salvati e file nella cartella per togliere quelli vecchi e aggiungere quelli nuovi GIO
-	//TODO editMetadata in file GIO
-	//TODO finish songqueue GIO
-	//TODO cancel loading songs
-	
-	
-//	//TODO sort playlists tasti FO/GIO
-
-//	//CHECK fix playlists special characters FO
-
-
-//	//TODO player redesign DAVIDE
-//	//TODO repeat graphics DAVIDE
-	//TODO nullpointerexceptions nel player quando non ci sono canzoni selezionate DAVIDE (rendi il player non selezionabile quando pc.getcurrenttrack() == null)
-//	//TODO scroll on drag DAVIDE
-//	//TODO drag sulla songqueue DAVIDE
-//	//TODO drag and drop sulle playlist DAVIDE
-
-//	//TODO per gli errori usare Tools.stackTrace
-	//TODO refactor generale
-
-	public static List<String> mainDirList = new ArrayList<String>();
+	public static ObservableList<String> mainDirList = FXCollections.observableArrayList();
 	public static TrackList allSongs;
 	public static PlayerController pc;
 
@@ -60,7 +41,7 @@ public class MainApp extends Application{
 	public static HBox findBox;
 
 	public static VBox playlistPane;
-	public static ObservableList<String> savedPlaylists;
+	public static ObservableMap<String, TrackList> playlistMap = FXCollections.emptyObservableMap();
 
 	public static HBox buttonBox;
 
@@ -77,42 +58,36 @@ public class MainApp extends Application{
 	public static MenuItem themeItem = new MenuItem();
 
 
-	public static List<TrackList> playlistList = new ArrayList<TrackList>();
-
 	public static int repeat = 0;
 	public static int shuffle = 0;
 	
 	
-
+	// Da qui si imposta tutta la UI
 	public void start(Stage primaryStage) throws Exception {
-
-		Initialize.checkMainFiles();
-
-
-		root = Root.rootPane();
-
-		Initialize.setMainDir();
-		allSongs = Initialize.getAllSongs();
-		savedPlaylists = Tools.getNamesSavedPlaylists();
-
+		
+		// Inizializzo il playercontroller
 		pc = new PlayerController();
 
+		// Controllo che ci siano i file necessari
+		Initialize.checkMainFiles();
+
+		// Inizializzo il pannello che conterrà ogni parte dell'applicazione
+		root = Root.rootPane();
+
+		// inizializzo le directory selezionate
+		Initialize.setMainDir();
+		// ottengo la tracklist che contiene tutte le canzoni presenti nella main directory
+		allSongs = Initialize.getAllSongs();
+		
+		Tools.getNamesSavedPlaylists().forEach(s ->{
+			TrackList tracklist = Tools.readPlaylist(s);
+			tracklist.setPlaylistName(s);
+			playlistMap.put(s, tracklist);
+		});;
+
+		// inizializzo la scene e aggiungo il css per lo styling
 		Scene scene = new Scene(root, Tools.DWIDTHS[1]*1.5, Tools.DHEIGHTS[2]*1.8);
 		scene.getStylesheets().add(getClass().getResource("dark.css").toExternalForm());
-		
-//		Root.Light().setOnAction(e-> {
-//			 if( scene.getStylesheets().contains( "dark.css" ) ) {
-//			    scene.getStylesheets().remove(getClass().getResource("dark.css").toExternalForm());
-//				scene.getStylesheets().add(getClass().getResource("light.css").toExternalForm());
-//			 }
-//		   } );
-//		Root.Dark().setOnAction(e-> {
-//			if( scene.getStylesheets().contains( "light.css" ) ) {
-//			scene.getStylesheets().remove(getClass().getResource("light.css").toExternalForm());
-//			scene.getStylesheets().add(getClass().getResource("dark.css").toExternalForm());
-//			}
-//		   } );
-
 
 		// Set values for songsPane, artistsPane, albumsPane, songQueueView
 		RightPanels.panels();
@@ -131,8 +106,6 @@ public class MainApp extends Application{
 
 		buttonBox = RightPanels.buttonBox;
 
-//		albumsPane = RightPanels.albumsPane;
-//		artistsPane = RightPanels.artistsPane;
 		songsPane = RightPanels.songsPane;
 
 
@@ -145,8 +118,6 @@ public class MainApp extends Application{
 		root.add(buttonBox, 1, 1);
 		root.add(playlistPane, 0, 3);
 
-//		root.add(albumsPane, 1, 2, 1, 2);
-//		root.add(artistsPane, 1, 2, 1, 2);
 		root.add(songsPane, 1, 2, 1, 2);
 
 		//Set buttons to switch between songs, album and artist panes
@@ -167,11 +138,6 @@ public class MainApp extends Application{
 		primaryStage.setMinHeight(Tools.DHEIGHTS[2]*1.9);
 		primaryStage.show();
 		
-		Visualizer.visualize();
-		
-		
-
-
 	}
 
 

@@ -66,7 +66,7 @@ public class Tools {
 	public static final double[] DWIDTHS= {screenWidth*0.2, screenWidth*0.4};
 	
 	public static final double[] DHEIGHTS = {screenHeight*0.05, screenHeight*0.045, screenHeight*0.4, screenHeight*0.045, screenHeight*0.1};
-
+	public static final String DIRBREAK = "&&dirbreak&&";
 
 	public static Image DIMAGE;
 
@@ -195,7 +195,7 @@ public class Tools {
 			try {
 				Path filePath = Paths.get("playlists", playlistName + ".txt");
 				Files.createFile(filePath);
-				MainApp.savedPlaylists.add(playlistName);
+				MainApp.playlistMap.put(playlistName, new TrackList());
 
 			} catch (IOException e) {
 				if (e instanceof FileAlreadyExistsException) {
@@ -240,7 +240,7 @@ public class Tools {
 				if (arr.length == 7) {
 					Path path = Paths.get(arr[6]);
 					if(Files.isRegularFile(path)){
-						tracklist.addTrack(new Track(arr));
+						tracklist.add(new Track(arr));
 					}
 					else System.out.println(path.toString() + "\t Non e' un file corretto");
 				}
@@ -323,7 +323,7 @@ public class Tools {
 						yes.setTitle("Eliminazione Playlist");
 						yes.setContentText("Playlist eliminata correttament");
 						yes.showAndWait();
-						MainApp.savedPlaylists.remove(playlist);
+						MainApp.playlistMap.remove(playlist);
 					}
 					else {
 						Alert alert = new Alert(AlertType.ERROR);
@@ -336,7 +336,7 @@ public class Tools {
 
 			} else {
 				if(Files.deleteIfExists(filePath)) {
-					MainApp.savedPlaylists.remove(playlist);
+					MainApp.playlistMap.remove(playlist);
 				}
 				else System.out.println("Non esiste la playlist selezionata");
 			}

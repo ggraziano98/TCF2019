@@ -1,5 +1,6 @@
 package userinterface;
 
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -7,11 +8,13 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import models.TrackList;
 import utils.Initialize;
 import utils.Tools;
 
@@ -21,24 +24,24 @@ public class Root{
 
 		GridPane root = new GridPane();
 		//GRIDPANE è il pane di livello piu alto, contiene tutti gli altri
-//		FileInputStream bgFile = new FileInputStream("files\\bg.png");
-//		Image bgImage = new Image(bgFile, Tools.screenWidth, Tools.screenHeight, true, true);
-//
-//		 root.setBackground(new Background(new BackgroundImage(bgImage, BackgroundRepeat.REPEAT,
-//                 BackgroundRepeat.REPEAT,
-//                 BackgroundPosition.DEFAULT,
-//                 BackgroundSize.DEFAULT)));
-
-
+		//		FileInputStream bgFile = new FileInputStream("files\\bg.png");
+		//		Image bgImage = new Image(bgFile, Tools.screenWidth, Tools.screenHeight, true, true);
+		//
+		//		 root.setBackground(new Background(new BackgroundImage(bgImage, BackgroundRepeat.REPEAT,
+		//                 BackgroundRepeat.REPEAT,
+		//                 BackgroundPosition.DEFAULT,
+		//                 BackgroundSize.DEFAULT)));
+		
+		
 		root.setVgap(10);
 		root.setHgap(10);
 		root.setPadding(new Insets(5, 5, 5, 5));
 		root.setGridLinesVisible(false);
 		//root.setId("grad");
-
+		
 		double[] widths = Tools.DWIDTHS;
 		double[] heights = Tools.DHEIGHTS;
-
+		
 		//imposto i constraints del gridpane per settare anche il comportamento quando riscalo
 		ColumnConstraints column1 = new ColumnConstraints();
 		column1.setMinWidth(widths[0]);
@@ -47,7 +50,7 @@ public class Root{
 		column2.setMinWidth(widths[1]);
 		column2.setHgrow(Priority.ALWAYS);
 		root.getColumnConstraints().addAll(column1, column2);
-
+		
 		RowConstraints row1 = new RowConstraints();
 		row1.setMinHeight(heights[3]);
 		row1.setMaxHeight(heights[3]);
@@ -60,31 +63,50 @@ public class Root{
 		RowConstraints row4 = new RowConstraints();
 		row4.setMinHeight(heights[2]);
 		row4.setVgrow(Priority.ALWAYS);
-
+		
 		root.getRowConstraints().addAll(row1, row2, row3,row4);
-
+		
 		Visualizer.visualize();
 		root.add(Visualizer.visuaPane, 0, 0, 2, 4);
-
+		
 		MenuBar menuBar = new MenuBar();
-	     Menu menuFile = new Menu("File directory");
-	     Menu menuInformation = new Menu("Informazioni");
-
-	     MenuItem item1 = new MenuItem("Aggiungi cartella di musica (richiesto riavvio)");
-	     item1.setOnAction(new EventHandler<ActionEvent>() {
+		Menu menuFile = new Menu("File directory");
+		Menu menuInformation = new Menu("Informazioni");
+		
+		MenuItem item1 = new MenuItem("Aggiungi cartella di musica");
+		item1.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event) {
-					Initialize.addDirectory();
-					}
-			});
-	     	     
-
-	     menuFile.getItems().add(item1);
-
-	     MenuItem item2 = new MenuItem("Vedi informazioni");
-	     item2.setOnAction(new EventHandler<ActionEvent>() {
-	    		    public void handle(ActionEvent event) {
-	    		    	
-         try {
+				Initialize.addDirectory();
+				}
+		});
+		
+		Menu menuDel = new Menu("Rimuovi una cartella");
+		MainApp.mainDirList.forEach(dir->{
+			menuDel.getItems().add(removeDir(dir));
+		});
+		
+		MainApp.mainDirList.addListener((ListChangeListener<String>) c -> {
+			while(c.next()) {
+				c.getAddedSubList().forEach(s->{
+					menuDel.getItems().add(removeDir(s));
+				});
+			}
+		});
+		
+		item1.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent event) {
+				Initialize.addDirectory();
+				}
+		});
+		 	     
+		
+		menuFile.getItems().addAll(item1, menuDel);
+		
+		MenuItem item2 = new MenuItem("Vedi informazioni");
+		item2.setOnAction(new EventHandler<ActionEvent>() {
+				    public void handle(ActionEvent event) {
+				    	
+		try {
 			Info.start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -107,13 +129,19 @@ public class Root{
 
 		return root;
 	}
-	 
-//	public void runAnotherApp(Class<? extends Application> anotherAppClass) throws Exception {
-//	    Application app2 = anotherAppClass.newInstance(); 
-//	    Stage anotherStage = new Stage();
-//	    app2.start(anotherStage);
-//	}
+	
+	private static MenuItem removeDir(String dir) {
+		MenuItem item  = new MenuItem(dir);
+		item.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				Initialize.removeDir(dir);
+			}
+		});
 
-	} 
+		return item;
+	}
+
+	 
+} 
 
 

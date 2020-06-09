@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javafx.collections.ListChangeListener;
+import javafx.collections.MapChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -143,34 +143,30 @@ public class PlaylistStuff {
 		scroll.setFitToHeight(true);
 
 
-		MainApp.savedPlaylists.forEach((String name)->{
-			createPlaylistView(name, playlistsVbox);
+		MainApp.playlistMap.forEach((String name, TrackList tl)->{
+			createPlaylistView(name, tl, playlistsVbox);
 
 		});
 
 
-		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c-> {
-			while(c.next()) {
+		MainApp.playlistMap.addListener((MapChangeListener<String, TrackList>) c-> {
 
-				c.getAddedSubList().forEach(s->{
-					createPlaylistView(s, playlistsVbox);
-				});
-				c.getRemoved().forEach(s->{
-					RadioButton tbremoved = new RadioButton();
+			if(c.wasAdded()) {
+				createPlaylistView(c.getKey(), c.getValueAdded(), playlistsVbox);
+			}
+			else {
+				RadioButton tbremoved = new RadioButton();
 
-					for(int i=0; i<playlistsVbox.getChildren().size(); i++) {
-						RadioButton playlist = (RadioButton) playlistsVbox.getChildren().get(i);
-						if((playlist).getText() == s) {
-							MainApp.root.getChildren().remove(playlist.getUserData());
-							tbremoved = playlist;
-						}
+				for(int i=0; i<playlistsVbox.getChildren().size(); i++) {
+					RadioButton playlist = (RadioButton) playlistsVbox.getChildren().get(i);
+					if((playlist).getText() == c.getKey()) {
+						MainApp.root.getChildren().remove(playlist.getUserData());
+						tbremoved = playlist;
+						break;
 					}
+				}
 
-					playlistsVbox.getChildren().remove(tbremoved);
-					MainApp.playlistList.removeIf(tl-> tl.getPlaylistName()==s);
-
-				});
-
+				playlistsVbox.getChildren().remove(tbremoved);
 			}
 		});
 
@@ -200,42 +196,22 @@ public class PlaylistStuff {
 		playlistButton.setMaxWidth(width);
 		playlistButton.setAlignment(Pos.CENTER_LEFT);
 		playlistButton.setToggleGroup(mainPanel);
-//		playlistButton.setStyle(Tools.TRANSBUTT);
-//		playlistButton.setOnMouseMoved((e)->{
-//			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
-//			else playlistButton.setStyle(Tools.BOLDBUTT);
-//		});
-//		playlistButton.setOnMouseExited((e)->{
-//			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
-//			else playlistButton.setStyle(Tools.TRANSBUTT);
-//		});
-//		playlistButton.selectedProperty().addListener((e)->{
-//			if(playlistButton.isSelected()) playlistButton.setStyle(Tools.SELBUTT);
-//			else playlistButton.setStyle(Tools.TRANSBUTT);
-//		});
+
 		box.getChildren().add(playlistButton);
 		dataPane.setVisible(false);
 		playlistButton.setUserData(dataPane);
 
 		ContextMenus.contextMenuPlaylists(playlistButton); //Add context menu
 
-
-
-
 	}
 
-	private static void createPlaylistView(String name, VBox playlistsVbox) {
-		TrackList tracklist = Tools.readPlaylist(name);
-		tracklist.setPlaylistName(name);
+	private static void createPlaylistView(String name, TrackList tracklist, VBox playlistsVbox) {
 		TableView<Track> table = TrackView.tableFromTracklist(tracklist, MainApp.pc);
 		ContextMenus.contextMenuTrackPlaylist(table, tracklist);
 		VBox tableBox = new VBox(table);
 		VBox.setVgrow(table, Priority.ALWAYS);
 		MainApp.root.add(tableBox, 1, 2, 1, 2);
 		playlistButton(name, playlistsVbox, MainApp.mainPanel, tableBox);
-
-		MainApp.playlistList.add(tracklist);
-
 
 		TrackView.setDragDrop(table, tracklist);
 
@@ -269,25 +245,6 @@ public class PlaylistStuff {
 		MainApp.playlistsVbox.getChildren().clear();
 		MainApp.playlistsVbox.getChildren().addAll(list);
 
-		/*UNUSED
-		 * 
-		HashMap<String, Double> map = new HashMap<String, Double>();
-
-		for (TrackList playlist : MainApp.playlistList) {
-			map.put(playlist.getPlaylistName(), playlist.totalDuration().toSeconds());
-		}
-
-		ValueComparator bvc = new ValueComparator(map);
-		TreeMap<String, Double> sortedmap = new TreeMap<String, Double>(bvc); 
-		sortedmap.putAll(map);
-
-		MainApp.savedPlaylists.clear();
-
-		for (String playlistName : sortedmap.keySet()) {
-			MainApp.savedPlaylists.add(playlistName);
-		}
-		 */
-
 	}
 
 }
@@ -314,23 +271,4 @@ class DurationComparator implements Comparator<Node> {
 		}
 	}
 
-
-	/*UNUSED
-	 * 
-	Map<String, Double> base;
-
-	public ValueComparator(Map<String, Double> base) {
-		this.base = base;
-	}
-
-	// Note: this comparator imposes orderings that are inconsistent with
-	// equals.
-	public int compare(String a, String b) {
-		if (base.get(a) <= base.get(b)) {
-			return -1;
-		} else {
-			return 1;
-		} // returning 0 would merge keys
-	}
-	 */
 }

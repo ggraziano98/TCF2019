@@ -16,6 +16,7 @@ import userinterface.MainApp;
 import userinterface.Visualizer;
 import utils.Tools;
 
+// Classe che si occupa della gestione delle track da far suonare attraverso una tracklist interna
 public class PlayerController {
 
 	/**
@@ -139,15 +140,12 @@ public class PlayerController {
 
 
 	public void refreshPlayer() {
-		if (this.getCurrentTrack() != null) this.getCurrentTrack().setPlaying(false);
+//		if (this.getCurrentTrack() != null) this.getCurrentTrack().setPlaying(false);
 
 		this.getCurrentTrack().setPlaying(true);
 
 		this.setCurrentInt(this.getCurrentTrack().getPosition());
-		if(player != null) {
-			player.stop();
-			player.dispose();
-		}
+
 		try {
 			MediaPlayer mp = new MediaPlayer(new Media(Tools.cleanURL(this.getCurrentTrack().getPath().toString())));
 			this.setPlayer(mp);
@@ -179,8 +177,13 @@ public class PlayerController {
 	}
 
 
-	private final void setPlayer(MediaPlayer player) {
-		this.player = player;
+	private final void setPlayer(MediaPlayer newPlayer) {
+		if(player != null) {
+			player.stop();
+			player.dispose();
+			player = null;
+		}
+		this.player = newPlayer;
 		this.setVolume();
 		this.player.currentTimeProperty().addListener((obs, oldv, newv)->{
 			this.setCurrentTime(newv.toSeconds());

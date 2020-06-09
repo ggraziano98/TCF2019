@@ -190,7 +190,7 @@ public class PlayerBuilder {
 		
 		
 
-			shuffleButton.setOnAction(ev->{
+		shuffleButton.setOnAction(ev->{
 		
 			if (!MainApp.songQueueView.isVisible() && MainApp.pc.getCurrentTrack()!=null) {
 			MainApp.shuffle = (MainApp.shuffle+1)%2;
@@ -229,7 +229,7 @@ public class PlayerBuilder {
 					repeatButton.setGraphic(repeat1Shape);
 					buttonMouseIconRegion(repeatButton, repeat1Shape, repeat1ShapeTrasp);
 				}
-		 if(MainApp.repeat == 0)  {
+				if(MainApp.repeat == 0)  {
 	     			repeatButton.setGraphic(repeatShape);
 					buttonMouseIconRegion(repeatButton, repeatShape, repeatShapeTrasp);
 				}
@@ -303,91 +303,91 @@ public class PlayerBuilder {
 		final Region volMuteShapeTrasp = iconShape(volMute, volSize, greyTrasp);
 				
 
-				Slider volumeSlider = new Slider();
-				volumeSlider.setMax(1);
-				volumeSlider.setMin(0);
-				volumeSlider.setValue(0.6);
-				volumeSlider.setMaxWidth(Tools.DHEIGHTS[4]*1.15);
-				volumeSlider.valueProperty().bindBidirectional(pc.volumeValueProperty());
-
-				volBox.setOnScroll((ev)->{
-					double volumeAmount = ev.getDeltaY();
-					pc.setVolumeValue(pc.getVolumeValue() + volumeAmount/300);
-				});
-				
-				
-				AtomicBoolean muted = new AtomicBoolean(false);
-				Button volumeButton = new Button("",volUpShapeTrasp);
-				volumeButton.setStyle("-fx-background-color: transparent");
-				buttonMouseIconRegion(volumeButton, volUpShape, volUpShapeTrasp);
-				volumeButton.setOnMouseClicked((e) -> {
+		Slider volumeSlider = new Slider();
+		volumeSlider.setMax(1);
+		volumeSlider.setMin(0);
+		volumeSlider.setValue(0.6);
+		volumeSlider.setMaxWidth(Tools.DHEIGHTS[4]*1.15);
+		volumeSlider.valueProperty().bindBidirectional(pc.volumeValueProperty());
+	
+		volBox.setOnScroll((ev)->{
+			double volumeAmount = ev.getDeltaY();
+			pc.setVolumeValue(pc.getVolumeValue() + volumeAmount/300);
+		});
+		
+		
+		AtomicBoolean muted = new AtomicBoolean(false);
+		Button volumeButton = new Button("",volUpShapeTrasp);
+		volumeButton.setStyle("-fx-background-color: transparent");
+		buttonMouseIconRegion(volumeButton, volUpShape, volUpShapeTrasp);
+		volumeButton.setOnMouseClicked((e) -> {
+			if(muted.get()) {
+				if(volumeSlider.getValue()>0.5) {
+					volumeButton.setGraphic(volUpShape);
+					buttonMouseIconRegion(volumeButton, volUpShape, volUpShapeTrasp);
+				}
+				else if(0.001<volumeSlider.getValue() || volumeSlider.getValue()<0.5) {
+					volumeButton.setGraphic(volDownShape);
+					buttonMouseIconRegion(volumeButton, volDownShape, volDownShapeTrasp);
+				}
+			}
+			else {
+				volumeButton.setGraphic(volMuteShape);
+				buttonMouseIconRegion(volumeButton, volMuteShape, volMuteShapeTrasp);
+			}
+			muted.set(!muted.get());
+			volumeMute(muted, pc);
+	
+		});
+		
+		
+		
+		//keypress per il muto
+		GridPane root = MainApp.root;
+		root.addEventFilter(KeyEvent.KEY_RELEASED, k -> {
+			if(k.getTarget() != findText) {
+				if ( k.getCode() == KeyCode.M) {
 					if(muted.get()) {
 						if(volumeSlider.getValue()>0.5) {
-							volumeButton.setGraphic(volUpShape);
+							volumeButton.setGraphic(volUpShapeTrasp);
 							buttonMouseIconRegion(volumeButton, volUpShape, volUpShapeTrasp);
 						}
 						else if(0.001<volumeSlider.getValue() || volumeSlider.getValue()<0.5) {
-							volumeButton.setGraphic(volDownShape);
+							volumeButton.setGraphic(volDownShapeTrasp);
 							buttonMouseIconRegion(volumeButton, volDownShape, volDownShapeTrasp);
 						}
-					}
-					else {
-						volumeButton.setGraphic(volMuteShape);
-						buttonMouseIconRegion(volumeButton, volMuteShape, volMuteShapeTrasp);
-					}
-					muted.set(!muted.get());
-					volumeMute(muted, pc);
-
-				});
-				
-				
-				
-				//keypress per il muto
-				GridPane root = MainApp.root;
-				root.addEventFilter(KeyEvent.KEY_RELEASED, k -> {
-					if(k.getTarget() != findText) {
-						if ( k.getCode() == KeyCode.M) {
-							if(muted.get()) {
-								if(volumeSlider.getValue()>0.5) {
-									volumeButton.setGraphic(volUpShapeTrasp);
-									buttonMouseIconRegion(volumeButton, volUpShape, volUpShapeTrasp);
-								}
-								else if(0.001<volumeSlider.getValue() || volumeSlider.getValue()<0.5) {
-									volumeButton.setGraphic(volDownShapeTrasp);
-									buttonMouseIconRegion(volumeButton, volDownShape, volDownShapeTrasp);
-								}
-							}
-							else {
-								volumeButton.setGraphic(volMuteShapeTrasp);
-								buttonMouseIconRegion(volumeButton, volMuteShape, volMuteShapeTrasp);
-							}
-							muted.set(!muted.get());
-							volumeMute(muted, pc);
-						}
-				}
-					});
-				
-				
-				volumeSlider.valueProperty().addListener((obs, oldv, newv)->{
-					if(volumeSlider.getValue()>0.5) {
-						volumeButton.setGraphic(volUpShapeTrasp);
-						buttonMouseIconRegion(volumeButton, volUpShape, volUpShapeTrasp);
-					}
-					else if(0.001<volumeSlider.getValue() || volumeSlider.getValue()<0.5) {
-						volumeButton.setGraphic(volDownShapeTrasp);
-						buttonMouseIconRegion(volumeButton, volDownShape, volDownShapeTrasp);
 					}
 					else {
 						volumeButton.setGraphic(volMuteShapeTrasp);
 						buttonMouseIconRegion(volumeButton, volMuteShape, volMuteShapeTrasp);
 					}
+					muted.set(!muted.get());
+					volumeMute(muted, pc);
 				}
-			);
-				
-				volBox.getChildren().addAll(volumeButton, volumeSlider);
-				volBox.setAlignment(Pos.CENTER);
-				
-				return volBox;
+			}
+		});
+		
+		
+		volumeSlider.valueProperty().addListener((obs, oldv, newv)->{
+			if(volumeSlider.getValue()>0.5) {
+				volumeButton.setGraphic(volUpShapeTrasp);
+				buttonMouseIconRegion(volumeButton, volUpShape, volUpShapeTrasp);
+			}
+			else if(0.001<volumeSlider.getValue() || volumeSlider.getValue()<0.5) {
+				volumeButton.setGraphic(volDownShapeTrasp);
+				buttonMouseIconRegion(volumeButton, volDownShape, volDownShapeTrasp);
+			}
+			else {
+				volumeButton.setGraphic(volMuteShapeTrasp);
+				buttonMouseIconRegion(volumeButton, volMuteShape, volMuteShapeTrasp);
+			}
+		}
+	);
+		
+		volBox.getChildren().addAll(volumeButton, volumeSlider);
+		volBox.setAlignment(Pos.CENTER);
+		
+		return volBox;
 	}
 
 	public static void playPause(AtomicBoolean play, PlayerController pc) {
@@ -495,7 +495,8 @@ public class PlayerBuilder {
 					e.printStackTrace();
 				}
 			}
-			else songView.setImage(Tools.DIMAGE);});
+			else songView.setImage(Tools.DIMAGE);
+		});
 		
 		VBox songStrings = new VBox();
 		songStrings.setAlignment(Pos.CENTER);

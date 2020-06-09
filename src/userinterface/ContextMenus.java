@@ -1,7 +1,7 @@
 
 package userinterface;
 
-import javafx.collections.ListChangeListener;
+import javafx.collections.MapChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -90,20 +90,16 @@ public class ContextMenus{
 		});
 
 		//menu che fa aggiungere tutte le canzoni in una playlist alla playlist selezionata
-		MainApp.savedPlaylists.forEach((String playlistName)->{
+		MainApp.playlistMap.keySet().forEach((String playlistName)->{
 			addSongTo.getItems().add(addPlaylistToPlaylist(playlistName, button));
 		});
 
 
 		//controllo che non siano state create nuove playlist, se sono state create le aggiungo al menu
-		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c->{
-			while(c.next()) {
-				addSongTo.getItems().removeIf(i->!MainApp.savedPlaylists.contains(i.getText()));
-				c.getAddedSubList().forEach(playlistName->{
-					addSongTo.getItems().add(addPlaylistToPlaylist(playlistName, button));
-				});
+		MainApp.playlistMap.addListener((MapChangeListener<String, TrackList>) c->{
+				addSongTo.getItems().add(addPlaylistToPlaylist(c.getKey(), button));
+				addSongTo.getItems().removeIf(i->!MainApp.playlistMap.keySet().contains(i.getText()));
 				addSongTo.getItems().addAll(separator,songQueue);
-			}
 		});
 
 		//aggiungo gli items ai menu principale e secondario
@@ -128,7 +124,7 @@ public class ContextMenus{
 	/**
 	 * MenuItem delle playlist che permette di aggiungere tutte le track di una playlist a un'altra playlist
 	 * @param playlistName Nome della playlist a cui aggiungere
-	 * @param button RadioButton a cui è collegata la playlist da aggiungere
+	 * @param button RadioButton a cui ï¿½ collegata la playlist da aggiungere
 	 * @return
 	 */
 	private static MenuItem addPlaylistToPlaylist(String playlistName, RadioButton button) {
@@ -136,12 +132,10 @@ public class ContextMenus{
 		playlist.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				TrackList tracklistToAdd = Tools.readPlaylist(button.getText());
-				MainApp.playlistList.forEach(tl->{
-					if(tl.getPlaylistName() == playlistName) {
-						tl.addAll(tracklistToAdd);
-						Tools.saveAsPlaylist(tl, playlistName);
-					}
-				});
+				TrackList tl = MainApp.playlistMap.get(playlistName);
+
+				tl.addAll(tracklistToAdd);
+				Tools.saveAsPlaylist(tl, playlistName);
 			}
 		});
 
@@ -153,7 +147,7 @@ public class ContextMenus{
 
 
 	/**
-	 * mi dà il contextmenu per le songs: delete song, add song to playlist, add song to queue
+	 * mi dï¿½ il contextmenu per le songs: delete song, add song to playlist, add song to queue
 	 *
 	 * @param TableView<Track> 		table
 	 */
@@ -201,19 +195,15 @@ public class ContextMenus{
 			
 		});
 
-		MainApp.savedPlaylists.forEach((String playlistName)->{
-			addSongTo.getItems().add(addTrackToPlaylist(playlistName, table));
+		MainApp.playlistMap.values().forEach((TrackList tl)->{
+			addSongTo.getItems().add(addTrackToPlaylist(tl.getName(), table));
 		});
 
 		//controllo che non siano state create altre playlist
-		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c->{
-			while(c.next()) {
-				addSongTo.getItems().removeIf(i->!MainApp.savedPlaylists.contains(i.getText()));
-				c.getAddedSubList().forEach(playlistName->{
-					addSongTo.getItems().add(addTrackToPlaylist(playlistName, table));
-				});
-				addSongTo.getItems().addAll(separatorMenuItem,songQueue);
-			}
+		MainApp.playlistMap.addListener((MapChangeListener<String, TrackList>) c->{
+			addSongTo.getItems().add(addTrackToPlaylist(c.getKey(), table));
+			addSongTo.getItems().removeIf(i->!MainApp.playlistMap.keySet().contains(i.getText()));
+			addSongTo.getItems().addAll(separatorMenuItem,songQueue);
 		});
 
 		//aggiungo tutto ai rispettivi menu
@@ -244,12 +234,9 @@ public class ContextMenus{
 		playlist.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				Object track = table.getSelectionModel().getSelectedItem();
-				MainApp.playlistList.forEach(tl->{
-					if(tl.getPlaylistName() == playlistName) {
-						tl.addNew((Track) track);
-						Tools.saveAsPlaylist(tl, playlistName);
-					}
-				});
+				TrackList tl = MainApp.playlistMap.get(playlistName);
+				tl.addNew((Track) track);
+				Tools.saveAsPlaylist(tl, playlistName);
 			}	
 		});
 		return playlist;
@@ -302,7 +289,7 @@ public class ContextMenus{
 			public void handle(ActionEvent event) {
 				Track track = MainApp.pc.getCurrentTrack();
 				MainApp.pc.getTracklist().clear();
-				MainApp.pc.getTracklist().addTrack(track);
+				MainApp.pc.getTracklist().add(track);
 				MainApp.pc.refreshCurrentInt();
 			}
 		});
@@ -373,20 +360,6 @@ public class ContextMenus{
 			}
 		});
 		
-		/*
-		//controllo che non ci siano nuovi elementi playlist
-		MainApp.savedPlaylists.addListener((ListChangeListener<String>) c->{
-			menu.getItems().remove(addSongTo);
-			while(c.next()) {				
-				addSongTo.getItems().clear();
-				c.getList().forEach(playlistName->{
-					addSongTo.getItems().add(addTrackToPlaylist(playlistName, table));
-				});
-				addSongTo.getItems().addAll(separator,songQueue);
-			}
-			menu.getItems().add(0, addSongTo);
-		});
-		*/
 
 		//aggiungo gli item ai menu
 		menu.getItems().addAll(addSongTo, information, separator, remove);
@@ -396,7 +369,7 @@ public class ContextMenus{
 			public void handle(ContextMenuEvent event) {
 				if(table.getSelectionModel().getSelectedItem() != null) {
 					addSongTo.getItems().clear();
-					MainApp.savedPlaylists.forEach((String playlistName)->{
+					MainApp.playlistMap.keySet().forEach((String playlistName)->{
 						addSongTo.getItems().add(addTrackToPlaylist(playlistName, table));
 					});
 					addSongTo.getItems().addAll(new SeparatorMenuItem(),songQueue);

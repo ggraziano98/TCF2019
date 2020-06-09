@@ -18,6 +18,7 @@ import utils.Initialize;
 import utils.Tools;
 
 /**
+ * Classe per la gestione dei file
  * @author Umberto
  *
  */
@@ -30,7 +31,7 @@ public class FileController {
 		
 		dirList.forEach(dir->{
 			getFilesFromDir(Paths.get(dir)).forEach(t->{
-				tracklist.addTrack(t);
+				tracklist.add(t);
 			});;
 		});
 		
@@ -59,7 +60,7 @@ public class FileController {
 			/* uso il metodo removeIf dell'ArrayList per rimuovere i file che non sono dell'estensione corretta */
 
 			pathList.forEach(p -> {
-				tracklist.addTrack(p);
+				tracklist.add(new Track(p));
 			});
 		}
 		catch (NullPointerException e) {
@@ -71,7 +72,6 @@ public class FileController {
 	}
 
 	/**
-	 * metodo per eliminare una canzone passando una track (futureproofing)
 	 * @param track		Track
 	 */
 	public static void deleteTrack(Track track) {
@@ -112,7 +112,7 @@ public class FileController {
 						Alert alert = new Alert(AlertType.ERROR);
 						alert.setTitle("Errore");
 						alert.setHeaderText("Errore durante l'eliminazione della canzone");
-						alert.setContentText("Non è stato possibile eliminare \"" + fileName + "\"");
+						alert.setContentText("Non ï¿½ stato possibile eliminare \"" + fileName + "\"");
 						alert.showAndWait();
 					}
 				} else {

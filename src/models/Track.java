@@ -27,6 +27,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableMap;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
@@ -35,7 +36,7 @@ import utils.Tools;
 
 
 /**
- * Class model for a Track 
+ * Classe che controlla le track, occupandosi di trovare i metadata e di gestirli come proprietà osservabili
  * 
  * 
  * @param title
@@ -45,7 +46,6 @@ import utils.Tools;
  * @param year
  * @param duration
  *
- * @see <a href="https://docs.oracle.com/javafx/2/binding/jfxpub-binding.htm">Properties</a>
  */
 public class Track{
 	private Path path;
@@ -98,7 +98,7 @@ public class Track{
 		this.hasMetadata = true;
 	}
 
-
+	// necessario per assicurarsi che sia tutto come di default
 	private void resetProperties() {
 		this.album = new SimpleStringProperty(Tools.DALBUM);
 		this.artist = new SimpleStringProperty(Tools.DARTIST);
@@ -109,6 +109,7 @@ public class Track{
 
 	/**
 	 * sets Track metadata. Does not set image to avoid memory usage 
+	 * Usa il parser di tika (quello di Javafx non funziona bene)
 	 */
 	public void setMetadata() {
 		if(!this.getHasMetadata()) {
@@ -341,14 +342,20 @@ public class Track{
 	}
 
 
+	// Imposta l'immagine associata alla canzone, se la trova
 	public void setImageView(ImageView view) {
 		view.setImage(Tools.DIMAGE);
 		Path path = this.getPath();
 		String cleanPathS = Tools.cleanURL(path.toString());
 		Media media = new Media(cleanPathS);	
-		media.getMetadata().addListener((MapChangeListener<String, Object>) change ->{
-			if (change.getKey() == "image") {
-				view.setImage((Image) change.getValueAdded());
+		ObservableMap<String, Object> data = media.getMetadata();
+		data.addListener(new MapChangeListener<String, Object>(){
+			@Override
+			public void onChanged(Change<? extends String, ? extends Object> change) {
+				if (change.getKey() == "image") {
+					view.setImage((Image) change.getValueAdded());
+					data.removeListener(this);
+				}
 			}
 		});
 	}

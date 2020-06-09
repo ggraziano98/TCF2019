@@ -3,6 +3,7 @@ package userinterface;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -33,6 +34,12 @@ public class Visualizer {
 		    colors.add(Color.hsb(jump*i, 1.0f, 1.0f));
 		}
 		
+		MainApp.pc.playingProperty().addListener((ChangeListener<Boolean>) (obs, oldv, newv)-> {
+			if(!newv) {
+				reset();
+			}
+		});
+		
 		
 		for(int i=0; i<nbin; i++) {
 			Rectangle rec = new Rectangle((visuaPane.getWidth()-space)/nbin, 5);
@@ -53,6 +60,12 @@ public class Visualizer {
 		
 		for (int i = 0; i < n; i++) {
 			rectangleList.get(i).setHeight(Math.max(Math.pow((magnitudes[i] - min)/Math.sqrt(nbin-i)/10, 3)*visuaPane.getHeight(), 5));
+		}
+	}
+	
+	private static void reset() {
+		for (int i = 0; i < rectangleList.size(); i++) {
+			rectangleList.get(i).setHeight(5);
 		}
 	}
 
