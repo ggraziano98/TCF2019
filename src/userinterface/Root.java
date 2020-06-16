@@ -86,8 +86,9 @@ public class Root{
 		});
 		
 		MainApp.mainDirList.addListener((ListChangeListener<String>) c -> {
+			menuDel.getItems().clear();
 			while(c.next()) {
-				c.getAddedSubList().forEach(s->{
+				c.getList().forEach(s->{
 					menuDel.getItems().add(removeDir(s));
 				});
 			}
