@@ -254,7 +254,10 @@ public class Initialize {
 				boolean remove = false;
 				while((currentLine = br.readLine()) != null){
 					if(currentLine.contentEquals(dir)) remove = true;
-					else if(currentLine.contentEquals(Tools.DIRBREAK)) remove = false;
+					else if(remove && currentLine.contentEquals(Tools.DIRBREAK)) {
+						remove = false;
+						continue;
+					}
 					if(!remove) {
 						bw.write(currentLine + System.getProperty("line.separator"));
 					}

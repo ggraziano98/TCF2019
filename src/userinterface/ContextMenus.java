@@ -195,8 +195,8 @@ public class ContextMenus{
 			
 		});
 
-		MainApp.playlistMap.values().forEach((TrackList tl)->{
-			addSongTo.getItems().add(addTrackToPlaylist(tl.getName(), table));
+		MainApp.playlistMap.keySet().forEach((String name)->{
+			addSongTo.getItems().add(addTrackToPlaylist(name, table));
 		});
 
 		//controllo che non siano state create altre playlist
@@ -359,7 +359,6 @@ public class ContextMenus{
 				MainApp.pc.previousTracklist = MainApp.pc.getTracklist();
 			}
 		});
-		
 
 		//aggiungo gli item ai menu
 		menu.getItems().addAll(addSongTo, information, separator, remove);
@@ -367,6 +366,7 @@ public class ContextMenus{
 		//event handler del context menu
 		table.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			public void handle(ContextMenuEvent event) {
+
 				if(table.getSelectionModel().getSelectedItem() != null) {
 					addSongTo.getItems().clear();
 					MainApp.playlistMap.keySet().forEach((String playlistName)->{

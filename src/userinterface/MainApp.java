@@ -41,7 +41,7 @@ public class MainApp extends Application{
 	public static HBox findBox;
 
 	public static VBox playlistPane;
-	public static ObservableMap<String, TrackList> playlistMap = FXCollections.emptyObservableMap();
+	public static ObservableMap<String, TrackList> playlistMap = FXCollections.observableHashMap();
 
 	public static HBox buttonBox;
 
